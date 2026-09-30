@@ -1,0 +1,18 @@
+{
+  "name": "static-blog",
+  "version": "1.0.0",
+  "description": "基于 VitePress 的 Markdown 知识库网站",
+  "type": "module",
+  "scripts": {
+    "dev": "vitepress dev docs",
+    "build": "vitepress build docs",
+    "preview": "vitepress preview docs"
+  },
+  "devDependencies": {
+    "mermaid": "^11.17.2",
+    "vitepress": "^1.6.4"
+  },
+  "dependencies": {
+    "debug": "^4.4.3"
+  }
+}

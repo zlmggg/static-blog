@@ -1,0 +1,184 @@
+/* ============================================================
+ * 文章页宽度调整（覆盖 VitePress 默认样式）
+ * ------------------------------------------------------------
+ * 默认值参考：
+ *   --vp-layout-max-width                         整页最大宽度 1440px
+ *   .VPDoc.has-aside .content-container (max-width) 正文列宽度 688px
+ * ============================================================ */
+
+:root {
+  /* 整页容器最大宽度（包含左侧目录、正文、右侧大纲），宽屏可调大 */
+  --vp-layout-max-width: 1580px;
+}
+
+/* 中间正文列：默认固定 688px，改为自动填满左右栏之间的空间。
+   如果觉得行太长不适合阅读，可把 100% 改成固定值，如 900px / 1000px。
+   注意：必须加 !important，因为 VitePress 内置规则是带 [data-v] 的
+   scoped 样式，普通选择器优先级不够会被它压过。 */
+.VPDoc.has-aside .content-container {
+  max-width: 100% !important;
+}
+
+/* 顶部导航右侧留白：整页宽度调大（1600px）后，VitePress 原公式
+   (100vw - 1600px)/2 + 32px 在 1440~1536px 分辨率下会算出负值，
+   导致主题切换按钮紧贴屏幕右边缘。用 max() 保证至少保留 32px。
+   !important：内置规则是 scoped 样式，优先级更高（同正文宽度的处理）。 */
+@media (min-width: 1440px) {
+  .VPNavBar.has-sidebar .content {
+    padding-right: max(32px, calc((100vw - var(--vp-layout-max-width)) / 2 + 32px)) !important;
+  }
+}
+
+/* ============================================================
+ * 首页整屏化：Hero（含右侧插画）+ 功能卡片在一屏内完整显示
+ * 全部以 .VPHome 前缀限定，只影响首页，文档页不受影响
+ * ============================================================ */
+
+/* 收紧首页底部外边距（默认 96px / 宽屏 128px） */
+.VPHome {
+  margin-bottom: 0 !important;
+}
+
+/* Hero 视觉变量（仿 VitePress 官网蓝框） */
+:root {
+  /* name 文字渐变（与 VitePress 官网同款写法）：品红 → 青蓝，
+     120deg 下实际观感为左青蓝、右品红；.clip 类负责 background-clip:text */
+  --vp-home-hero-name-color: transparent;
+  --vp-home-hero-name-background: -webkit-linear-gradient(
+    120deg,
+    #bd34fe 30%,
+    #41d1ff
+  );
+
+  /* 右侧图片背后的蓝紫辉光 */
+  --vp-home-hero-image-background-image:
+    linear-gradient(150deg, #38bdf8 0%, #6366f1 45%, #a855f7 100%);
+  --vp-home-hero-image-filter: blur(60px);
+}
+
+/* 缩小页脚留白（默认上下 32px） */
+.VPFooter {
+  padding-top: 14px !important;
+  padding-bottom: 14px !important;
+}
+
+/* 页脚 message 和 copyright 默认是两个 <p>、垂直堆叠；
+   改为 flex 横排，中间用逗号分隔的间距 */
+.VPFooter .container {
+  display: flex !important;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+/* ============================================================
+ * 普通引用块（Markdown 的 > ）全局蓝色高亮
+ * ------------------------------------------------------------
+ * 复用 VitePress 主题色变量 --vp-c-brand-soft（与 ::: tip 同款蓝），
+ * 深浅色主题自动适配。以后导入的 Markdown 无需逐个改写。
+ * 限定 .vp-doc，只影响文章正文，不影响首页。
+ * ============================================================ */
+
+.vp-doc blockquote {
+  margin: 16px 0;
+  padding: 12px 20px;
+  border: 1px solid var(--vp-c-brand-soft);
+  border-left: 1px solid var(--vp-c-brand-soft);
+  border-radius: 8px;
+  background-color: var(--vp-c-brand-soft);
+  color: var(--vp-c-text-1);
+}
+
+/* 引用内的行内代码用更深一档底色，避免与引用背景融在一起 */
+.vp-doc blockquote code {
+  background-color: var(--vp-c-bg-alt);
+}
+
+/* 透明 PNG 直接悬浮：去掉此前白底卡片的圆角与投影 */
+.VPHome .image-src {
+  border-radius: 0;
+  box-shadow: none;
+}
+
+@media (min-width: 960px) {
+  /* Hero 区贴紧顶部（垂直居中由下面的 min-height 实现） */
+  .VPHome .VPHero {
+    padding-top: calc(var(--vp-nav-height) + 16px) !important;
+    padding-bottom: 8px !important;
+  }
+
+  /* Hero 内容在「导航与功能卡片之间」垂直居中（预留 360px 给卡片+页脚） */
+  .VPHome .VPHero .container {
+    min-height: calc(100vh - var(--vp-nav-height) - 360px);
+    align-items: center;
+  }
+
+  /* 副标题文案较长（12 字），组件默认 56px + 限宽 576px 会折成两行并留孤字；
+     略收到 44px 并放开宽度，桌面端一行完整显示 */
+  .VPHome .text {
+    max-width: 720px !important;
+    font-size: 44px !important;
+    line-height: 56px !important;
+  }
+
+  .VPHome .tagline {
+    padding-top: 12px !important;
+  }
+
+  .VPHome .actions {
+    padding-top: 24px !important;
+  }
+
+  /* 图片取消默认的左上偏移，在右列正中悬浮；随屏高自适应防与卡片重叠 */
+  .VPHome .VPHero .image-container {
+    transform: none !important;
+  }
+
+  .VPHome .VPHero .image-src {
+    max-width: min(380px, 40vh) !important;
+    max-height: min(380px, 40vh) !important;
+  }
+
+  /* 辉光盘略大于图片，形成外圈光晕 */
+  .VPHome .VPHero .image-bg {
+    width: 360px !important;
+    height: 360px !important;
+    opacity: 0.65;
+  }
+
+  /* 功能卡片内边距略收紧（默认上下 24px） */
+  .VPHome .VPFeature .box {
+    padding: 20px 24px !important;
+  }
+}
+/* 表格首列（命令 / 日期 / 文章标题 / 缩写）不换行，日期不在连字符处折行 */
+.vp-doc table th:first-child,
+.vp-doc table td:first-child {
+  white-space: nowrap;
+}
+/* 全站底部信息（一行）—— 字体、颜色都在这里调 */
+.site-footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  column-gap: 16px;
+  row-gap: 6px;
+  padding: 16px 16px 28px;
+  font-size: 13px;              /* ① 字体大小：想大改 14px / 15px，想小改 12px */
+  /* font-weight: 500; */       /* ② 字重：400 正常，500/600 更粗（去掉前面的/* */
+}
+
+/* 底部文字 + 备案链接的默认颜色 */
+.site-footer .footer-item {
+  color: var(--vp-c-text-2);    /* ③ 颜色，见下方说明 */
+  text-decoration: none;
+}
+
+/* 鼠标悬停在备案号上时 */
+.site-footer a.footer-item:hover {
+  color: var(--vp-c-brand-1);   /* ④ 悬停颜色（主题蓝），可改任意色值 */
+  text-decoration: underline;   /* 想要下划线保留，不想要就删这行 */
+}
+
+

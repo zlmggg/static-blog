@@ -1,0 +1,16 @@
+# 依赖目录（可用 npm install 恢复，不传）
+node_modules/
+
+# 构建产物与缓存
+docs/.vitepress/dist/
+docs/.vitepress/cache/
+
+# 敏感文件（绝不进仓库）
+*.pem
+.htpasswd
+id_ed25519
+id_ed25519.pub
+
+# 其他
+*.log
+.DS_Store
