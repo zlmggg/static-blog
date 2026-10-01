@@ -1,3 +1,8 @@
+---
+category: 容器
+difficulty: 初级
+---
+
 # Docker 容器化应用快速入门
 
 ::: tip 本篇定位：掌握容器原理、镜像构建、存储网络、Compose 多服务编排、仓库管理、资源限制、运维。
@@ -1158,64 +1163,687 @@ hello-world        latest             fce289e99eb9        12 month
 
 ### 镜像加速和配置优化
 
+**为什么需要加速器**：默认 `docker pull` 直连 Docker Hub（registry-1.docker.io），国内经常超时、TLS 握手失败。registry mirror 相当于在 Docker 守护进程前面挂一个"国内中转站"：pull 时 Docker 先问镜像站要，中转站没有再回源 Docker Hub，对用户透明。
+
+配置文件 `/etc/docker/daemon.json`（Docker Engine 29.x，2026 年当前稳定线）完整示例：
+
+```json
+{
+  "registry-mirrors": [
+    "https://docker.m.daocloud.io",
+    "https://docker.1panel.live",
+    "https://docker.1ms.run"
+  ],
+  "insecure-registries": [
+    "harbor.internal.local:80"
+  ],
+  "log-driver": "json-file",
+  "log-opts": {
+    "max-size": "100m",
+    "max-file": "3"
+  },
+  "exec-opts": ["native.cgroupdriver=systemd"],
+  "data-root": "/var/lib/docker",
+  "live-restore": true,
+  "max-concurrent-downloads": 10
+}
+```
+
+改完必须重载生效：
+
+```bash
+sudo systemctl daemon-reload
+sudo systemctl restart docker
+docker info | grep -A 5 "Registry Mirrors"
+```
+
+**2024 年后国内加速器现状（务必知道）**：
+
+- 2024 年中起，大厂公共加速器批量关停或限流：USTC（`docker.mirrors.ustc.edu.cn`）、网易（`hub-mirror.c.163.com`）已停止公共服务；阿里云个人加速器（`xxxx.mirror.aliyuncs.com`）官方公告已停止同步最新镜像，拉 `latest` 可能拿到旧层。
+- 现在能用的基本是社区维护的中转站（`docker.m.daocloud.io`、`docker.1panel.live`、`docker.1ms.run`、`hub.rat.dev` 等），特点是**随时可能挂、有白名单/限流、不保证镜像新鲜**，只能当开发环境的尽力而为。
+- 云厂商内网镜像站只在自家 VPC 内可用：腾讯云 `https://mirror.ccs.tencentyun.com`（仅腾讯云服务器内网）、阿里云内网域名同理，出了云就不通。
+
+**生产可用的替代思路**：
+
+1. **自建 Harbor proxy cache（推荐）**：Harbor 自带代理缓存项目，把 docker.io / gcr.io / quay.io 缓存到内网，全公司共享，稳定可控，见后文"Docker 仓库管理"。
+2. **镜像名前缀替换**：不改 daemon，直接把镜像名写成中转站前缀，如 `docker pull docker.m.daocloud.io/library/nginx:1.27`，pull 下来后 `docker tag` 回原名。
+3. **离线导入**：见本节末尾"拉取不可描述的镜像"。
+
+::: warning 不要把公共加速器写死进生产配置
+公共加速器随时可能失效。生产环境 pull 失败时第一反应是 `docker info` 看 mirrors 是否还通；更稳妥的做法是所有镜像一律经内网 Harbor 分发，加速器只给开发机用。
+:::
+
 ### 查看本地镜像
+
+```bash
+docker images
+# 等价于
+docker image ls
+```
+
+典型输出：
+
+```
+REPOSITORY    TAG       IMAGE ID       CREATED        SIZE
+nginx         1.27      6f59c5d4d6dc    2 weeks ago     192MB
+mysql         8.4       908200b0b1a4    3 weeks ago     780MB
+<none>        <none>    a1b2c3d4e5f6    5 days ago      120MB   ← dangling 悬空镜像
+```
+
+各列含义：
+
+| 列 | 含义 |
+|---|---|
+| REPOSITORY | 镜像仓库名（去掉仓库地址前缀的短名） |
+| TAG | 标签；`<none>` 表示没打标签 |
+| IMAGE ID | 镜像唯一 ID（SHA256 前 12 位）；`--no-trunc` 看完整 |
+| CREATED | 镜像**构建时间**（不是你 pull 下来的时间） |
+| SIZE | 镜像展开后的逻辑大小；层有共享，实际占盘比这个小 |
+
+常用过滤：
+
+```bash
+docker images nginx                      # 只看 nginx 仓库
+docker images "nginx:1.27"               # 指定 tag
+docker images -f "dangling=true"         # 只看悬空镜像
+docker images -f "before=nginx:1.27"     # 某镜像之前构建的
+docker images -q                         # 只输出 IMAGE ID，常配合批量删除
+```
 
 ### 镜像导出
 
+把本地镜像打成 tar 包，用于离线拷贝：
+
+```bash
+docker save -o nginx-1.27.tar nginx:1.27
+# gzip 压缩省空间（不写 -o，输出走 stdout）
+docker save nginx:1.27 | gzip > nginx-1.27.tar.gz
+# 一次导出多个镜像到同一个包
+docker save -o web-images.tar nginx:1.27 redis:7.4
+```
+
+导出的是镜像的所有层和元数据，**镜像名和 tag 会原样保留**，load 回来后 `docker images` 里名字不变。
+
 ### 镜像导入
+
+```bash
+docker load -i nginx-1.27.tar
+# gzip 包可直接 load（Docker 自动识别压缩）
+docker load -i nginx-1.27.tar.gz
+```
+
+典型输出：
+
+```
+Loaded image: nginx:1.27
+```
+
+`docker load` 与 `docker import` 的区别：
+
+- `docker load`：加载 `docker save` 导出的镜像包，**保留历史层和 tag**，用于镜像搬家。
+- `docker import`：把一个 rootfs 目录/压缩包导入成镜像，**不保留历史层**，常用于从虚拟机磁盘模板做基础镜像。
 
 ### 镜像删除
 
+```bash
+docker rmi nginx:1.27            # 按 名字:tag 删
+docker rmi 6f59c5d4d6dc          # 按 IMAGE ID 删
+```
+
+**删除规则**：
+
+- 一个镜像可能被多个 tag 指向，`docker rmi 名字:tag` 只是摘掉那个标签；标签摘光了才真正删层。
+- 正在被容器使用的镜像删不掉，报错形如：
+  `conflict: unable to delete ... (must be forced): image is being used by stopped container xxx`
+
+处理办法：
+
+```bash
+docker ps -a | grep nginx          # 找到用这个镜像的容器
+docker rm -f <容器ID>              # 删掉容器后再 rmi
+# 非必要不要用：docker rmi -f <ID>（强删会把引用它的容器写层搞坏）
+```
+
 ### 清理`dangling`状态镜像
+
+`dangling`（悬空）镜像就是 `<none>:<none>`：你重新 build 同名镜像后，旧 tag 被摘走但层没人要了，就变成悬空垃圾。
+
+```bash
+# 列出悬空镜像
+docker images -f "dangling=true"
+# 只清理悬空镜像（安全，不会删任何有名字的镜像）
+docker image prune
+# 连"没有任何容器引用"的镜像一起删（确认后再用）
+docker image prune -a
+```
+
+可加 `--filter "until=24h"` 只删超过 24 小时的，`-f` 跳过交互确认。生产上 `prune -a` 前务必确认后面要用的镜像不是还没 pull 的——删了得重新下载。
 
 ### 镜像打标签
 
+```bash
+docker tag 原镜像:原tag 仓库地址/项目名/镜像名:新tag
+# 例：把本地 nginx:1.27 打上 Harbor 私有仓库标签
+docker tag nginx:1.27 harbor.internal.local:80/library/nginx:1.27
+```
+
+**推送前提**：
+
+1. tag 里的仓库地址前缀决定 push 到哪，必须和实际仓库一致；
+2. 先 `docker login harbor.internal.local:80` 登录；
+3. 再 `docker push harbor.internal.local:80/library/nginx:1.27`。
+
+`docker tag` **不复制镜像层**，只是给同一个 IMAGE ID 多起一个名字，秒级完成。
+
 ### 拉取不可描述的镜像
 
+这里说的是 Docker Hub 之外、国内直连不通的镜像：`gcr.io`、`registry.k8s.io`（原 k8s.gcr.io）、`quay.io` 上的镜像。
 
-> ✏️ pull/images/tag/rmi、save/load、Harbor 私有仓库。
+完整离线流程：**在有网的机器上 pull 下来 → save 成 tar → 拷到内网 → load**。
 
-（在此填写内容）
+```bash
+# ===== 第一步：在能联网的机器上 =====
+# 方式 A：官方镜像走中转站，镜像名加前缀
+docker pull docker.m.daocloud.io/library/nginx:1.27
+docker tag docker.m.daocloud.io/library/nginx:1.27 nginx:1.27
+
+# 方式 B：registry.k8s.io 的镜像走对应中转前缀
+# 例：registry.k8s.io/pause:3.9  →  k8s.m.daocloud.io/pause:3.9
+docker pull k8s.m.daocloud.io/pause:3.9
+docker tag k8s.m.daocloud.io/pause:3.9 registry.k8s.io/pause:3.9
+
+# 打成离线包（可多个镜像一起）
+docker save -o images-offline.tar nginx:1.27 registry.k8s.io/pause:3.9
+
+# ===== 第二步：scp / 拷贝到内网目标机器 =====
+scp images-offline.tar root@内网机器:/tmp/
+
+# ===== 第三步：目标机器加载 =====
+docker load -i /tmp/images-offline.tar
+docker images        # 确认镜像名和 tag 都在
+```
+
+生产环境建议把这套流程固化成发布脚本，或者直接内网搭 Harbor proxy cache 统一代理。
 
 ## 镜像构建
 
-> ✏️ Dockerfile 指令、构建、多阶段构建、分层缓存、最佳实践。
+### Dockerfile 常用指令
 
-（在此填写内容）
+把"装运行环境、拷代码、暴露端口、定义启动命令"这一套手工操作写成一个文本文件 Dockerfile，`docker build` 就能自动、可重复地造出一模一样的镜像。
+
+| 指令 | 作用 | 要点 |
+|---|---|---|
+| `FROM` | 指定基础镜像 | 每条 Dockerfile 的第一条指令；多阶段构建时可写多个 FROM |
+| `WORKDIR` | 设置工作目录 | 后续 RUN/CMD 的相对路径都基于它；目录不存在自动建 |
+| `COPY` | 拷本地文件进镜像 | 只支持 build 上下文里的文件；支持 `--chown=user:group` |
+| `ADD` | 拷文件（增强版） | 会自动解压 tar、能直接下 URL；行为太隐式，**官方建议优先用 COPY** |
+| `RUN` | 构建时执行命令 | 每条 RUN 生成一层；多条用 `&&` 串起来减少层数 |
+| `ENV` | 环境变量 | 构建期和运行期都生效 |
+| `ARG` | 构建参数 | 只在 build 时生效（`--build-arg` 传入），容器运行后不存在 |
+| `EXPOSE` | 声明端口 | **只是文档作用**，不真正发布端口；发布靠 `-p` |
+| `CMD` | 容器默认启动命令 | `docker run 镜像 后面的命令` 会整体覆盖它 |
+| `ENTRYPOINT` | 容器入口 | 不被 run 后面的参数覆盖（除非 `--entrypoint`）；常和 CMD 配合做"固定程序+可变参数" |
+
+CMD 与 ENTRYPOINT 的经典配合：
+
+```dockerfile
+ENTRYPOINT ["nginx"]
+CMD ["-g", "daemon off;"]
+# docker run my-nginx        → nginx -g "daemon off;"
+# docker run my-nginx -t     → nginx -t（CMD 被替换，ENTRYPOINT 不变）
+```
+
+### 完整 Dockerfile 示例（Spring Boot 应用）
+
+```dockerfile
+# 构建阶段
+FROM maven:3.9-eclipse-temurin-21 AS builder
+WORKDIR /build
+COPY pom.xml .
+RUN mvn dependency:go-offline          # 先下依赖，充分利用层缓存
+COPY src ./src
+RUN mvn package -DskipTests
+
+# 运行阶段（最终镜像）
+FROM eclipse-temurin:21-jre-alpine
+WORKDIR /app
+RUN addgroup -S app && adduser -S app -G app
+COPY --from=builder /build/target/demo-0.0.1.jar app.jar
+USER app
+EXPOSE 8080
+ENV JAVA_OPTS="-Xms256m -Xmx512m"
+ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar app.jar"]
+```
+
+### 构建命令
+
+```bash
+docker build -t myapp:1.0 .
+# 指定 Dockerfile 路径、传构建参数、禁用缓存
+docker build -f deploy/Dockerfile -t myapp:1.0 \
+  --build-arg VERSION=1.0 --no-cache .
+```
+
+末尾的 `.` 是 build 上下文（context），决定了 `COPY` 能拷宿主机上哪些文件。
+
+### 多阶段构建
+
+上面 Dockerfile 就是多阶段：第一阶段带 Maven + JDK 全套编译工具（好几百 MB），第二阶段只把编译产物 jar 包拷进一个瘦 JRE 镜像。最终镜像可能从 800MB 瘦到 170MB。**原则：编译工具链不进最终镜像。**
+
+### 分层缓存原理与最佳实践
+
+镜像是一层一层叠出来的（UnionFS）。build 时 Docker 从上到下执行 Dockerfile 指令，**某一层的输入没变，就直接复用上次的缓存**；一旦某层失效，它下面所有层全部重新构建。
+
+由此推出四条最佳实践：
+
+1. **`.dockerignore` 必备**：排除 `.git`、`target/`、`node_modules/`、本地无关大文件，避免无关文件变动导致缓存全失效。
+   ```
+   .git
+   target/
+   node_modules/
+   *.md
+   ```
+2. **把"变动少的"指令放上面**：先 `COPY pom.xml` 下依赖，再 `COPY src`——pom.xml 不变时依赖层一直命中缓存，改源码不用重新下 Maven 依赖。
+3. **合并 RUN**：`RUN yum install -y xxx && yum clean all`，别一条 RUN 装一个包；每层都会留痕占体积。
+4. **层最小化**：每个 RUN 做完顺手清理缓存（`rm -rf /var/cache/dnf/*`、`apt clean`），否则临时文件会被永久带进镜像。
 
 ## 容器的数据管理
 
-> ✏️ run 参数、生命周期、exec、logs、资源限制 cgroup。
+### docker run 常用参数完整讲解
 
-（在此填写内容）
+```bash
+docker run -d \
+  --name web01 \
+  -p 8080:80 \
+  -v /data/web/html:/usr/share/nginx/html \
+  -e TZ=Asia/Shanghai \
+  --restart=always \
+  --cpus="1.0" -m="512m" \
+  nginx:1.27
+```
+
+| 参数 | 作用 | 小白类比 |
+|---|---|---|
+| `-d` | 后台运行 | 把程序丢后台，不占着终端 |
+| `-p 宿主:容器` | 端口映射 | 给容器门口装个转接分机 |
+| `-v` | 挂载数据卷/目录 | 给容器开一个和宿主机共享的文件夹 |
+| `-e KEY=VAL` | 环境变量 | 程序启动时读的配置开关 |
+| `--name` | 容器起名 | 不起名 Docker 随机起个逗比名字 |
+| `--restart` | 重启策略（no / on-failure:5 / always / unless-stopped） | 崩了要不要自动拉起来 |
+| `-it` | 交互式 + 伪终端 | 想跟容器里的程序对话就加它 |
+| `--rm` | 退出后自动删容器 | 一次性任务跑完就打扫干净 |
+
+### 容器生命周期命令
+
+```bash
+docker create web01 nginx:1.27     # 建而不启
+docker start web01
+docker stop web01                  # 先发 SIGTERM，宽限 10s 后 SIGKILL
+docker restart web01
+docker pause web01 && docker unpause web01   # 冻结/解冻
+docker rm web01                    # 删已停止容器；-f 连运行中的一起删
+docker update --cpus=2 web01      # 运行中动态改资源限制
+```
+
+### exec / logs / cp / stats
+
+```bash
+docker exec -it web01 /bin/bash                 # 进入运行中容器（容器里得有 bash/sh）
+docker exec web01 ls /etc/nginx                 # 不进入，直接跑一条命令
+docker logs -f --since 10m --tail 200 web01     # 跟踪最近 200 行日志
+docker stats                                   # 实时看所有容器 CPU/内存/网络
+docker cp web01:/etc/nginx/nginx.conf ./        # 容器 → 宿主机拷文件
+docker cp ./index.html web01:/usr/share/nginx/html/   # 宿主机 → 容器
+```
+
+### cgroup 资源限制
+
+```bash
+# 最多 1 核 CPU、512MB 内存、swap 不额外给
+docker run -d --name web01 \
+  --cpus="1.0" --memory="512m" --memory-swap="512m" \
+  nginx:1.27
+# CPU 权重（相对值，默认 1024，越大越能抢 CPU）
+docker run -d --cpu-shares=2048 --name big web01 nginx:1.27
+```
+
+验证方法：
+
+```bash
+docker inspect web01 --format '{{.HostConfig.NanoCpus}} {{.HostConfig.Memory}}'
+# cgroup v2（Docker 29 默认）下宿主机直接看
+cat /sys/fs/cgroup/system.slice/docker-<容器ID>.scope/memory.max
+cat /sys/fs/cgroup/system.slice/docker-<容器ID>.scope/cpu.max
+```
+
+**关于 `No swap limit support`**：`docker info` 出现这条 WARNING 时，`--memory-swap` 不生效，需要给内核开 `swapaccount`。本案例站内已有完整记录：[解决 SWAP 报警提示](/cases/t-docker-swap)。两种做法：
+
+::: details Debian/Ubuntu 做法
+编辑 `/etc/default/grub`，在 `GRUB_CMDLINE_LINUX` 末尾加 `swapaccount=1`：
+
+```bash
+GRUB_CMDLINE_LINUX="... swapaccount=1"
+```
+
+然后：
+
+```bash
+sudo update-grub
+sudo reboot
+```
+:::
+
+::: details RHEL/CentOS/Rocky 做法
+编辑 `/etc/default/grub`，同样在 `GRUB_CMDLINE_LINUX` 加 `swapaccount=1`，然后重新生成 GRUB 配置：
+
+```bash
+# BIOS 机器
+grub2-mkconfig -o /boot/grub2/grub.cfg
+# UEFI 机器（路径按发行版略有不同）
+grub2-mkconfig -o /boot/efi/EFI/rocky/grub.cfg
+sudo reboot
+```
+:::
+
+重启后 `docker info` 里那条 WARNING 消失即生效。
 
 ## 存储
 
-> ✏️ volume、bind mount、数据共享。
+### named volume 与 bind mount 区别
 
-（在此填写内容）
+| | named volume（命名卷） | bind mount（绑定挂载） |
+|---|---|---|
+| 存储位置 | Docker 管理（默认 `/var/lib/docker/volumes/`） | 用户指定宿主机任意路径 |
+| 谁管理 | Docker | 用户 |
+| 适合 | 数据库数据目录（MySQL/PG 数据） | 开发时代码挂载、配置文件 |
+| 移植性 | 强，`docker volume` 统一管理 | 弱，强依赖宿主机目录结构 |
+| 权限 | Docker 帮你处理 | 自己搞定 uid/gid |
+
+### 完整命令
+
+```bash
+# named volume
+docker volume create pgdata
+docker run -d -v pgdata:/var/lib/postgresql/data postgres:17
+docker volume ls
+docker volume inspect pgdata        # 看 Mountpoint
+docker volume rm pgdata
+
+# bind mount（:ro 只读）
+docker run -d -v /opt/nginx/conf.d:/etc/nginx/conf.d:ro nginx:1.27
+# 语义更清晰的等价写法
+docker run -d --mount type=bind,source=/opt/nginx/conf.d,target=/etc/nginx/conf.d,readonly nginx:1.27
+```
+
+### 容器间数据共享
+
+两个容器共享同一份数据，用一个共享 volume：
+
+```bash
+docker volume create shared
+docker run -d --name app1 -v shared:/data nginx:1.27
+docker run -d --name app2 -v shared:/data:ro nginx:1.27   # app2 只读挂载
+```
+
+或者用 `--volumes-from app1`，把另一个容器的所有挂载原样继承过来。
+
+### volume 备份恢复思路
+
+```bash
+# 备份：临时起一个容器，把 volume 挂进来打 tar，输出到宿主机当前目录
+docker run --rm -v pgdata:/volume -v $(pwd):/backup alpine \
+  tar czf /backup/pgdata-backup.tar.gz -C /volume .
+
+# 恢复：把 tar 解开回 volume
+docker run --rm -v pgdata:/volume -v $(pwd):/backup alpine \
+  tar xzf /backup/pgdata-backup.tar.gz -C /volume
+```
 
 ## 网络管理
 
-> ✏️ bridge/host/none/container、端口映射、自定义网络、容器互联。
+### 内置网络原理
 
-（在此填写内容）
+```bash
+docker network ls
+```
+
+| 驱动 | 原理 | 用途 |
+|---|---|---|
+| bridge（默认） | 宿主机上虚拟网桥 docker0，容器拿 172.17.x.x 内网 IP，出去靠 NAT | 默认单机容器网络 |
+| host | 容器直接用宿主机网络栈，**无网络隔离**，端口直接占宿主机端口 | 性能要求极高、不需要端口隔离的场景 |
+| none | 只有 lo 回环，完全没网络 | 安全敏感的计算任务 |
+| container | 复用另一个容器的网络栈（sidecar 模式） | K8s Pod 内同 Pod 容器就是这个 |
+
+### 用户自定义 bridge（推荐）
+
+默认 bridge 里容器之间只能靠 IP 互访；**用户自建的 bridge 自带 DNS，容器名就能互相解析**：
+
+```bash
+docker network create mynet
+docker run -d --name redis --network mynet redis:7.4
+docker run -d --name app --network mynet -e REDIS_HOST=redis myapp:1.0
+# app 容器里直接用容器名就能 ping 通
+docker exec app ping -c 2 redis
+```
+
+### 端口映射 -p 四种写法
+
+```bash
+docker run -p 8080:80 ...           # 宿主机所有网卡 8080 → 容器 80
+docker run -p 127.0.0.1:8080:80    # 只绑本机回环，外部访问不到
+docker run -p 80:80/udp ...        # 指定协议（默认 tcp）
+docker run -P ...                   # 大写：随机映射高位端口，EXPOSE 端口全暴露
+```
+
+### 容器间互联与排错
+
+```bash
+docker network inspect mynet       # 看该网络下所有容器和分配的 IP
+docker exec app ip addr            # 看容器自己的网卡
+docker exec app getent hosts redis  # 验证 DNS 解析
+```
+
+连不通先查三步：两个容器是不是同一个网络？容器名拼对没？目标容器里的服务监听的是 `0.0.0.0` 而不是 `127.0.0.1`？
 
 ## DockerCompose 容器单机编排
 
-> ✏️ docker-compose.yml、多服务编排、实战项目。
+一台机器上要跑 nginx + 应用 + redis 三个容器，手动 run 十条命令很烦。Compose 就是把这一坨写进一个 YAML 文件，一条 `docker compose up -d` 全拉起来。
 
-（在此填写内容）
+> Docker Engine 29 里 Compose 是官方插件（命令是 `docker compose`，带空格），老的独立二进制 `docker-compose` 已基本淘汰。
+
+### compose.yaml 完整语法
+
+```yaml
+services:
+  web:
+    image: nginx:1.27
+    # 或者本地构建：
+    # build:
+    #   context: ./web
+    #   dockerfile: Dockerfile
+    ports:
+      - "8080:80"
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+      - web_html:/usr/share/nginx/html
+    environment:
+      - TZ=Asia/Shanghai
+    depends_on:
+      - app
+    networks:
+      - frontend
+    restart: always
+
+  app:
+    build: ./app
+    image: myapp:1.0
+    environment:
+      - REDIS_HOST=redis
+    networks:
+      - frontend
+      - backend
+    restart: always
+
+  redis:
+    image: redis:7.4
+    volumes:
+      - redis_data:/data
+    networks:
+      - backend
+    restart: always
+
+volumes:
+  web_html:
+  redis_data:
+
+networks:
+  frontend:
+  backend:
+```
+
+### 常用命令
+
+```bash
+docker compose up -d                  # 后台启动全部
+docker compose ps                     # 看状态
+docker compose logs -f web            # 跟某个服务日志
+docker compose exec app sh            # 进某个服务容器
+docker compose down                   # 停并删容器/网络（加 -v 连 volume 一起删）
+docker compose up -d --scale app=3    # app 扩到 3 个实例（注意此时 ports 不能写死）
+docker compose build                  # 重新构建带 build 的服务
+```
+
+::: warning `depends_on` 不代表"对方已就绪"
+`depends_on` 只控制启动顺序，**不保证对方端口已经能连上**。应用启动时连数据库失败要自己重试，不能依赖 Compose 的启动顺序。
+:::
 
 ## Docker 仓库管理
 
+Docker Hub 国内访问不稳，公司内部也不可能把镜像传到公网。**Harbor** 就是企业自建的私有镜像仓库：带 Web 界面、项目权限、镜像漏洞扫描、跨集群复制、LDAP 集成。
+
+### 定位与架构
+
+Harbor 本质上是在开源 OCI Distribution（registry）外面套了一层管理壳，主要组件：
+
+- `core`（portal + api）：Web 和 API 入口
+- `registry`：真正存镜像的 OCI 仓库
+- `jobservice`：复制、GC 等异步任务
+- `database`（PostgreSQL）：存项目、用户、权限元数据
+- `redis`：缓存
+- `trivy`：镜像漏洞扫描
+
+当前稳定版 **v2.15.x**（2026 年，以 GitHub releases 最新为准）。
+
+### 部署要点
+
+最简方式是用官方离线安装包（自带所有镜像 tar，适合内网）：
+
+```bash
+# 从 github.com/goharbor/harbor/releases 下载 harbor-offline-installer-v2.15.x.tgz
+tar xzf harbor-offline-installer-v2.15.x.tgz
+cd harbor
+cp harbor.yml.tmpl harbor.yml
+# 编辑 harbor.yml：改 hostname、http 端口、admin 初始密码、数据盘位置
+./install.sh
+```
+
+前置依赖：本机要有 Docker 和 docker compose。上 K8s 集群则用官方 Helm chart（`helm repo add harbor https://helm.goharbor.io`）。
+
+### 完整推拉流程
+
+```bash
+# 1. 浏览器登录 Harbor Web → 新建项目（如 library，公开或私有）
+# 2. 本机登录
+docker login harbor.internal.local:80 -u admin
+# 3. 打标签（前缀必须是 Harbor 地址/项目）
+docker tag nginx:1.27 harbor.internal.local:80/library/nginx:1.27
+# 4. 推送
+docker push harbor.internal.local:80/library/nginx:1.27
+# 5. 别的机器拉取
+docker login harbor.internal.local:80
+docker pull harbor.internal.local:80/library/nginx:1.27
+```
+
+### HTTP 非 HTTPS 仓库
+
+Harbor 走纯 HTTP 内网地址时，Docker 客户端默认拒绝。在每个客户端的 `/etc/docker/daemon.json` 里加：
+
+```json
+{
+  "insecure-registries": ["harbor.internal.local:80"]
+}
+```
+
+然后 `sudo systemctl restart docker`。生产建议上 HTTPS（harbor.yml 里配证书），insecure 只用于纯内网测试。
+
+### 日常运维要点
+
+- 数据目录默认 `/data/registry`，一定要挂大盘；
+- 定期在 Web 上跑"垃圾回收（GC）"，清理被删除但还占盘的镜像层；
+- 开启 Trivy 漏洞扫描，可配置 block 高危镜像；
+- 项目按团队划分，用机器人账号（robot account）给 CI/CD 用，别用 admin 密码到处塞。
 
 ## Docker 的资源限制
 
-> ✏️ 监控、清理、日志驱动、常见问题。
+### docker system df / prune 体系
 
-（在此填写内容）
+```bash
+docker system df                 # 看 Docker 占盘概况（镜像/容器/卷/网络）
+docker system df -v              # 明细
+docker system prune              # 清停止容器、无用网络、悬空镜像（相对安全）
+docker system prune -a --volumes # 连未使用的镜像和卷一起清（高危！）
+```
+
+### 日志驱动与大小轮转
+
+容器默认日志驱动 `json-file`，容器 stdout 日志会**无限增长，是生产磁盘被写满的头号原因**。必须配大小轮转：
+
+全局配 `/etc/docker/daemon.json`（对之后新建的所有容器生效）：
+
+```json
+{
+  "log-driver": "json-file",
+  "log-opts": {
+    "max-size": "100m",
+    "max-file": "3"
+  }
+}
+```
+
+单个容器覆盖：
+
+```bash
+docker run --log-opt max-size=100m --log-opt max-file=3 ...
+```
+
+### 容器监控
+
+```bash
+docker stats                 # 实时 CPU / MEM / 网络 / IO
+docker stats --no-stream     # 打一次快照
+```
+
+底层数据全部来自 cgroup，和宿主机 `/sys/fs/cgroup/` 下对应目录对得上。
+
+### 生产常见 FAQ
+
+| 现象 | 原因 | 解法 |
+|---|---|---|
+| 磁盘突然被写满 | 容器 json 日志暴涨 | 配 max-size/max-file；已发生的 `truncate -s 0 $(docker inspect -f '{{.LogPath}}' 容器名)` |
+| 容器内时间慢 8 小时 | 容器默认 UTC | run 加 `-e TZ=Asia/Shanghai`，或挂 `/etc/localtime:/etc/localtime:ro` |
+| 容器时间漂移 | 宿主机时钟源异常 | 确认宿主机 chronyd / systemd-timesyncd 正常；容器共享宿主内核时钟 |
+| `--restart=always` 不生效 | 容器是被手动 stop 的 | `always` 无视手动 stop 也会拉起；想尊重手动停止用 `unless-stopped` |
+| 误删镜像/容器 | `prune -a` 乱用 | 删除前 `docker system df -v` 看清；重要镜像提前 push 到 Harbor |
+| push 报 `server gave HTTP response to HTTPS client` | Harbor 是 HTTP | 配 insecure-registries（见上节） |
 
 ## 相关速查
 
 - [Docker 命令速查](/reference/docker-commands)
+- [SWAP 报警排查案例](/cases/t-docker-swap)
+
+### 官方文档
+
+- Docker Engine 官方文档：https://docs.docker.com/engine/
+- Dockerfile 参考：https://docs.docker.com/build/concepts/dockerfile/
+- Harbor 官方文档：https://goharbor.io/docs/
+- Compose 规范：https://docs.docker.com/compose/compose-file/

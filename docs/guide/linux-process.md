@@ -1,8 +1,9 @@
 ---
 title: 进程与服务管理
 description: 进程概念、ps/top 查看、kill 信号与作业控制，systemd/systemctl 与 Unit 文件，含僵尸/孤儿进程
+category: Linux
+difficulty: 中级
 ---
-
 # 进程与服务管理
 
 ::: tip 本篇定位

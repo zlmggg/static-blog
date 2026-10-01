@@ -1,8 +1,9 @@
 ---
 title: 安全加固
 description: Linux 基础加固：账号策略、防火墙、SELinux、SSH 加固、SSL/TLS 证书、VPN、chrony 时间同步
+category: Linux
+difficulty: 中级
 ---
-
 # 安全加固
 
 ::: tip 本篇定位

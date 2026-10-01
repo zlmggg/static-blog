@@ -1,8 +1,9 @@
 ---
 title: MySQL 基础
 description: 关系型数据库与范式、MySQL/MariaDB 多种安装与安全初始化、SQL 增删改查/联表/聚合/函数、用户权限、数据类型、视图/存储过程/触发器、InnoDB 存储引擎
+category: 数据
+difficulty: 初级
 ---
-
 # MySQL 基础
 
 ::: tip 本篇定位

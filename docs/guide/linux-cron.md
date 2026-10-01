@@ -1,8 +1,9 @@
 ---
 title: 定时任务
 description: cron 周期任务、at 一次性任务、systemd timer 的配置与注意事项
+category: Linux
+difficulty: 中级
 ---
-
 # 定时任务
 
 ::: tip 本篇定位

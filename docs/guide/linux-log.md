@@ -1,8 +1,9 @@
 ---
 title: 日志管理
 description: /var/log 日志、journalctl、journal 持久化与清理、rsyslog 集中日志、logrotate 轮转、dmesg 与 auditd
+category: Linux
+difficulty: 中级
 ---
-
 # 日志管理
 
 ::: tip 本篇定位

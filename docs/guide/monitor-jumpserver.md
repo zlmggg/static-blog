@@ -1,3 +1,8 @@
+---
+category: 监控
+difficulty: 中级
+---
+
 # JumpServer 堡垒机实战
 
 ::: tip 本篇定位

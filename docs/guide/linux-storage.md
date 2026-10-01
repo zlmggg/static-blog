@@ -1,3 +1,8 @@
+---
+category: Linux
+difficulty: 中级
+---
+
 # 磁盘存储（详细指南）
 
 ::: tip 本篇定位

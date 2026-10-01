@@ -1,8 +1,9 @@
 ---
 title: iptables 防火墙
 description: netfilter/iptables 四表五链、规则语法、过滤与 NAT 实战、持久化，含 RHEL/Debian 差异
+category: Linux
+difficulty: 中级
 ---
-
 # iptables 防火墙
 
 ::: tip 本篇定位

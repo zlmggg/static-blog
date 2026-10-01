@@ -1,3 +1,9 @@
+---
+category: 容器
+difficulty: 初级
+date: 2026-09-25
+---
+
 # 解决SWAP报警提示
 
 ## 现象

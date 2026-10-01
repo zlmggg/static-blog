@@ -1,3 +1,8 @@
+---
+category: Linux
+difficulty: 初级
+---
+
 # 安装与初始环境
 
 ::: tip 本篇定位

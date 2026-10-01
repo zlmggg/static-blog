@@ -1,8 +1,9 @@
 ---
 title: 内核调优与资源限制
 description: sysctl 内核参数、网络/内存/文件句柄调优、ulimit 资源限制与内核模块管理
+category: Linux
+difficulty: 高级
 ---
-
 # 内核调优与资源限制
 
 ::: tip 本篇定位

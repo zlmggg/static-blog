@@ -1,3 +1,8 @@
+---
+category: 自动化
+difficulty: 中级
+---
+
 # Git / GitLab / Jenkins 持续集成实战
 
 ::: tip 本篇定位

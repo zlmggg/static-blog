@@ -1,3 +1,8 @@
+---
+category: 自动化
+difficulty: 中级
+---
+
 # Terraform 基础设施即代码实战
 
 ::: tip 本篇定位

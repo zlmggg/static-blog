@@ -1,8 +1,9 @@
 ---
 title: APISIX 与 MinIO
 description: API 网关 APISIX（etcd 架构、Docker 部署、route/upstream/consumer、限流认证流量插件）、DAS/NAS/SAN、S3 对象存储 MinIO（单机/分布式纠删码、mc、SDK 对接）
+category: 数据
+difficulty: 中级
 ---
-
 # APISIX 与 MinIO
 
 ::: tip 本篇定位

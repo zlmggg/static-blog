@@ -1,162 +1,663 @@
 /* ============================================================
- * 文章页宽度调整（覆盖 VitePress 默认样式）
- * ------------------------------------------------------------
- * 默认值参考：
- *   --vp-layout-max-width                         整页最大宽度 1440px
- *   .VPDoc.has-aside .content-container (max-width) 正文列宽度 688px
+ * 禾光知寒 · SRE Notes 全局主题（VitePress 默认主题上的视觉覆盖）
+ *   1. 字体 / 设计 token
+ *   2. 布局宽度（1580px）
+ *   3. 全局背景 bg-fx + 透明链
+ *   4. 顶部导航两态：顶部透明 / 滚动毛玻璃
+ *   5. 细滚动条 / ::selection
+ *   6. 代码块：卡片化 + 独立 codebar 头部
+ *   7. 引用块 / 表格 / 图片
+ *   8. 聚合页 idx-table
+ *   9. ThemeToggle、MetaBar、全站页脚
  * ============================================================ */
 
+/* ---------- 1. 字体与设计 token ---------- */
 :root {
-  /* 整页容器最大宽度（包含左侧目录、正文、右侧大纲），宽屏可调大 */
+  --vp-font-family-base: 'Space Grotesk', 'Noto Sans SC', 'PingFang SC',
+    'Hiragino Sans GB', 'Microsoft YaHei', system-ui, -apple-system, sans-serif;
+  --vp-font-family-mono: 'JetBrains Mono', 'Noto Sans Mono', 'Cascadia Code',
+    'Cascadia Mono', Consolas, ui-monospace, monospace;
+
+  --brand-1: #6366f1;
+  --brand-2: #8b5cf6;
+  --brand-3: #22d3ee;
+  --radius: 16px;
+
+  /* 侧栏宽度 */
+  --vp-sidebar-width: 272px;
+
+  /* 统一玻璃态变量：深色/浅色靠 var(--vp-c-bg) 自动适配，不写两套 */
+  --glass-bg: color-mix(in srgb, var(--vp-c-bg) 0%, transparent);
+  --glass-blur: saturate(100%) blur(14px);
+
+  /* 三栏间距：文章↔左 sidebar、文章↔右大纲 共用此值，左右始终对称；
+     想整体调松紧（如 56 / 72），只改这一个数，下面布局用 calc 自动平分。 */
+  --col-gap: 72px;
+  /* sidebar 玻璃面板内文字的左右内边距：文字离面板左缘的距离（文字左边距），改这里。 */
+  --sidebar-pad: 24px;
+  /* 三栏内容顶部呼吸区：左 sidebar 玻璃面板、文章、右大纲的顶部都在 nav 下方再留这段空白，
+     三栏顶部边缘对齐；改这一个值三栏整体下移/上移。 */
+  --content-top-gap: 0px;
+}
+
+/* ---------- 2. 布局宽度 ---------- */
+:root {
   --vp-layout-max-width: 1580px;
 }
 
-/* 中间正文列：默认固定 688px，改为自动填满左右栏之间的空间。
-   如果觉得行太长不适合阅读，可把 100% 改成固定值，如 900px / 1000px。
-   注意：必须加 !important，因为 VitePress 内置规则是带 [data-v] 的
-   scoped 样式，普通选择器优先级不够会被它压过。 */
+/* 中间正文列默认固定 688px，改为自动填满左右栏之间的空间 */
 .VPDoc.has-aside .content-container {
   max-width: 100% !important;
 }
 
-/* 顶部导航右侧留白：整页宽度调大（1600px）后，VitePress 原公式
-   (100vw - 1600px)/2 + 32px 在 1440~1536px 分辨率下会算出负值，
-   导致主题切换按钮紧贴屏幕右边缘。用 max() 保证至少保留 32px。
-   !important：内置规则是 scoped 样式，优先级更高（同正文宽度的处理）。 */
+/* 全局横向溢出兜底：装饰背景 .bg-fx 已是 fixed+overflow:hidden 自行裁切，
+   这里再锁死页面级横向滚动，避免任何窄屏元素把页面撑宽。 */
+html,
+body {
+  overflow-x: hidden;
+  max-width: 100vw;
+}
+
+/* 顶部导航右侧留白修正：宽屏下避免主题切换按钮紧贴右边缘 */
 @media (min-width: 1440px) {
   .VPNavBar.has-sidebar .content {
-    padding-right: max(32px, calc((100vw - var(--vp-layout-max-width)) / 2 + 32px)) !important;
+    padding-right: max(
+      32px,
+      calc((100vw - var(--vp-layout-max-width)) / 2 + 32px)
+    ) !important;
+  }
+  .VPSidebar.VPSidebar.VPSidebar {
+    padding-left: max(
+      32px,
+      calc((100vw - var(--vp-layout-max-width)) / 2 + 32px)
+    );
+    width: calc(
+      max(32px, calc((100vw - var(--vp-layout-max-width)) / 2 + 32px)) +
+        var(--vp-sidebar-width) - 32px
+    );
   }
 }
 
 /* ============================================================
- * 首页整屏化：Hero（含右侧插画）+ 功能卡片在一屏内完整显示
- * 全部以 .VPHome 前缀限定，只影响首页，文档页不受影响
+ * 3. 全局背景 bg-fx（fixed 铺满，首页与内容页一致）
+ *    深色：#08080d + 顶部网格 mask 渐隐 + 三团光晕
+ *    浅色：多段 radial 渐变 + 线性渐变
  * ============================================================ */
-
-/* 收紧首页底部外边距（默认 96px / 宽屏 128px） */
-.VPHome {
-  margin-bottom: 0 !important;
+.bg-fx {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+  background: #08080d;
 }
-
-/* Hero 视觉变量（仿 VitePress 官网蓝框） */
-:root {
-  /* name 文字渐变（与 VitePress 官网同款写法）：品红 → 青蓝，
-     120deg 下实际观感为左青蓝、右品红；.clip 类负责 background-clip:text */
-  --vp-home-hero-name-color: transparent;
-  --vp-home-hero-name-background: -webkit-linear-gradient(
-    120deg,
-    #bd34fe 30%,
-    #41d1ff
+.bg-grid {
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+  background-size: 56px 56px;
+  -webkit-mask-image: radial-gradient(
+    ellipse 90% 60% at 50% 0%,
+    #000 30%,
+    transparent 75%
   );
-
-  /* 右侧图片背后的蓝紫辉光 */
-  --vp-home-hero-image-background-image:
-    linear-gradient(150deg, #38bdf8 0%, #6366f1 45%, #a855f7 100%);
-  --vp-home-hero-image-filter: blur(60px);
+  mask-image: radial-gradient(
+    ellipse 90% 60% at 50% 0%,
+    #000 30%,
+    transparent 75%
+  );
+}
+.bg-fx .glow {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(90px);
+  transition: opacity 0.4s;
+}
+.bg-fx .glow.g1 {
+  width: 520px;
+  height: 520px;
+  background: #6366f1;
+  top: -180px;
+  left: 8%;
+  opacity: 0.5;
+}
+.bg-fx .glow.g2 {
+  width: 460px;
+  height: 460px;
+  background: #8b5cf6;
+  top: -140px;
+  right: 6%;
+  opacity: 0.4;
+}
+.bg-fx .glow.g3 {
+  width: 380px;
+  height: 380px;
+  background: #22d3ee;
+  top: 60px;
+  left: 42%;
+  opacity: 0.18;
+}
+html:not(.dark) .bg-fx {
+  background:
+    radial-gradient(1100px 480px at 50% -8%, rgba(124, 92, 246, 0.13), transparent 60%),
+    radial-gradient(900px 520px at 82% 52%, rgba(99, 102, 241, 0.09), transparent 65%),
+    radial-gradient(760px 480px at 12% 78%, rgba(34, 211, 238, 0.07), transparent 65%),
+    linear-gradient(180deg, #f3f4fb 0%, #eceffa 46%, #f2f3fa 100%);
+}
+html:not(.dark) .bg-fx .glow {
+  opacity: 0.32;
 }
 
-/* 缩小页脚留白（默认上下 32px） */
-.VPFooter {
-  padding-top: 14px !important;
-  padding-bottom: 14px !important;
+/* 透明链：让全局 bg-fx 透出来。
+   body / VPApp / VPContent / VPSidebar 及其顶部 .curtain 兜底元素、
+   nav title 区全部透明 —— 浅色模式下 logo 背后零色块。 */
+body,
+.VPApp,
+.VPContent,
+.VPDoc,
+.VPNav {
+  background-color: transparent !important;
 }
 
-/* 页脚 message 和 copyright 默认是两个 <p>、垂直堆叠；
-   改为 flex 横排，中间用逗号分隔的间距 */
-.VPFooter .container {
-  display: flex !important;
-  justify-content: center;
-  gap: 12px;
-  flex-wrap: wrap;
+/* 去掉 VitePress 在"有 sidebar"时给 nav 标题（logo 区 .title）加的底部 divider 线
+   （组件源码：.VPNavBarTitle.has-sidebar .title{border-bottom-color:var(--vp-c-divider)}）。
+   我们 nav 透明、玻璃面板下移，这条 1px 线会孤立残留在 logo 下方，浅色尤其明显。 */
+.VPNavBarTitle.has-sidebar .title {
+  border-bottom-color: transparent !important;
+}
+
+/* 桌面左 sidebar 硬边界（≥960px；<960 移动端抽屉保持默认滚动，不动）：
+   外层 .VPSidebar 不滚动、背景全透明（消除 logo 后方色块），仅保留顶部 nav 高度占位；
+   真正的滚动与淡毛玻璃都移到内部 .nav#VPSidebarNav 上，内容绝不可能滚进 nav 区。 */
+@media (min-width: 960px) {
+  .VPSidebar {
+    overflow: hidden !important;
+    background-color: transparent !important;
+    box-shadow: none !important; /* 去掉默认顶部发丝阴影（玻璃面板已下移，否则 y64 残留白线） */
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+  .dark .VPSidebar {
+    background-color: transparent !important;
+  }
+  /* 内部滚动容器：填满 outer 内容区，自己滚；毛玻璃直接复用 nav 的 --glass-*，
+     全站一套玻璃、不另写 rgba。背景只从 nav 下方开始，滚动条轨道天然只在这一区。 */
+  .VPSidebar .nav#VPSidebarNav {
+    position: absolute;
+    top: calc(var(--vp-nav-height) + var(--content-top-gap));
+    bottom: 0;
+    left: 32px;
+    right: 0; /* 面板贴 sidebar 盒右缘，使"面板→文章"间距 = --col-gap，与右侧对称 */
+    overflow-y: auto;
+    overflow-x: hidden;
+    overscroll-behavior: contain;
+    scrollbar-width: thin; /* 与网页主滚动条一致（scrollbar-color 继承 html） */
+    padding-top: 0;
+    padding-left: var(--sidebar-pad); /* 文字距玻璃面板左缘（= sidebar 文字左边距） */
+    padding-right: var(--sidebar-pad);
+    padding-bottom: 96px;
+    background: var(--glass-bg);
+    -webkit-backdrop-filter: var(--glass-blur);
+    backdrop-filter: var(--glass-blur);
+  }
+  /* 硬边界后无需 sticky curtain 遮盖，直接隐藏 */
+  .VPSidebar .curtain {
+    display: none !important;
+  }
+}
+/* ≥1440 宽屏：内部 nav 左对齐到 outer 的 padding-left 偏移，保持原居中规则 */
+@media (min-width: 1440px) {
+  .VPSidebar .nav#VPSidebarNav {
+    left: max(
+      32px,
+      calc((100vw - var(--vp-layout-max-width)) / 2 + 32px)
+    );
+  }
+}
+
+/* 桌面右大纲硬边界（≥1280px；aside 本身仅在此断点以上显示）：
+   容器顶部直接落在 nav+48 处、高度扣掉这一段、padding-top 归零，
+   大纲内容不再有可滚入顶部 padding 区，任何滚动位置都不进 nav。
+   （选择器加 .VPDoc .aside 前缀，特异性压过 VPDoc.vue 的 scoped .aside-container） */
+@media (min-width: 1280px) {
+  .VPDoc .aside .aside-container {
+    top: calc(var(--vp-nav-height) + var(--content-top-gap));
+    height: calc(100vh - var(--vp-nav-height) - var(--content-top-gap));
+    padding-top: 40px;
+    /* 顶部渐隐：大纲滚动时顶部项自然淡出，而不是被硬切 */
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 26px);
+    mask-image: linear-gradient(to bottom, transparent 0, #000 26px);
+  }
+}
+
+/* ---------- sidebar 折叠组右侧小箭头（caret）左右位置 ----------
+   默认 margin-right:-7px 贴最右边；数值越大箭头越往左（正值=离右缘更远）。改这一个值。 */
+.VPSidebar .VPSidebarItem .caret {
+  margin-right: 2px;
+}
+
+/* ---------- 三栏间距统一（左右对称，全部由 --col-gap 计算，改 token 即可） ---------- */
+@media (min-width: 960px) {
+  /* VPDoc 自身左右内边距 = 间距一半 */
+  .VPContent .VPDoc.VPDoc {
+    padding-left: calc(var(--col-gap) / 2);
+    padding-right: calc(var(--col-gap) / 2);
+  }
+  /* 文章 .content 左右内边距 = 间距一半（左 GAP = VPDoc 半 + content 半） */
+  .VPDoc .content.content {
+    padding-left: calc(var(--col-gap) / 2);
+    padding-right: calc(var(--col-gap) / 2);
+  }
+}
+@media (min-width: 1280px) {
+  /* 右大纲 .aside 左内边距 = 间距一半（右 GAP = content 半 + aside 半） */
+  .VPDoc .aside.aside {
+    padding-left: calc(var(--col-gap) / 2);
+  }
+  /* 去掉大纲 .content 默认的 16px 内缩，让右 GAP 精确 = --col-gap */
+  .VPDoc .aside .VPDocAsideOutline .content {
+    padding-left: 20px;
+  }
 }
 
 /* ============================================================
- * 普通引用块（Markdown 的 > ）全局蓝色高亮
- * ------------------------------------------------------------
- * 复用 VitePress 主题色变量 --vp-c-brand-soft（与 ::: tip 同款蓝），
- * 深浅色主题自动适配。以后导入的 Markdown 无需逐个改写。
- * 限定 .vp-doc，只影响文章正文，不影响首页。
+ * 4. 顶部导航两态（VitePress 1.6.4：y===0 时根节点带 .top）
+ *    顶部：整条（title 区 + 右侧菜单区）完全透明、无分割线
+ *    滚动后：整条统一毛玻璃 + 柔和阴影；title 区无单独底色
  * ============================================================ */
+.VPNavBar {
+  background-color: transparent !important;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+.VPNavBar.top {
+  box-shadow: none !important;
+}
+.VPNavBar:not(.top) {
+  background-color: var(--glass-bg) !important;
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+  box-shadow: 0 10px 30px -18px rgba(40, 50, 100, 0.28);
+}
+.dark .VPNavBar:not(.top) {
+  box-shadow: 0 12px 32px -18px rgba(0, 0, 0, 0.65);
+}
+/* 右侧菜单条与 title 区都不单独上色，统一由根节点毛玻璃承担 */
+.VPNavBar .content-body,
+.VPNavBar .title {
+  background-color: transparent !important;
+}
+/* 水平分隔线与菜单项之间的竖向分割线全部透明 */
+.VPNavBar .divider,
+.VPNavBar .divider-line {
+  background-color: transparent !important;
+}
+.VPNavBar .menu + .translations::before,
+.VPNavBar .menu + .appearance::before,
+.VPNavBar .menu + .social-links::before,
+.VPNavBar .translations + .appearance::before,
+.VPNavBar .appearance + .social-links::before {
+  background-color: transparent !important;
+}
 
+/* ---------- 顶部搜索弹窗毛玻璃（手动调整区） ----------
+   弹窗玻璃浓度默认复用 --glass-bg（= var(--vp-c-bg) 72%）；想让搜索框单独调，
+   直接改下面 .shell 的 color-mix 百分比（越大越实、越小越透）。
+   外层遮罩深浅改 .backdrop 的 36%；模糊强度改 blur()。 */
+.VPLocalSearchBox .shell.shell {
+  background: var(--glass-bg);
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+  border: 1px solid color-mix(in srgb, var(--vp-c-bg) 88%, transparent);
+  border-radius: 12px;
+}
+.VPLocalSearchBox .backdrop.backdrop {
+  background: color-mix(in srgb, var(--vp-c-bg) 36%, transparent);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+}
+
+/* ---------- 5. 细滚动条 / ::selection ---------- */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(110, 116, 140, 0.4) transparent;
+}
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(100, 106, 130, 0.55);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(100, 106, 130, 0.75);
+}
+.dark ::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+}
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.48);
+}
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+::selection {
+  background: var(--brand-1);
+  color: #fff;
+}
+
+/* ============================================================
+ * 6. 代码块：Starlight 风格圆角卡片
+ *    不画整条头部条，语言标签（左）/ 复制按钮（右）直接浮在代码块顶部，
+ *    pre 顶部预留空间，避免与第一行代码重叠；中性灰、浅色不带蓝调。
+ * ============================================================ */
+:root {
+  --cb-body: color-mix(in srgb, #f6f7f9 32%, transparent);
+  /* 标题栏（语言标签行 / tabs）背景：比 body 实一些以压住层次；百分比越小越透 */
+  --cb-head: color-mix(in srgb, #eff1f3 72%, transparent);
+  --cb-border: rgba(15, 23, 42, 0.09);
+  --cb-blur: blur(10px);
+}
+.dark {
+  --cb-body: color-mix(in srgb, #0e1116 52%, transparent);
+  --cb-head: color-mix(in srgb, #161b22 70%, transparent);
+  --cb-border: rgba(255, 255, 255, 0.09);
+}
+
+
+.vp-doc div[class*='language-'] {
+  position: relative;
+  margin: 18px 0;
+  padding-top: 0;
+  border: 1px solid var(--cb-border);
+  border-radius: 12px;
+  box-shadow: 0 14px 32px -26px rgba(15, 23, 42, 0.3);
+  overflow: hidden;
+  background-color: var(--cb-body);
+  -webkit-backdrop-filter: var(--cb-blur);
+  backdrop-filter: var(--cb-blur);
+
+}
+.dark .vp-doc div[class*='language-'] {
+  box-shadow: 0 16px 36px -24px rgba(0, 0, 0, 0.6);
+}
+/* 普通代码块顶部标题栏：语言标签 / 复制按钮所在行，背景 --cb-head + 底部分隔细线（与 code-group 同款） */
+.vp-doc div[class*='language-']::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 42px;
+  background: var(--cb-head);
+  border-bottom: 1px solid var(--cb-border);
+  border-radius: 12px 12px 0 0;
+  z-index: 1;
+  pointer-events: none;
+}
+.vp-doc div[class*='language-'] > pre {
+  background: transparent;
+  padding-top: 42px;
+}
+/* 语言标签定位进头部条左侧 */
+.vp-doc div[class*='language-'] > span.lang {
+  position: absolute;
+  top: 13px;
+  left: 18px;
+  right: auto;
+  height: auto;
+  display: block;
+  z-index: 3;
+  opacity: 1 !important;
+  font-size: 12px;
+  letter-spacing: 0.02em;
+  color: rgba(255, 255, 255, 0.4) !important;
+}
+/* 浅色：语言标签改深色可见 */
+html:not(.dark) .vp-doc div[class*='language-'] > span.lang {
+  color: rgba(15, 23, 42, 0.5) !important;
+}
+
+/* 复制按钮：图标 + 「复制」文字原地切换为「✓ 已复制」，无浮层 */
+.cb-copy-label {
+  pointer-events: none; /* 点击穿透到按钮本身，保证原生 copyCode 的 e.target 判定生效 */
+}
+.vp-doc div[class*='language-'] > button.copy {
+  top: 6px;
+  right: 10px;
+  width: auto;
+  height: 28px;
+  padding: 0 10px 0 26px;
+  z-index: 3;
+  opacity: 1;
+  background-color: transparent;
+  border: 1px solid transparent;
+  border-radius: 7px !important; /* 覆盖原生 .copied 时的 0 4px 4px 0 */
+  background-image: var(--vp-icon-copy);
+  background-position: 8px center;
+  background-size: 13px;
+  background-repeat: no-repeat;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--vp-font-family-base);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1;
+  color: rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+}
+/* 隐藏原生「已复制」左侧浮层（::before） */
+.vp-doc div[class*='language-'] > button.copy.copied::before,
+.vp-doc div[class*='language-'] > button.copy:hover.copied::before {
+  content: none !important;
+  display: none !important;
+}
+.vp-doc div[class*='language-'] > button.copy:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+/* .copied：去掉背景对勾图标，按钮本身文字变为「✓ 已复制」（由客户端增强注入） */
+.vp-doc div[class*='language-'] > button.copy.copied {
+  background-image: none !important;
+  padding: 0 10px;
+  background-color: rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.92);
+}
+/* 浅色 codebar 上按钮文字 / hover / copied 用深色可见 */
+html:not(.dark) .vp-doc div[class*='language-'] > button.copy {
+  color: rgba(15, 23, 42, 0.6);
+}
+html:not(.dark) .vp-doc div[class*='language-'] > button.copy:hover {
+  background-color: rgba(15, 23, 42, 0.07);
+}
+html:not(.dark) .vp-doc div[class*='language-'] > button.copy.copied {
+  background-color: rgba(15, 23, 42, 0.1);
+  color: rgba(15, 23, 42, 0.85);
+}
+/* 头部条下分隔线：浅色用深色极淡线 */
+html:not(.dark) .vp-doc div[class*='language-']::before {
+  border-bottom-color: rgba(15, 23, 42, 0.07);
+}
+
+/* ---------- 7. 引用块 / 表格 / 图片 ---------- */
+.vp-doc .custom-block {
+  border-radius: 12px;
+}
 .vp-doc blockquote {
   margin: 16px 0;
   padding: 12px 20px;
   border: 1px solid var(--vp-c-brand-soft);
-  border-left: 1px solid var(--vp-c-brand-soft);
+  border-left: 3px solid var(--vp-c-brand-1);
   border-radius: 8px;
   background-color: var(--vp-c-brand-soft);
   color: var(--vp-c-text-1);
 }
-
-/* 引用内的行内代码用更深一档底色，避免与引用背景融在一起 */
 .vp-doc blockquote code {
   background-color: var(--vp-c-bg-alt);
 }
 
-/* 透明 PNG 直接悬浮：去掉此前白底卡片的圆角与投影 */
-.VPHome .image-src {
-  border-radius: 0;
-  box-shadow: none;
+.vp-doc img,
+.vp-doc video {
+  max-width: 100%;
+  height: auto;
 }
 
-@media (min-width: 960px) {
-  /* Hero 区贴紧顶部（垂直居中由下面的 min-height 实现） */
-  .VPHome .VPHero {
-    padding-top: calc(var(--vp-nav-height) + 16px) !important;
-    padding-bottom: 8px !important;
-  }
-
-  /* Hero 内容在「导航与功能卡片之间」垂直居中（预留 360px 给卡片+页脚） */
-  .VPHome .VPHero .container {
-    min-height: calc(100vh - var(--vp-nav-height) - 360px);
-    align-items: center;
-  }
-
-  /* 副标题文案较长（12 字），组件默认 56px + 限宽 576px 会折成两行并留孤字；
-     略收到 44px 并放开宽度，桌面端一行完整显示 */
-  .VPHome .text {
-    max-width: 720px !important;
-    font-size: 44px !important;
-    line-height: 56px !important;
-  }
-
-  .VPHome .tagline {
-    padding-top: 12px !important;
-  }
-
-  .VPHome .actions {
-    padding-top: 24px !important;
-  }
-
-  /* 图片取消默认的左上偏移，在右列正中悬浮；随屏高自适应防与卡片重叠 */
-  .VPHome .VPHero .image-container {
-    transform: none !important;
-  }
-
-  .VPHome .VPHero .image-src {
-    max-width: min(380px, 40vh) !important;
-    max-height: min(380px, 40vh) !important;
-  }
-
-  /* 辉光盘略大于图片，形成外圈光晕 */
-  .VPHome .VPHero .image-bg {
-    width: 360px !important;
-    height: 360px !important;
-    opacity: 0.65;
-  }
-
-  /* 功能卡片内边距略收紧（默认上下 24px） */
-  .VPHome .VPFeature .box {
-    padding: 20px 24px !important;
-  }
+/* 表格统一为 HeroUI 风格圆角卡片（文章页 + 聚合页同一套）：
+   玻璃背景复用 nav 的 --glass-*；无生硬外框，靠圆角 + 柔和阴影界定；
+   表头淡灰实底与内容行明显区分，行极淡分隔、中性 hover；不出现竖线。 */
+.vp-doc table {
+  width: 100%;
+  display: table; /* 显式 table：绝不在 table 上用 overflow，否则被 blockify 造成右侧空白 */
+  border-collapse: separate;
+  border-spacing: 0;
+  margin: 20px 0;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  border-radius: 12px; /* separate 模式下圆角直接生效，无需 overflow:hidden */
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+  box-shadow:
+    0 1px 2px rgba(15, 23, 42, 0.05),
+    0 4px 16px rgba(15, 23, 42, 0.06);
+  color: var(--vp-c-text-1);
 }
-/* 表格首列（命令 / 日期 / 文章标题 / 缩写）不换行，日期不在连字符处折行 */
+/* ▼▼▼ 表格背景深浅 · 手动调整区（百分比=不透明度：越大越"实"、越小越透、玻璃感越强） ▼▼▼ */
+/* 浅色表格背景（改这一条的百分比）： */
+.vp-doc table {
+  background: color-mix(in srgb, var(--vp-c-bg) 40%, transparent);
+}
+/* 暗色表格背景（改这一条的百分比）： */
+.dark .vp-doc table {
+  background: color-mix(in srgb, var(--vp-c-bg) 60%, transparent);
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.32),
+    0 8px 24px rgba(0, 0, 0, 0.3);
+}
+/* ▲▲▲ 表格背景深浅 · 手动调整区结束 ▲▲▲ */
+.vp-doc table thead th {
+  background: rgba(15, 23, 42, 0.045);
+  font-weight: 600;
+  text-align: left;
+  border-left: none;
+  border-right: none;
+  border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+}
+.dark .vp-doc table thead th {
+  background: rgba(255, 255, 255, 0.06);
+  border-bottom-color: rgba(255, 255, 255, 0.08);
+}
+/* 表头/末行四角跟随卡片圆角（separate 布局，不靠 overflow 裁剪） */
+.vp-doc table thead th:first-child { border-top-left-radius: 11px; }
+.vp-doc table thead th:last-child { border-top-right-radius: 11px; }
+.vp-doc table tbody tr:last-child td:first-child { border-bottom-left-radius: 11px; }
+.vp-doc table tbody tr:last-child td:last-child { border-bottom-right-radius: 11px; }
+.vp-doc table th,
+.vp-doc table td {
+  padding: 10px 16px;
+  border-left: none;
+  border-right: none;
+}
+.vp-doc table tbody td {
+  border-bottom: 1px solid rgba(15, 23, 42, 0.06);
+}
+.dark .vp-doc table tbody td {
+  border-bottom-color: rgba(255, 255, 255, 0.05);
+}
+.vp-doc table tbody tr:last-child td {
+  border-bottom: none;
+}
+/* 覆盖默认主题的行实底与隔行条纹：行常态透明，透出整表毛玻璃（hover 才高亮） */
+.vp-doc table thead tr,
+.vp-doc table tbody tr,
+.vp-doc table tbody tr:nth-child(2n) {
+  background-color: transparent;
+}
+.vp-doc table tbody tr {
+  transition: background-color 0.15s ease;
+}
+.vp-doc table tbody tr:hover {
+  background: rgba(99, 102, 241, 0.12); /* hover 才高亮：品牌淡紫，比常态毛玻璃更实 */
+}
+.dark .vp-doc table tbody tr:hover {
+  background: rgba(139, 92, 246, 0.22);
+}
+/* 首列（命令/日期/标题/缩写）不换行（聚合 idx 第1列另有覆盖） */
 .vp-doc table th:first-child,
 .vp-doc table td:first-child {
   white-space: nowrap;
 }
-/* 全站底部信息（一行）—— 字体、颜色都在这里调 */
+
+/* ---------- 8. 聚合页 idx-table（列结构/列宽保持不变，与文章页共用上面的玻璃表格样式） ---------- */
+.vp-doc .idx-table table {
+  table-layout: fixed;
+}
+.vp-doc .idx-table table th:nth-child(1),
+.vp-doc .idx-table table td:nth-child(1) {
+  width: 22%;
+  white-space: normal;
+}
+.vp-doc .idx-table table th:nth-child(3),
+.vp-doc .idx-table table td:nth-child(3) {
+  width: 7.5em;
+  white-space: nowrap;
+  text-align: center;
+  vertical-align: middle;
+}
+/* 窄屏：聚合表格自身可横向滚动，长串允许断行，不把整页撑宽 */
+.vp-doc .idx-table {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.vp-doc .idx-table table th,
+.vp-doc .idx-table table td {
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+/* ============================================================
+ * 9. ThemeToggle（圆形涟漪主题切换按钮）+ 隐藏默认开关
+ * ============================================================ */
+.VPSwitchAppearance {
+  display: none !important;
+}
+.theme-toggle-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--vp-c-text-2);
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  transition: 0.2s;
+  padding: 0;
+  margin: 0 2px;
+}
+.theme-toggle-btn:hover {
+  background: var(--vp-c-bg-soft);
+  color: var(--vp-c-text-1);
+}
+html:not(.dark) .theme-toggle-btn:hover {
+  background: rgba(20, 28, 60, 0.06);
+}
+.theme-toggle-btn .moon {
+  display: none;
+}
+html.dark .theme-toggle-btn .sun {
+  display: none;
+}
+html.dark .theme-toggle-btn .moon {
+  display: block;
+}
+
+/* ---------- 全站底部信息 ---------- */
 .site-footer {
   display: flex;
   flex-wrap: wrap;
@@ -165,20 +666,105 @@
   column-gap: 16px;
   row-gap: 6px;
   padding: 16px 16px 28px;
-  font-size: 13px;              /* ① 字体大小：想大改 14px / 15px，想小改 12px */
-  /* font-weight: 500; */       /* ② 字重：400 正常，500/600 更粗（去掉前面的/* */
+  font-size: 13px;
 }
-
-/* 底部文字 + 备案链接的默认颜色 */
 .site-footer .footer-item {
-  color: var(--vp-c-text-2);    /* ③ 颜色，见下方说明 */
+  color: var(--vp-c-text-2);
   text-decoration: none;
 }
-
-/* 鼠标悬停在备案号上时 */
 .site-footer a.footer-item:hover {
-  color: var(--vp-c-brand-1);   /* ④ 悬停颜色（主题蓝），可改任意色值 */
-  text-decoration: underline;   /* 想要下划线保留，不想要就删这行 */
+  color: var(--vp-c-brand-1);
+  text-decoration: underline;
 }
 
+/* ============================================================
+ * 10. code-group：group 统一卡片框，tabs 为唯一顶部条，
+ *     复制按钮上提到 tabs 同一行右侧，隐藏重复语言标签，不再有第二行头部。
+ * ============================================================ */
+.vp-code-group {
+  margin: 18px 0;
+  border: 1px solid var(--cb-border);
+  border-radius: 12px;
+  overflow: hidden;
+  background-color: var(--cb-body);
+  box-shadow: 0 14px 32px -26px rgba(15, 23, 42, 0.3);
+  -webkit-backdrop-filter: var(--cb-blur);
+  backdrop-filter: var(--cb-blur);
 
+}
+.dark .vp-code-group {
+  box-shadow: 0 16px 36px -24px rgba(0, 0, 0, 0.6);
+}
+/* group 内语言块：去掉自己的卡片框；overflow visible 让复制按钮能上提到 tabs 行 */
+.vp-code-group div[class*='language-'] {
+  margin: 0;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  overflow: visible;
+}
+/* group 内语言块不显示普通块那套标题栏（顶部已有 group 的 tabs） */
+.vp-code-group div[class*='language-']::before {
+  content: none;
+}
+/* tabs 唯一顶部条：浅底 + 底部极淡线 */
+.vp-code-group .tabs {
+  background-color: var(--cb-head) !important;
+  box-shadow: inset 0 -1px var(--cb-border);
+}
+.vp-code-group .tabs label {
+  color: var(--vp-c-text-2);
+}
+.vp-code-group .tabs input:checked + label {
+  color: var(--vp-c-text-1);
+}
+/* 隐藏重复的语言标签；pre 顶部留白恢复（复制按钮已上移） */
+.vp-code-group div[class*='language-'] > span.lang {
+  display: none;
+}
+.vp-code-group div[class*='language-'] > pre {
+  padding-top: 20px;
+}
+/* 复制按钮上提到 tabs 行右侧，与 tabs 同一行 */
+.vp-code-group div[class*='language-'] > button.copy {
+  top: -32px;
+}
+
+/* ============================================================
+ * 11. nav 搜索框：去底色 / 去边框，仅放大镜图标 + 占位文字
+ * ============================================================ */
+@media (min-width: 768px) {
+  .DocSearch.DocSearch-Button {
+    background-color: transparent !important;
+    border: 1px solid transparent !important;
+  }
+  .DocSearch.DocSearch-Button:hover {
+    background-color: rgba(15, 23, 42, 0.05) !important;
+    border-color: transparent !important;
+  }
+  .dark .DocSearch.DocSearch-Button:hover {
+    background-color: rgba(255, 255, 255, 0.06) !important;
+  }
+  /* 仅保留放大镜图标与占位文字，隐藏 Ctrl/K 快捷键提示 */
+  .DocSearch-Button .DocSearch-Button-Keys {
+    display: none !important;
+  }
+}
+
+/* ============================================================
+ * 12. 移动端（≤768）：表格保持 table 布局、设最小宽度并横向滑动，
+ *     单元格不竖排；表头与正文始终对齐（不改 display，避免匿名表格错位）
+ * ============================================================ */
+@media (max-width: 768px) {
+  .vp-doc {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .vp-doc table {
+    min-width: 600px;
+  }
+  .vp-doc table th,
+  .vp-doc table td {
+    white-space: nowrap;
+  }
+}

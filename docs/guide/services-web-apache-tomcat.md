@@ -1,8 +1,9 @@
 ---
 title: Apache 与 Tomcat
 description: HTTP 协议方法状态码 Cookie/Session/JWT、Apache（httpd/apache2）MPM/虚拟主机/htaccess、Tomcat 安装部署/server.xml/WAR、JVM 内存 GC 与调优
+category: 服务
+difficulty: 中级
 ---
-
 # Apache 与 Tomcat
 
 ::: tip 本篇定位
