@@ -7,52 +7,52 @@
 
 | 命令 | 说明 |
 |---|---|
-| `docker run 镜像` | 创建并启动容器 |
-| `docker run -d 镜像` | 后台运行（d 守护态） |
-| `docker run --name web -p 80:80 nginx` | 指定名称、映射端口 |
-| `docker run -it 镜像 /bin/bash` | 交互式进入终端（i 交互、t 终端） |
-| `docker run --rm 镜像` | 退出后自动删除容器 |
-| `docker ps` | 查看运行中的容器 |
-| `docker ps -a` | 查看所有容器（含已停止） |
-| `docker start/stop/restart 容器` | 启动 / 停止 / 重启 |
-| `docker rm 容器` | 删除容器（需先停止） |
-| `docker rm -f $(docker ps -aq)` | 强制删除所有容器 |
+| [`docker run 镜像`](./cmd-docker/run) | 创建并启动容器 |
+| [`docker run -d 镜像`](./cmd-docker/run) | 后台运行（d 守护态） |
+| [`docker run --name web -p 80:80 nginx`](./cmd-docker/run) | 指定名称、映射端口 |
+| [`docker run -it 镜像 /bin/bash`](./cmd-docker/run) | 交互式进入终端（i 交互、t 终端） |
+| [`docker run --rm 镜像`](./cmd-docker/run) | 退出后自动删除容器 |
+| [`docker ps`](./cmd-docker/ps-inspect) | 查看运行中的容器 |
+| [`docker ps -a`](./cmd-docker/ps-inspect) | 查看所有容器（含已停止） |
+| [`docker start/stop/restart 容器`](./cmd-docker/lifecycle) | 启动 / 停止 / 重启 |
+| [`docker rm 容器`](./cmd-docker/lifecycle) | 删除容器（需先停止） |
+| [`docker rm -f $(docker ps -aq)`](./cmd-docker/lifecycle) | 强制删除所有容器 |
 
 ## 进入与日志
 
 | 命令 | 说明 |
 |---|---|
-| `docker exec -it 容器 /bin/bash` | 进入正在运行的容器 |
-| `docker logs 容器` | 查看容器日志 |
-| `docker logs -f --tail 100 容器` | 实时跟踪最后100行 |
-| `docker inspect 容器` | 查看容器详细信息（JSON） |
-| `docker cp 容器:/路径 ./本地` | 容器与宿主机间复制文件 |
-| `docker stats` | 实时查看容器资源占用 |
-| `docker top 容器` | 查看容器内进程 |
+| [`docker exec -it 容器 /bin/bash`](./cmd-docker/exec) | 进入正在运行的容器 |
+| [`docker logs 容器`](./cmd-docker/logs) | 查看容器日志 |
+| [`docker logs -f --tail 100 容器`](./cmd-docker/logs) | 实时跟踪最后100行 |
+| [`docker inspect 容器`](./cmd-docker/ps-inspect) | 查看容器详细信息（JSON） |
+| [`docker cp 容器:/路径 ./本地`](./cmd-docker/cp) | 容器与宿主机间复制文件 |
+| [`docker stats`](./cmd-docker/stats) | 实时查看容器资源占用 |
+| [`docker top 容器`](./cmd-docker/ps-inspect) | 查看容器内进程 |
 
 ## 镜像管理
 
 | 命令 | 说明 |
 |---|---|
-| `docker images` | 列出本地镜像 |
-| `docker pull 镜像:标签` | 拉取镜像 |
-| `docker push 镜像` | 推送镜像到仓库 |
-| `docker build -t 名称:标签 .` | 根据 Dockerfile 构建镜像 |
-| `docker rmi 镜像` | 删除镜像 |
-| `docker tag 镜像 用户/镜像:标签` | 给镜像打标签 |
-| `docker save -o out.tar 镜像` | 镜像导出为文件 |
-| `docker load -i out.tar` | 从文件导入镜像 |
-| `docker image prune -a` | 清理悬空/无用镜像 |
+| [`docker images`](./cmd-docker/images) | 列出本地镜像 |
+| [`docker pull 镜像:标签`](./cmd-docker/images) | 拉取镜像 |
+| [`docker push 镜像`](./cmd-docker/images) | 推送镜像到仓库 |
+| [`docker build -t 名称:标签 .`](./cmd-docker/build) | 根据 Dockerfile 构建镜像 |
+| [`docker rmi 镜像`](./cmd-docker/images) | 删除镜像 |
+| [`docker tag 镜像 用户/镜像:标签`](./cmd-docker/images) | 给镜像打标签 |
+| [`docker save -o out.tar 镜像`](./cmd-docker/images) | 镜像导出为文件 |
+| [`docker load -i out.tar`](./cmd-docker/images) | 从文件导入镜像 |
+| [`docker image prune -a`](./cmd-docker/images) | 清理悬空/无用镜像 |
 
 ## 网络
 
 | 命令 | 说明 |
 |---|---|
-| `docker network ls` | 列出网络 |
-| `docker network create 名称` | 创建网络 |
-| `docker network connect 网络 容器` | 容器接入网络 |
-| `docker network disconnect 网络 容器` | 断开网络 |
-| `docker network inspect 网络` | 查看网络详情 |
+| [`docker network ls`](./cmd-docker/network) | 列出网络 |
+| [`docker network create 名称`](./cmd-docker/network) | 创建网络 |
+| [`docker network connect 网络 容器`](./cmd-docker/network) | 容器接入网络 |
+| [`docker network disconnect 网络 容器`](./cmd-docker/network) | 断开网络 |
+| [`docker network inspect 网络`](./cmd-docker/network) | 查看网络详情 |
 
 **网络模式：** `bridge`（默认）、`host`（共享宿主机网络）、`none`（无网络）、`container`（共享另一容器网络）。
 
@@ -60,30 +60,30 @@
 
 | 命令 | 说明 |
 |---|---|
-| `docker volume ls` | 列出数据卷 |
-| `docker volume create 名称` | 创建数据卷 |
-| `docker volume inspect 名称` | 查看卷详情 |
-| `docker volume rm 名称` | 删除卷 |
-| `-v 宿主机路径:容器路径` | 挂载（bind mount） |
-| `-v 卷名:容器路径` | 挂载数据卷 |
+| [`docker volume ls`](./cmd-docker/volume) | 列出数据卷 |
+| [`docker volume create 名称`](./cmd-docker/volume) | 创建数据卷 |
+| [`docker volume inspect 名称`](./cmd-docker/volume) | 查看卷详情 |
+| [`docker volume rm 名称`](./cmd-docker/volume) | 删除卷 |
+| [`-v 宿主机路径:容器路径`](./cmd-docker/volume) | 挂载（bind mount） |
+| [`-v 卷名:容器路径`](./cmd-docker/volume) | 挂载数据卷 |
 
 ## 系统与清理
 
 | 命令 | 说明 |
 |---|---|
-| `docker info` | Docker 系统信息 |
-| `docker version` | 版本信息 |
-| `docker system df` | 磁盘占用情况 |
-| `docker system prune -af` | 清理所有无用资源（容器/镜像/网络） |
+| [`docker info`](./cmd-docker/system-prune) | Docker 系统信息 |
+| [`docker version`](./cmd-docker/system-prune) | 版本信息 |
+| [`docker system df`](./cmd-docker/system-prune) | 磁盘占用情况 |
+| [`docker system prune -af`](./cmd-docker/system-prune) | 清理所有无用资源（容器/镜像/网络） |
 
 ## Docker Compose
 
 | 命令 | 说明 |
 |---|---|
-| `docker compose up -d` | 根据 compose 文件启动所有服务 |
-| `docker compose down` | 停止并删除容器、网络 |
-| `docker compose ps` | 查看本项目服务状态 |
-| `docker compose logs -f` | 查看所有服务日志 |
-| `docker compose build` | 构建服务镜像 |
-| `docker compose restart 服务` | 重启某个服务 |
-| `docker compose exec 服务 bash` | 进入某个服务容器 |
+| [`docker compose up -d`](./cmd-docker/compose) | 根据 compose 文件启动所有服务 |
+| [`docker compose down`](./cmd-docker/compose) | 停止并删除容器、网络 |
+| [`docker compose ps`](./cmd-docker/compose) | 查看本项目服务状态 |
+| [`docker compose logs -f`](./cmd-docker/compose) | 查看所有服务日志 |
+| [`docker compose build`](./cmd-docker/compose) | 构建服务镜像 |
+| [`docker compose restart 服务`](./cmd-docker/compose) | 重启某个服务 |
+| [`docker compose exec 服务 bash`](./cmd-docker/compose) | 进入某个服务容器 |

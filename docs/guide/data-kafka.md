@@ -1,8 +1,9 @@
 ---
 title: Kafka
 description: Kafka 高吞吐原理、topic/partition/副本/ISR/消费组/offset、KRaft 部署、topic 管理、生产消费、消费堆积与 lag、消息不丢不重顺序、rebalance 与监控
+category: 数据
+difficulty: 中级
 ---
-
 # Kafka
 
 ::: tip 本篇定位

@@ -6,22 +6,44 @@
 
 ### Web 服务
 
+::: idx
+
 | 文章 | 解决什么问题 | 状态 |
 |---|---|---|
 | [Nginx 实战](./services-web-nginx) | 安装、虚拟主机、反向代理、负载均衡、SSL/HTTP2、调优 | ✅ 已完成 |
 | [Apache 与 Tomcat](./services-web-apache-tomcat) | HTTP 协议、Apache 虚拟主机/认证、Tomcat、JVM/GC | ✅ 已完成 |
 
+:::
+
 ### DNS 域名服务
+
+::: idx
 
 | 文章 | 解决什么问题 | 状态 |
 |---|---|---|
 | [DNS 域名解析](./services-dns) | DNS 原理/记录、BIND 部署、正反解析、主从、分离解析 | ✅ 已完成 |
 
+:::
+
 ### 文件共享
+
+::: idx
 
 | 文章 | 解决什么问题 | 状态 |
 |---|---|---|
 | [文件共享服务](./services-file-sharing) | NFS、Samba、vsftpd 部署与权限 | ✅ 已完成 |
+
+:::
+
+### 负载均衡与高可用
+
+::: idx
+
+| 文章 | 解决什么问题 | 状态 |
+|---|---|---|
+| [LVS 与 Keepalived](./services-lvs-keepalived) | LVS DR/NAT 模式、ipvsadm、Keepalived VIP 四层负载高可用 | ✅ 已完成 |
+
+:::
 
 ## 命令速查
 

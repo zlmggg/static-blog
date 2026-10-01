@@ -1,8 +1,9 @@
 ---
 title: DNS 域名解析
 description: DNS 层级与递归迭代、记录类型、BIND（RHEL named / Debian bind9）正反向解析、主从复制、view 分离、转发缓存、dig/nslookup/host 排障
+category: 服务
+difficulty: 中级
 ---
-
 # DNS 域名解析
 
 ::: tip 本篇定位

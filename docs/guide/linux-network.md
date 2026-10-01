@@ -1,8 +1,9 @@
 ---
 title: 网络基础
 description: 计算机网络原理：OSI/TCP-IP 分层、IP 地址与子网划分、TCP/UDP、以太网 MAC、网卡配置、bond 高可用
+category: Linux
+difficulty: 中级
 ---
-
 # 网络基础
 
 ::: tip 本篇定位

@@ -1,8 +1,9 @@
 ---
 title: Nginx 实战
 description: Nginx 事件模型与安装、配置结构、虚拟主机、location 优先级与 rewrite、反向代理、负载均衡算法、HTTPS/HTTP2、gzip/缓存/限流
+category: 服务
+difficulty: 中级
 ---
-
 # Nginx 实战
 
 ::: tip 本篇定位

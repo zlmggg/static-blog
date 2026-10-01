@@ -1,8 +1,9 @@
 ---
 title: Shell 脚本编程
 description: Bash 脚本系统教程：变量、运算测试、条件循环、函数、数组、trap、调试与生产实战脚本
+category: Linux
+difficulty: 中级
 ---
-
 # Shell 脚本编程
 
 ::: tip 本篇定位

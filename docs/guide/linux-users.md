@@ -1,8 +1,9 @@
 ---
 title: 用户、权限与认证
 description: Linux 用户与组、文件权限、特殊权限、ACL、sudo 提权与集中认证，含 RHEL/Debian 差异
+category: Linux
+difficulty: 中级
 ---
-
 # 用户、权限与认证
 
 ::: tip 本篇定位

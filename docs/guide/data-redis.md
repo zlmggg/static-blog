@@ -1,8 +1,9 @@
 ---
 title: Redis
 description: Redis 单线程模型、源码/Docker 安装、五大类型与 bitmap/stream、RDB/AOF/混合持久化、过期淘汰、事务 Lua、主从、哨兵、Cluster 哈希槽、缓存穿透击穿雪崩与分布式锁
+category: 数据
+difficulty: 中级
 ---
-
 # Redis
 
 ::: tip 本篇定位

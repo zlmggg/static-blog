@@ -1,3 +1,8 @@
+---
+category: 监控
+difficulty: 中级
+---
+
 # ELK 日志平台实战
 
 ::: tip 本篇定位

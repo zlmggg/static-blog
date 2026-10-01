@@ -6,22 +6,44 @@
 
 ### 配置管理自动化
 
+::: idx
+
 | 文章 | 解决什么问题 | 状态 |
 |---|---|---|
-| [Ansible](./automation-ansible) | Inventory、Ad-Hoc、Playbook、常用模块、Roles、Vault、Galaxy | ✏️ 待写 |
+| [Ansible](./automation-ansible) | Inventory、Ad-Hoc、Playbook、常用模块、Roles、Vault、Galaxy | ✅ 已完成 |
+
+:::
 
 ### 持续集成 / 持续交付
 
+::: idx
+
 | 文章 | 解决什么问题 | 状态 |
 |---|---|---|
-| [Git / GitLab / Jenkins](./automation-jenkins) | Git 版本控制、GitLab 部署管理、Jenkins 自由风格/Pipeline | ✏️ 待写 |
-| [GitOps（GitLab CI / ArgoCD）](./automation-gitops) | GitLab CI 流水线、ArgoCD 持续部署、GitOps 工作流 | ✏️ 待写 |
+| [Git / GitLab / Jenkins](./automation-jenkins) | Git 版本控制、GitLab 部署管理、Jenkins 自由风格/Pipeline | ✅ 已完成 |
+| [GitOps（GitLab CI / ArgoCD）](./automation-gitops) | GitLab CI 流水线、ArgoCD 持续部署、GitOps 工作流 | ✅ 已完成 |
+
+:::
 
 ### 基础设施即代码
 
+::: idx
+
 | 文章 | 解决什么问题 | 状态 |
 |---|---|---|
-| [Terraform](./automation-terraform) | HCL 语法、Provider、State 管理、云服务器（ECS/CVM）、模块化 | ✏️ 待写 |
+| [Terraform](./automation-terraform) | HCL 语法、Provider、State 管理、云服务器（ECS/CVM）、模块化 | ✅ 已完成 |
+
+:::
+
+### SRE 编程
+
+::: idx
+
+| 文章 | 解决什么问题 | 状态 |
+|---|---|---|
+| [Python 运维自动化](./sre-python) | subprocess、paramiko、requests 调 API、数据处理、综合实战工具 | ✅ 已完成 |
+
+:::
 
 ## 命令速查
 

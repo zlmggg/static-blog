@@ -1,3 +1,8 @@
+---
+category: Linux
+difficulty: 中级
+---
+
 # 文件系统
 
 ::: tip 本篇定位

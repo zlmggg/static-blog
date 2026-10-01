@@ -1,8 +1,9 @@
 ---
 title: MySQL 进阶与高可用
 description: 事务隔离级别与 MVCC、行锁/间隙锁/死锁、索引原理、EXPLAIN 实战、慢查询优化、binlog/redo/undo 日志、mysqldump/xtrabackup 备份、主从复制 GTID、MHA/MGR 高可用、读写分离
+category: 数据
+difficulty: 高级
 ---
-
 # MySQL 进阶与高可用
 
 ::: tip 本篇定位

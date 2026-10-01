@@ -1,3 +1,8 @@
+---
+category: 监控
+difficulty: 初级
+---
+
 # Prometheus 从 0 到 1 新手实战手册
 
 本篇是写给零基础同学的 Prometheus 上机手册：不堆概念，每一步都告诉你在哪个目录、用什么用户、敲什么命令、应该看到什么、错了怎么修，跟着敲完就能搭出一套中小企业在用的监控告警系统。
@@ -9230,7 +9235,7 @@ Prometheus 数据备份不是常规必需（它是监控数据，可重新采集
 
 # 附录：延伸阅读（可选）
 
-- 《Site Reliability Engineering》（Google SRE 书）：监控方法论与四个黄金信号的出处，在线版 https://sre.google/sre-book/monitoring-distributed-systems/
+- 《Site Reliability Engineering》（Google SRE 书）：监控方法论与四个黄金信号的出处，在线版 https://sre.google/sre-book/monitoring-distributed-systems/（需科学上网）；国内平替：https://www.cnblogs.com/lhxBlogs/p/17924893.html
 - Facebook Gorilla 论文：理解 TSDB 高压缩存储，https://www.vldb.org/pvldb/vol8/p1816-teller.pdf
 - Prometheus 官方最佳实践：指标命名、标签使用，https://prometheus.io/docs/practices/naming/
 - Kubernetes 可观测性体系：Metrics Server、cAdvisor、kube-state-metrics 的分工

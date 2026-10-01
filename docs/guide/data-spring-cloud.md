@@ -1,8 +1,9 @@
 ---
 title: Spring Cloud 微服务
 description: 架构演进与微服务特点、Spring Cloud Alibaba 版本配套、Nacos 注册配置、Sentinel 限流熔断、Seata 分布式事务 AT、Gateway 路由限流、OpenFeign 与链路追踪
+category: 数据
+difficulty: 中级
 ---
-
 # Spring Cloud 微服务
 
 ::: tip 本篇定位

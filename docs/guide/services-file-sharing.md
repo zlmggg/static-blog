@@ -1,8 +1,9 @@
 ---
 title: 文件共享服务
 description: NFS（exports 选项/exportfs/autofs）、Samba（smb.conf/smbpasswd/跨平台客户端）、vsftpd（主动被动/chroot/虚拟用户）部署与方案选型
+category: 服务
+difficulty: 中级
 ---
-
 # 文件共享服务
 
 ::: tip 本篇定位
@@ -220,4 +221,4 @@ FTP 传输内容和密码都不加密，公网易被嗅探。安全需求请用 
 - [Linux 命令速查](/reference/linux-commands)
 - NFS（Linux 文档）：https://nfs.sourceforge.net/nfs-howto/
 - Samba 文档：https://www.samba.org/samba/docs/
-- vsftpd：https://security.appspot.com/vsftpd.html
+- vsftpd：https://security.appspot.com/vsftpd.html（需科学上网）；国内平替：https://cloud.tencent.com/document/product/1207/47638

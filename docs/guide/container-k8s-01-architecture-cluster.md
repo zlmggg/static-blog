@@ -1,3 +1,8 @@
+---
+category: 容器
+difficulty: 中级
+---
+
 # K8s 01：架构与集群部署
 
 ::: tip 本篇定位

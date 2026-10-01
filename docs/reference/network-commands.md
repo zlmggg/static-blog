@@ -7,9 +7,9 @@
 
 | 命令 | 说明 | 示例 |
 |---|---|---|
-| `ip addr` | 查看接口和 IP 地址 | `ip a`；`ip a show eth0` |
-| `ip link` | 查看/管理链路状态 | `ip link set eth0 up/down` |
-| `ip route` | 查看路由表 | `ip r`；`ip route add default via 网关` |
+| [`ip addr`](./cmd-net/ip-addr-link) | 查看接口和 IP 地址 | `ip a`；`ip a show eth0` |
+| [`ip link`](./cmd-net/ip-addr-link) | 查看/管理链路状态 | `ip link set eth0 up/down` |
+| [`ip route`](./cmd-net/ip-route) | 查看路由表 | `ip r`；`ip route add default via 网关` |
 | `nmcli` | NetworkManager 管理 | `nmcli device status`；`nmcli con show` |
 | `ifconfig` | 旧版查看接口（net-tools） | `ifconfig` |
 | `ethtool` | 查看网卡物理信息 | `ethtool eth0`（速率/双工） |
@@ -35,9 +35,9 @@ sudo systemctl restart network
 
 | 命令 | 说明 | 示例 |
 |---|---|---|
-| `ss` | 查看端口/连接（推荐） | `ss -tunlp`（t TCP、u UDP、l 监听、n 数字、p 进程） |
-| `netstat` | 旧版查看端口 | `netstat -tunlp` |
-| `lsof -i` | 查端口占用 | `lsof -i :80` |
+| [`ss`](./cmd-net/ss) | 查看端口/连接（推荐） | `ss -tunlp`（t TCP、u UDP、l 监听、n 数字、p 进程） |
+| [`netstat`](./cmd-net/ss) | 旧版查看端口 | `netstat -tunlp` |
+| [`lsof -i`](./cmd/lsof) | 查端口占用 | `lsof -i :80` |
 | `fuser` | 查端口占用进程 | `fuser -v 80/tcp` |
 
 **ss 常用过滤：**
@@ -52,18 +52,18 @@ ss -s                        # 连接统计汇总
 
 | 命令 | 说明 | 示例 |
 |---|---|---|
-| `ping` | ICMP 连通性/延迟 | `ping -c 4 host`（c 次数） |
-| `nc` | netcat，端口连通/传输 | `nc -zv host 80`（z 扫描、v 详细） |
-| `telnet` | 测试端口连通 | `telnet host 3306` |
+| [`ping`](./cmd-net/ping) | ICMP 连通性/延迟 | `ping -c 4 host`（c 次数） |
+| [`nc`](./cmd-net/nc-telnet) | netcat，端口连通/传输 | `nc -zv host 80`（z 扫描、v 详细） |
+| [`telnet`](./cmd-net/nc-telnet) | 测试端口连通 | `telnet host 3306` |
 | `nmap` | 端口扫描（需安装） | `nmap -p 1-1000 host`；`nmap -sP 网段` |
 
 ## 路由追踪
 
 | 命令 | 说明 | 示例 |
 |---|---|---|
-| `traceroute` | 追踪数据包路径 | `traceroute host` |
-| `mtr` | 结合 ping+traceroute，看每跳丢包 | `mtr -r host`（r 报告模式） |
-| `tracepath` | 免 root 的路径追踪 | `tracepath host` |
+| [`traceroute`](./cmd-net/traceroute-mtr) | 追踪数据包路径 | `traceroute host` |
+| [`mtr`](./cmd-net/traceroute-mtr) | 结合 ping+traceroute，看每跳丢包 | `mtr -r host`（r 报告模式） |
+| [`tracepath`](./cmd-net/traceroute-mtr) | 免 root 的路径追踪 | `tracepath host` |
 
 ## DNS 查询
 
@@ -71,9 +71,9 @@ ss -s                        # 连接统计汇总
 
 | 命令 | 说明 | 示例 |
 |---|---|---|
-| `dig` | 强大的 DNS 查询工具 | 见下表 |
-| `nslookup` | 交互式 DNS 查询 | `nslookup domain` |
-| `host` | 简洁的 DNS 查询 | `host domain` |
+| [`dig`](./cmd-net/dig) | 强大的 DNS 查询工具 | 见下表 |
+| [`nslookup`](./cmd-net/dig) | 交互式 DNS 查询 | `nslookup domain` |
+| [`host`](./cmd-net/dig) | 简洁的 DNS 查询 | `host domain` |
 
 **dig 常用：**
 
@@ -92,7 +92,7 @@ dig example.com +short           # 只输出结果（简洁）
 
 | 命令 | 说明 | 示例 |
 |---|---|---|
-| `tcpdump` | 命令行抓包分析 | 见下表 |
+| [`tcpdump`](./cmd-net/tcpdump) | 命令行抓包分析 | 见下表 |
 
 ```bash
 tcpdump -i eth0                  # 抓指定网卡
@@ -108,8 +108,8 @@ tcpdump -A port 80               # A 以ASCII显示内容（看HTTP明文）
 
 | 命令 | 说明 | 示例 |
 |---|---|---|
-| `curl` | 发送 HTTP 请求，测接口 | 见下表 |
-| `wget` | 下载文件 | `wget https://x.com/f.tar.gz` |
+| [`curl`](./cmd-net/curl) | 发送 HTTP 请求，测接口 | 见下表 |
+| [`wget`](./cmd-net/wget) | 下载文件 | `wget https://x.com/f.tar.gz` |
 
 ```bash
 curl https://example.com                 # GET请求，显示内容
@@ -129,16 +129,16 @@ curl -w "%{http_code} %{time_total}s" -o /dev/null -s URL  # 只看状态码和�
 
 | 命令 | 说明 | 示例 |
 |---|---|---|
-| `iftop` | 实时显示各连接带宽 | `sudo iftop -i eth0` |
-| `nethogs` | 按进程统计网络流量 | `sudo nethogs eth0` |
-| `sar -n DEV` | 网卡流量历史 | `sar -n DEV 1` |
+| [`iftop`](./cmd-net/bandwidth) | 实时显示各连接带宽 | `sudo iftop -i eth0` |
+| [`nethogs`](./cmd-net/bandwidth) | 按进程统计网络流量 | `sudo nethogs eth0` |
+| [`sar -n DEV`](./cmd/mpstat-sar) | 网卡流量历史 | `sar -n DEV 1` |
 
 ## ARP 与邻居
 
 | 命令 | 说明 | 示例 |
 |---|---|---|
-| `ip neigh` | 查看 ARP 邻居表 | `ip n` |
-| `arp` | 旧版 ARP 表 | `arp -n` |
+| [`ip neigh`](./cmd-net/ip-neigh-arp) | 查看 ARP 邻居表 | `ip n` |
+| [`arp`](./cmd-net/ip-neigh-arp) | 旧版 ARP 表 | `arp -n` |
 | `arping` | 同网段探测 IP 是否冲突 | `arping -I eth0 192.168.1.1` |
 
 ## 防火墙（速查）
@@ -160,3 +160,4 @@ firewall-cmd --list-all                       # 查看
 ```
 
 :::
+> 防火墙命令从 0 到 1 详解：[iptables](./cmd-net/iptables) ｜ [nftables](./cmd-net/nftables) ｜ [firewalld 与 ufw](./cmd-net/firewalld-ufw)
