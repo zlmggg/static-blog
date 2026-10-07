@@ -3,21 +3,12 @@ import container from 'markdown-it-container'
 
 // 文档：https://vitepress.dev/zh/reference/site-config
 
-// 【子域方案】用环境变量区分构建版本：
-//   默认构建          = 公开版（www.sresec.com，排除面试内容）
-//   VITE_PRIVATE=1 构建 = 私有版（q.sresec.com，含面试，整站 Basic Auth）
-const isPrivate = process.env.VITE_PRIVATE === '1'
+// 【单站方案】面经内容（interview）已合并到主站公开访问，
+// 不再区分公开/私有构建，也不再使用 q 子站与 Nginx Basic Auth。
 
 export default defineConfig({
   // 站点语言：设置为中文后，界面内置文案会自动使用中文
   lang: 'zh-CN',
-
-  // 公开版不构建 interview 目录：面经 HTML 只存在于私有站，从根上无法在 www 访问到
-  srcExclude: isPrivate ? [] : ['interview/**'],
-
-  // 产物目录：公开版 -> docs/.vitepress/dist；私有版 -> docs/.vitepress/dist-private
-  // （两个站点分别部署到 www / q 子域，避免互相覆盖）
-  outDir: isPrivate ? './.vitepress/dist-private' : './.vitepress/dist',
 
   // 站点标题（显示在顶部导航最左侧，也是浏览器标签页标题后缀）
   title: '禾光知寒',
@@ -163,6 +154,7 @@ export default defineConfig({
           { text: '职业发展与行业思考', link: '/guide/career' }
         ]
       },
+      { text: '面试专区', link: '/interview/', activeMatch: '/interview/' },
       { text: '关于', link: '/about' }
     ],
 
@@ -224,18 +216,11 @@ export default defineConfig({
           { text: '排障记录', link: '/cases/troubleshooting' }
         ]
       },
-      // 仅私有版显示面试专区入口（公开版已 srcExclude，保留会成为死链）
-      ...(isPrivate
-        ? [
-            {
-              text: '面试专区（私有）',
-              collapsed: false,
-              items: [{ text: '面试题总览', link: '/interview/' }]
-            }
-          ]
-        : [])
-
-
+      {
+        text: '面试专区',
+        collapsed: false,
+        items: [{ text: '面试题总览', link: '/interview/' }]
+      }
     ],
 
     // —— 右侧「大纲」：自动提取当前文章的标题 ——
