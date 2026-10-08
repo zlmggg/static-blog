@@ -9,7 +9,7 @@ const isPrivate = import.meta.env.VITE_PRIVATE === '1'
 // 面经卡片：私有站直接进 /interview/，公开站跳 q 子域
 const INTERVIEW_TO = isPrivate
   ? '/interview/'
-  : 'https://q.sresec.com/interview/'
+  : 'https://sresec.com/interview/'
 
 const termBody = ref<HTMLElement | null>(null)
 let alive = true
