@@ -4,12 +4,8 @@ import { useRouter } from 'vitepress'
 
 const router = useRouter()
 
-// 是否私有构建（VITE_ 前缀变量会暴露到 import.meta.env）
-const isPrivate = import.meta.env.VITE_PRIVATE === '1'
-// 面经卡片：私有站直接进 /interview/，公开站跳 q 子域
-const INTERVIEW_TO = isPrivate
-  ? '/interview/'
-  : 'https://sresec.com/interview/'
+// 面经卡片链接：面经已并入主站，直接走站内路径
+const INTERVIEW_TO = '/interview/'
 
 const termBody = ref<HTMLElement | null>(null)
 let alive = true
@@ -47,9 +43,9 @@ const SCRIPTS: { cmd: string; out: Out[] }[] = [
   }
 ]
 
-function typeCmd(text: string) {
+async function typeCmd(text: string) {
   const body = termBody.value
-  if (!body) return Promise.resolve()
+  if (!body) return
   const line = document.createElement('div')
   line.className = 'ln'
   line.innerHTML =
@@ -57,18 +53,13 @@ function typeCmd(text: string) {
   const target = line.querySelector('.t-cmd') as HTMLElement
   body.appendChild(line)
   body.scrollTop = body.scrollHeight
-  return [...text]
-    .reduce((p, ch) => {
-      return p.then(() => {
-        if (!alive) return
-        target.textContent += ch
-        return sleep(38 + Math.random() * 46)
-      })
-    }, Promise.resolve())
-    .then(() => {
-      line.querySelector('.t-cursor')?.remove()
-      body.scrollTop = body.scrollHeight
-    })
+  for (const ch of text) {
+    if (!alive) break
+    target.textContent += ch
+    await sleep(38 + Math.random() * 46)
+  }
+  line.querySelector('.t-cursor')?.remove()
+  body.scrollTop = body.scrollHeight
 }
 
 function addOut(cls: string, text: string) {
@@ -175,9 +166,9 @@ const FEATS: Feat[] = [
     to: '/guide/career'
   },
   {
-    t: '面经专区（私有）',
-    d: 'Linux、网络、容器、云原生高频面试与场景题，q 站密码访问。',
-    g: '进入面经',
+    t: '面试专区',
+    d: 'Linux、网络、容器、云原生高频面试与场景题，公开可查、随时翻阅。',
+    g: '进入面试',
     i: '<rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>',
     to: INTERVIEW_TO
   },
