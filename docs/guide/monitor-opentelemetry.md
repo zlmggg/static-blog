@@ -290,7 +290,7 @@ processors:
 | Jaeger | 新版 Jaeger v2 本身就是 OTel Collector 发行版，直接 `otlp` 指向它即可 |
 | Grafana Loki | 用 `loki` exporter 或 Alloy 采集日志 |
 
-> 这几家后端的具体部署见 [Grafana LGTM 栈与 Jaeger](./monitor-grafana-stack)；Prometheus 基础见 [Prometheus 从 0 到 1](./monitor-prometheus)。
+> 这几家后端的具体部署见 [Grafana LGTM 栈与 Jaeger](./monitor-grafana-stack)；Prometheus 基础见 [Prometheus 从 0 到 1](./monitor-prometheus-01-intro)。
 
 ## 六、常见问题排错
 
@@ -313,7 +313,7 @@ processors:
 
 ## 相关速查
 
-- 监控基础：[Prometheus 从 0 到 1](./monitor-prometheus)
+- 监控基础：[Prometheus 从 0 到 1](./monitor-prometheus-01-intro)
 - 后端存储：[Grafana LGTM 栈与 Jaeger](./monitor-grafana-stack)
 - K8s 集群基础：[Kubernetes 架构与集群](./container-k8s-01-architecture-cluster)
 - 服务间链路与网格：[Service Mesh 服务网格](./container-servicemesh)

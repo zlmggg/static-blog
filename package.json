@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vitepress dev docs",
-    "build": "vitepress build docs",
+    "build": "vitepress build docs && node scripts/gen-feed.mjs",
     "preview": "vitepress preview docs"
   },
   "devDependencies": {

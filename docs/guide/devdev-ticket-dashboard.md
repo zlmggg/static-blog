@@ -255,7 +255,7 @@ onUnmounted(() => clearInterval(timer));
 - 数据底座：[自研 CMDB](./devdev-platform-cmdb)
 - SLA/SLO 原理：[SRE 稳定性](./monitor-slo)
 - 值班通知机器人：[运维 CLI 与钉钉/企微机器人](./devdev-cli-bot)
-- 监控数据：[Prometheus](./monitor-prometheus)
+- 监控数据：[Prometheus](./monitor-prometheus-01-intro)
 
 ### 官方文档
 

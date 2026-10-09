@@ -13,10 +13,10 @@
 
 /* ---------- 1. 字体与设计 token ---------- */
 :root {
-  --vp-font-family-base: 'Space Grotesk', 'Noto Sans SC', 'PingFang SC',
-    'Hiragino Sans GB', 'Microsoft YaHei', system-ui, -apple-system, sans-serif;
-  --vp-font-family-mono: 'JetBrains Mono', 'Noto Sans Mono', 'Cascadia Code',
-    'Cascadia Mono', Consolas, ui-monospace, monospace;
+  --vp-font-family-base: 'Space Grotesk', 'PingFang SC', 'Hiragino Sans GB',
+    'Microsoft YaHei', 'Noto Sans CJK SC', system-ui, -apple-system, sans-serif;
+  --vp-font-family-mono: 'JetBrains Mono', 'Cascadia Code', 'Cascadia Mono',
+    Consolas, 'Noto Sans Mono CJK SC', ui-monospace, monospace;
 
   --brand-1: #6366f1;
   --brand-2: #8b5cf6;

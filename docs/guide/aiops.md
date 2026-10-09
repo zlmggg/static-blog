@@ -59,4 +59,4 @@
 - 运维场景的 AI Prompt 与 Agent 指令模板：[运维 AI Prompt 速查](/reference/ai-prompts)
 - 云原生排障与可观测命令：[云原生命令速查](/reference/cloudnative-commands)
 - 模型部署相关：[大模型部署](./container-llm)
-- 监控数据来源：[Prometheus 监控](./monitor-prometheus)
+- 监控数据来源：[Prometheus 监控](./monitor-prometheus-01-intro)

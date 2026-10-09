@@ -342,7 +342,7 @@ sched.start()
 
 - Shell 基础：[Linux Shell](./linux-shell)、[Linux 命令速查](/reference/linux-commands)
 - 批量自动化：[Ansible 自动化](./automation-ansible)
-- 监控与 API：[Prometheus 监控](./monitor-prometheus)、[OpenTelemetry](./monitor-opentelemetry)
+- 监控与 API：[Prometheus 监控](./monitor-prometheus-01-intro)、[OpenTelemetry](./monitor-opentelemetry)
 - 容器与 K8s：[Helm 包管理](./container-helm)、[kubectl 命令速查](/reference/kubectl-commands)、[云原生命令速查](/reference/cloudnative-commands)
 
 ### 官方文档

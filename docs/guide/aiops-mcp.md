@@ -265,7 +265,7 @@ MCP Server 手里握着你内网的真实系统，**它就是一个能被 LLM �
 
 - 运维 AI Prompt 与工具指令模板：[运维 AI Prompt 速查](/reference/ai-prompts)
 - K8s 概念基础：[Kubernetes 集群架构](./container-k8s-01-architecture-cluster)
-- 监控数据从哪来：[Prometheus 监控](./monitor-prometheus)
+- 监控数据从哪来：[Prometheus 监控](./monitor-prometheus-01-intro)
 - Agent 怎么编排落地：[Agent 运维实战](./aiops-agent-practice)
 - 基础概念补课：[AI Agent 与 LLM 应用基础](./aiops-agent-basics)
 

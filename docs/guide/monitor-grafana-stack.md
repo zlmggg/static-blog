@@ -236,7 +236,7 @@ Grafana 里加数据源：Loki 地址填 `http://loki:3100`，Tempo 填 `http://
 ## 相关速查
 
 - 上游采集标准：[OpenTelemetry 统一可观测](./monitor-opentelemetry)
-- 指标采集基础：[Prometheus 从 0 到 1](./monitor-prometheus)
+- 指标采集基础：[Prometheus 从 0 到 1](./monitor-prometheus-01-intro)
 - 日志 ELK 方案对比：[ELK 日志栈](./monitor-elk)
 - SLO 告警：[SLO/SLI、错误预算与 Burn Rate](./monitor-slo)
 - K8s 部署：[Kubernetes 架构与集群](./container-k8s-01-architecture-cluster)

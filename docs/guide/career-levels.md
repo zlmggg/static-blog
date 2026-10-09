@@ -104,7 +104,7 @@ flowchart LR
 | 信号 | 突破动作 |
 |---|---|
 | 会用 kubectl，但讲不清 kube-proxy、调度器原理 | 选主线打穿，见 [K8s 系列](./container-k8s-01-architecture-cluster) |
-| 用过监控，但讲不清指标采集原理、Cardinality 问题 | 见 [OpenTelemetry](./monitor-opentelemetry)、[Prometheus](./monitor-prometheus) |
+| 用过监控，但讲不清指标采集原理、Cardinality 问题 | 见 [OpenTelemetry](./monitor-opentelemetry)、[Prometheus](./monitor-prometheus-01-intro) |
 | 故障靠经验猜，没有方法论 | 建立结构化排障框架，见 [排障推理框架](./blog-troubleshooting-reasoning) |
 
 刻意练习的办法：**每个方向做一个"费曼输出"**——对着空白页把这个方向从原理到实战讲一遍，讲不下去的地方就是你的空洞。写完发出来，被人挑战的部分再补。

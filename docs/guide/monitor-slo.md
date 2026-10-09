@@ -7,7 +7,7 @@ difficulty: 中级
 
 ::: tip 本篇定位
 让你从「拍脑袋告警」升级到「用错误预算说话」：定义用户真正在乎的 SLI/SLO，算出错误预算，并用 Google 经典的多窗口多燃烧率（Multi-Window Multi-Burn-Rate）方法写一套既不漏报、也不把人叫醒过头的告警规则。
-本篇版本：Prometheus 3.15.0、Alertmanager 0.34.1（与本站 [Prometheus 从 0 到 1](./monitor-prometheus) 一致）、Grafana 13.2.1。规则基于 PromQL，2026-09 可用。
+本篇版本：Prometheus 3.15.0、Alertmanager 0.34.1（与本站 [Prometheus 从 0 到 1](./monitor-prometheus-01-intro) 一致）、Grafana 13.2.1。规则基于 PromQL，2026-09 可用。
 :::
 
 ## 一、SLI / SLO / SLA 到底啥区别
@@ -228,7 +228,7 @@ Grafana SLO 仪表盘至少四块：**当前 SLI 实际值、本月剩余错误�
 
 ## 相关速查
 
-- 指标采集与 PromQL 基础：[Prometheus 从 0 到 1](./monitor-prometheus)
+- 指标采集与 PromQL 基础：[Prometheus 从 0 到 1](./monitor-prometheus-01-intro)
 - 事故发生后怎么复盘：[事故管理与无指责复盘](./sre-incident)
 - 压测与容量：[容量规划、高可用与灾备](./sre-capacity-dr)
 - 统一遥测采集：[OpenTelemetry 统一可观测](./monitor-opentelemetry)

@@ -113,7 +113,7 @@ flowchart TB
 
 | 工具 | 干什么 | 备注 |
 |---|---|---|
-| **Prometheus + Alertmanager** | 指标采集 + 规则告警 + 基础降噪 | 见[Prometheus 监控](./monitor-prometheus) |
+| **Prometheus + Alertmanager** | 指标采集 + 规则告警 + 基础降噪 | 见[Prometheus 监控](./monitor-prometheus-01-intro) |
 | **ELK / Loki** | 日志存储与查询 | 见[ELK 日志栈](./monitor-elk) |
 | **Drain3 / 各类 logparser** | 日志模板解析 | 纯 Python 库 |
 | **单链路/可观测平台** | 调用链追踪 | 见后续 OpenTelemetry 相关文章 |
@@ -214,7 +214,7 @@ python ts_anomaly_demo.py
 ## 相关速查
 
 - 运维 AI Prompt 模板：[运维 AI Prompt 速查](/reference/ai-prompts)
-- 指标从哪来：[Prometheus 监控](./monitor-prometheus)
+- 指标从哪来：[Prometheus 监控](./monitor-prometheus-01-intro)
 - 日志系统：[ELK 日志栈](./monitor-elk)
 - Agent 怎么接住这些告警做解释：[Agent 运维实战](./aiops-agent-practice)
 - 基础概念：[AI Agent 与 LLM 应用基础](./aiops-agent-basics)

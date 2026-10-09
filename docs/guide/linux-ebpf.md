@@ -235,7 +235,7 @@ zcat /proc/config.gz | grep BPF
 
 - 内核与性能：[Linux 内核](./linux-kernel)、[性能调优](./linux-performance)、[Linux 网络](./linux-network)
 - K8s 网络与入口：[Operator/CRD 与 Gateway API](./container-operator)、[Pod 与服务发现](./container-k8s-02-pod-service-discovery)
-- 可观测生态：[OpenTelemetry 统一可观测](./monitor-opentelemetry)、[Prometheus 监控](./monitor-prometheus)
+- 可观测生态：[OpenTelemetry 统一可观测](./monitor-opentelemetry)、[Prometheus 监控](./monitor-prometheus-01-intro)
 - 命令速查：[云原生命令速查](/reference/cloudnative-commands)、[Linux 命令速查](/reference/linux-commands)
 
 ### 官方文档
