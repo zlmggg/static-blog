@@ -4,6 +4,34 @@ import { useRouter } from 'vitepress'
 
 const router = useRouter()
 
+/* ---------------- 全站统计（构建时自动扫描 md，无需手改） ---------------- */
+const PATHS = Object.keys(import.meta.glob('/**/*.md')).filter(
+  (p) => !p.includes('/.vitepress/')
+)
+const STATS = {
+  total: PATHS.length,
+  cmd: PATHS.filter((p) => p.startsWith('/reference/cmd')).length,
+  cases: PATHS.filter((p) => /^\/cases\/t-[^/]+\.md$/.test(p)).length,
+  // 知识专题 = 12 个指南/手记聚合页 + 9 个速查页 + 2 个排障入口 + 1 个项目总览
+  topics:
+    PATHS.filter((p) =>
+      /^\/guide\/(linux|services|data|monitor|container|automation|devops|aiops|architecture|blog|opsdev|career)\.md$/.test(p)
+    ).length +
+    PATHS.filter((p) => /^\/reference\/[^/]+\.md$/.test(p)).length +
+    PATHS.filter((p) => p === '/cases/index.md' || p === '/cases/troubleshooting.md').length +
+    PATHS.filter((p) => p === '/projects/index.md').length
+}
+
+/* ---------------- 首屏向下箭头 ---------------- */
+const showHint = ref(true)
+function onWinScroll() {
+  // 鼠标一旦滚动（超过 8px）箭头立刻淡出
+  showHint.value = window.scrollY < 8
+}
+function scrollToContent() {
+  document.querySelector('.projects')?.scrollIntoView({ behavior: 'smooth' })
+}
+
 // 面经卡片链接：面经已并入主站，直接走站内路径
 const INTERVIEW_TO = '/interview/'
 
@@ -216,13 +244,6 @@ const PROJECTS: Pj[] = [
   }
 ]
 
-function onCardMove(e: MouseEvent) {
-  const card = e.currentTarget as HTMLElement
-  const r = card.getBoundingClientRect()
-  card.style.setProperty('--mx', e.clientX - r.left + 'px')
-  card.style.setProperty('--my', e.clientY - r.top + 'px')
-}
-
 function go(to: string) {
   if (to.startsWith('http')) {
     window.location.href = to
@@ -265,6 +286,9 @@ onMounted(() => {
   ).matches
   runTerm()
 
+  onWinScroll()
+  window.addEventListener('scroll', onWinScroll, { passive: true })
+
   io = new IntersectionObserver(
     (entries) => {
       entries.forEach((en) => {
@@ -291,19 +315,20 @@ onMounted(() => {
 onBeforeUnmount(() => {
   alive = false
   io?.disconnect()
+  window.removeEventListener('scroll', onWinScroll)
 })
 </script>
 
 <template>
   <div class="home-root">
-    <!-- 背景统一由全局 Layout 的 .bg-fx 提供，这里不再重复渲染 -->
-
+    <!-- 首屏：Hero + 统计条，占满一屏 -->
+    <div class="first-screen">
     <!-- Hero -->
     <header class="hero">
       <div class="home-wrap hero-grid">
         <div class="reveal hero-left">
           <span class="badge">
-            <span class="dot"></span>持续更新中 · 已沉淀 325+ 篇笔记
+            <span class="dot"></span>持续更新中 · 已沉淀 {{ STATS.total }} 篇笔记
           </span>
           <h1>
             随时可查的<br />
@@ -350,27 +375,69 @@ onBeforeUnmount(() => {
       </div>
     </header>
 
-    <!-- 数据条 -->
+    <!-- 数据条：极简内联 -->
     <section class="stats">
-      <div class="home-wrap stats-grid">
-        <div class="stat reveal">
-          <div class="num" data-count="325" data-suffix="+">0</div>
-          <div class="lbl">技术文档</div>
-        </div>
-        <div class="stat reveal">
-          <div class="num" data-count="129" data-suffix="">0</div>
-          <div class="lbl">命令详解</div>
-        </div>
-        <div class="stat reveal">
-          <div class="num" data-count="50" data-suffix="">0</div>
-          <div class="lbl">排障案例</div>
-        </div>
-        <div class="stat reveal">
-          <div class="num" data-count="24" data-suffix="">0</div>
-          <div class="lbl">知识专题</div>
+      <div class="home-wrap">
+        <div class="stat-inline">
+          <div class="it reveal">
+            <span class="num" :data-count="STATS.total" data-suffix="+">0</span>
+            <span class="lbl">技术文档</span>
+          </div>
+          <div class="it reveal">
+            <span class="num" :data-count="STATS.cmd" data-suffix="">0</span>
+            <span class="lbl">命令详解</span>
+          </div>
+          <div class="it reveal">
+            <span class="num" :data-count="STATS.cases" data-suffix="">0</span>
+            <span class="lbl">排障案例</span>
+          </div>
+          <div class="it reveal">
+            <span class="num" :data-count="STATS.topics" data-suffix="">0</span>
+            <span class="lbl">知识专题</span>
+          </div>
         </div>
       </div>
     </section>
+
+    <!-- 首屏搜索框：统计条与箭头之间 -->
+    <section class="first-search">
+      <div class="search-box reveal" @click="openSearch">
+        <svg
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="#9a9ab0"
+          stroke-width="2"
+          stroke-linecap="round"
+        >
+          <circle cx="11" cy="11" r="7" />
+          <path d="m21 21-4.3-4.3" />
+        </svg>
+        <span class="ph">搜索命令、服务、故障案例…</span>
+        <span class="key">Ctrl K</span>
+      </div>
+    </section>
+
+      <!-- 向下箭头：滚动后消失 -->
+      <button
+        class="scroll-hint"
+        :class="{ hide: !showHint }"
+        @click="scrollToContent"
+        aria-label="向下浏览"
+      >
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="m6 9 6 6 6-6" />
+        </svg>
+      </button>
+    </div>
 
     <!-- 我的项目 -->
     <section class="projects">
@@ -396,49 +463,24 @@ onBeforeUnmount(() => {
       </div>
     </section>
 
-    <!-- 搜索条 -->
-    <section class="search-section">
-      <div class="home-wrap">
-        <div class="search-hero reveal">
-          <div class="search-box" @click="openSearch">
-            <svg
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="#9a9ab0"
-              stroke-width="2"
-              stroke-linecap="round"
-            >
-              <circle cx="11" cy="11" r="7" />
-              <path d="m21 21-4.3-4.3" />
-            </svg>
-            <span class="ph">搜索命令、服务、故障案例…</span>
-            <span class="key">Ctrl K</span>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- 卡片 -->
+    <!-- 内容分类：紧凑列表 -->
     <section class="section" id="features">
       <div class="home-wrap">
         <div class="section-head reveal">
           <h2>一个“活生生”的高级运维站点</h2>
           <p>从基础到高级，从排障到前沿，按分类快速找到你要的内容</p>
         </div>
-        <div class="feat-grid">
+        <div class="list2">
           <div
-            v-for="f in FEATS"
+            v-for="(f, idx) in FEATS"
             :key="f.t"
-            class="feat reveal"
-            @mousemove="onCardMove"
+            :class="['li', 'reveal', 'lc' + (idx % 6)]"
             @click="go(f.to)"
           >
             <div class="ic">
               <svg
-                width="22"
-                height="22"
+                width="19"
+                height="19"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
@@ -448,23 +490,10 @@ onBeforeUnmount(() => {
                 v-html="f.i"
               ></svg>
             </div>
-            <h3>{{ f.t }}</h3>
-            <p>{{ f.d }}</p>
-            <span class="go">
-              {{ f.g }}
-              <svg
-                width="15"
-                height="15"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2.2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                <path d="M5 12h14M13 6l6 6-6 6" />
-              </svg>
-            </span>
+            <div class="tx">
+              <h3>{{ f.t }}</h3>
+              <p>{{ f.d }}</p>
+            </div>
           </div>
         </div>
       </div>
@@ -513,8 +542,17 @@ html:not(.dark) .home-root {
 }
 
 /* Hero */
+/* 首屏：nav 已占顶部 var(--vp-nav-height)，剩余高度正好填满一屏 */
+.home-root .first-screen {
+  position: relative;
+  min-height: calc(100vh - var(--vp-nav-height));
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-bottom: 70px;
+}
 .home-root .hero {
-  padding: calc(var(--vp-nav-height) + 56px) 0 40px;
+  padding: 60px 0 6px;
 }
 .home-root .hero-grid {
   display: grid;
@@ -703,47 +741,83 @@ html:not(.dark) .home-root .term-header {
   }
 }
 
-/* 数据条 */
+/* 数据条：极简内联 */
 .home-root .stats {
-  padding: 36px 0;
+  padding: 107px 0 0;
 }
-.home-root .stats-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 18px;
+.home-root .stat-inline {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-.home-root .stat {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 26px 22px;
-  text-align: center;
-  transition: 0.25s;
-  backdrop-filter: blur(14px) saturate(160%);
+.home-root .stat-inline .it {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 0 32px;
+  position: relative;
 }
-.home-root .stat:hover {
-  border-color: var(--border-strong);
-  transform: translateY(-3px);
+.home-root .stat-inline .it:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1px;
+  height: 22px;
+  background: var(--border);
 }
-.home-root .stat .num {
+.home-root .stat-inline .num {
   font-family: var(--vp-font-family-base);
-  font-size: 38px;
+  font-size: 26px;
   font-weight: 700;
   letter-spacing: -0.02em;
 }
-.home-root .stat .lbl {
-  margin-top: 6px;
-  font-size: 14px;
+.home-root .stat-inline .lbl {
+  font-size: 13px;
   color: var(--muted);
 }
 
-/* 搜索条 */
-.home-root .search-section {
-  padding-top: 8px;
+/* 首屏向下箭头 */
+.home-root .scroll-hint {
+  position: fixed;
+  left: 50%;
+  bottom: 24px;
+  transform: translateX(-50%);
+  z-index: 10;
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border: none;
+  background: none;
+  color: var(--muted);
+  cursor: pointer;
+  animation: hintBounce 2s ease-in-out infinite;
+  transition: opacity 0.35s, color 0.2s;
 }
-.home-root .search-hero {
+.home-root .scroll-hint svg {
+  width: 32px;
+  height: 32px;
+}
+.home-root .scroll-hint:hover {
+  color: var(--brand-2);
+}
+.home-root .scroll-hint.hide {
+  opacity: 0;
+  pointer-events: none;
+  animation: none;
+}
+@keyframes hintBounce {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(11px); }
+}
+
+/* 首屏搜索框：统计条下方居中，复用 .search-box 样式 */
+.home-root .first-search {
   max-width: 600px;
-  margin: 8px auto 0;
+  margin: 0 auto;
+  padding: 107px 0 0;
 }
 .home-root .search-box {
   display: flex;
@@ -793,78 +867,57 @@ html:not(.dark) .home-root .term-header {
   margin-top: 10px;
   color: var(--muted);
 }
-.home-root .feat-grid {
+/* 内容分类：紧凑列表 */
+.home-root .list2 {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px 24px;
 }
-.home-root .feat {
-  position: relative;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 28px 26px;
-  transition: 0.28s;
-  overflow: hidden;
-  cursor: pointer;
-  backdrop-filter: blur(14px) saturate(160%);
-}
-.home-root .feat::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  opacity: 0;
-  transition: 0.3s;
-  background: radial-gradient(
-    420px circle at var(--mx, 50%) var(--my, 0%),
-    color-mix(in srgb, var(--brand-1) 14%, transparent),
-    transparent 60%
-  );
-}
-.home-root .feat:hover {
-  transform: translateY(-5px);
-  border-color: var(--border-strong);
-  box-shadow: var(--shadow);
-}
-.home-root .feat:hover::before {
-  opacity: 1;
-}
-.home-root .feat .ic {
-  width: 46px;
-  height: 46px;
-  border-radius: 12px;
-  display: grid;
-  place-items: center;
-  margin-bottom: 16px;
-  background: color-mix(in srgb, var(--brand-1) 16%, transparent);
-  color: var(--brand-2);
-}
-.home-root .feat h3 {
-  font-family: var(--vp-font-family-base);
-  font-size: 18px;
-  font-weight: 600;
-}
-.home-root .feat p {
-  margin-top: 8px;
-  font-size: 14px;
-  color: var(--muted);
-}
-.home-root .feat .go {
-  display: inline-flex;
+.home-root .li {
+  display: flex;
   align-items: center;
-  gap: 6px;
-  margin-top: 16px;
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--brand-2);
-}
-.home-root .feat .go svg {
+  gap: 13px;
+  padding: 11px 14px;
+  border-radius: 12px;
+  border: 1px solid transparent;
+  cursor: pointer;
   transition: 0.2s;
 }
-.home-root .feat:hover .go svg {
-  transform: translateX(4px);
+.home-root .li:hover {
+  background: var(--surface-2);
+  border-color: var(--border);
 }
+.home-root .li .ic {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  flex: none;
+}
+.home-root .li .ic svg {
+  width: 18px;
+  height: 18px;
+}
+.home-root .li .tx h3 {
+  font-size: 14.5px;
+  font-weight: 600;
+}
+.home-root .li .tx p {
+  margin-top: 2px;
+  font-size: 12.5px;
+  color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+/* 各分类图标配色（按索引循环） */
+.home-root .lc0 .ic { background: color-mix(in srgb, var(--brand-1) 18%, transparent); color: var(--brand-1); }
+.home-root .lc1 .ic { background: color-mix(in srgb, var(--brand-2) 18%, transparent); color: var(--brand-2); }
+.home-root .lc2 .ic { background: color-mix(in srgb, #22d3ee 18%, transparent); color: #22d3ee; }
+.home-root .lc3 .ic { background: color-mix(in srgb, #34d399 18%, transparent); color: #34d399; }
+.home-root .lc4 .ic { background: color-mix(in srgb, #fbbf24 18%, transparent); color: #fbbf24; }
+.home-root .lc5 .ic { background: color-mix(in srgb, #fb7185 18%, transparent); color: #fb7185; }
 
 /* 我的项目特色条 */
 .home-root .projects {
@@ -929,11 +982,7 @@ html:not(.dark) .home-root .term-header {
     grid-template-columns: 1fr;
     gap: 40px;
   }
-  .home-root .feat-grid,
   .home-root .pj-grid {
-    grid-template-columns: 1fr 1fr;
-  }
-  .home-root .stats-grid {
     grid-template-columns: 1fr 1fr;
   }
   .home-root .term {
@@ -942,9 +991,19 @@ html:not(.dark) .home-root .term-header {
   }
 }
 @media (max-width: 560px) {
-  .home-root .feat-grid,
+  .home-root .list2,
   .home-root .pj-grid {
     grid-template-columns: 1fr;
+  }
+  .home-root .stat-inline {
+    flex-wrap: wrap;
+    gap: 14px 0;
+  }
+  .home-root .stat-inline .it {
+    padding: 0 18px;
+  }
+  .home-root .stat-inline .it::after {
+    display: none;
   }
   .home-root .hero {
     padding: calc(var(--vp-nav-height) + 24px) 0 24px;
@@ -960,6 +1019,9 @@ html:not(.dark) .home-root .term-header {
   }
   .home-root .term {
     transform: none;
+  }
+  .home-root .scroll-hint {
+    animation: none;
   }
 }
 </style>

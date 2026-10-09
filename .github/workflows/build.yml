@@ -1,0 +1,31 @@
+# CI：推送到 GitHub 后，自动安装依赖并构建（VitePress 构建会顺带检查死链）。
+# 本项目目前主要托管在 Gitee，此配置在把仓库同步到 GitHub 后自动生效。
+name: Build
+
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+    branches: [master, main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          # 拉取完整提交历史，保证 lastUpdated 取到真实的 git 提交时间
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build site
+        run: npm run build

@@ -111,5 +111,5 @@ K8s 环境里我会这么说：容器日志不落地，用 `kubectl logs <pod>` 
 
 ## 相关链接
 
-- [相关文档](/guide/monitor-prometheus)
+- [相关文档](/guide/monitor-prometheus-01-intro)
 - [ELK 日志栈](/guide/monitor-elk)

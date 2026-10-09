@@ -15,13 +15,22 @@
 
 :::
 
-### Prometheus 监控
+### Prometheus 监控（从 0 到 1 · 10 篇系列）
 
 ::: idx
 
 | 文章 | 解决什么问题 | 状态 |
 |---|---|---|
-| [Prometheus](./monitor-prometheus) | Prometheus、PromQL、Alertmanager、Grafana、联邦集群 | ✅ 已完成 |
+| [01 入门与监控基础](./monitor-prometheus-01-intro) | 监控组成、指标类型、Prometheus 架构与全家桶 | ✅ |
+| [02 部署 Prometheus 服务端](./monitor-prometheus-02-server-deploy) | 服务器初始化、二进制部署、主配置详解 | ✅ |
+| [03 主机采集、Grafana 与 Pushgateway](./monitor-prometheus-03-exporters-grafana) | Node Exporter、Grafana 大屏、短任务采集 | ✅ |
+| [04 PromQL 与自定义 Exporter](./monitor-prometheus-04-promql-exporter) | PromQL 查询运算、Python/Go 开发 Exporter | ✅ |
+| [05 标签、记录规则与 Alertmanager](./monitor-prometheus-05-rules-alertmanager) | relabel、记录规则、部署 Alertmanager、告警规则 | ✅ |
+| [06 告警通知、路由与高可用](./monitor-prometheus-06-alert-notification-ha) | 模板、路由分组、抑制、企微/钉钉、HA | ✅ |
+| [07 服务发现与 MySQL/Redis 采集](./monitor-prometheus-07-discovery-exporters) | 文件/DNS/Consul/K8s 发现、MySQL/Redis Exporter | ✅ |
+| [08 Nginx/JMX/Blackbox 等 Exporter](./monitor-prometheus-08-more-exporters) | Nginx/JMX/HAProxy、Blackbox 黑盒监控 | ✅ |
+| [09 容器监控、联邦与长期存储](./monitor-prometheus-09-container-federation-storage) | cAdvisor、联邦、TSDB、VictoriaMetrics | ✅ |
+| [10 Kubernetes 集成与 SOP/FAQ](./monitor-prometheus-10-k8s-sop-faq) | K8s YAML/Helm/Operator、实战 SOP、FAQ | ✅ |
 
 :::
 

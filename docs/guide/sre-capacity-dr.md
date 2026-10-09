@@ -212,7 +212,7 @@ mysql -u root -p test_restore -e "SELECT COUNT(*) FROM orders;"
 
 - 主动找脆弱点：[混沌工程](./sre-chaos)
 - 故障后应对：[事故管理与无指责复盘](./sre-incident)
-- 指标观测与水位告警：[Prometheus 从 0 到 1](./monitor-prometheus)
+- 指标观测与水位告警：[Prometheus 从 0 到 1](./monitor-prometheus-01-intro)
 - K8s 调度与伸缩：[Kubernetes 架构与集群](./container-k8s-01-architecture-cluster)
 - 四层高可用：[LVS 与 Keepalived](./services-lvs-keepalived)
 - 发布与回滚：[CI/CD 进阶与渐进式交付](./devops-cicd-advanced)

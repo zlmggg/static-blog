@@ -219,7 +219,7 @@ sequenceDiagram
 
 - 运维 AI Prompt 模板：[运维 AI Prompt 速查](/reference/ai-prompts)
 - 云原生排障命令：[云原生命令速查](/reference/cloudnative-commands)
-- 监控指标来源：[Prometheus 监控](./monitor-prometheus)
+- 监控指标来源：[Prometheus 监控](./monitor-prometheus-01-intro)
 - 日志系统：[ELK 日志栈](./monitor-elk)
 - Agent 接工具的标准方式：[MCP 模型上下文协议](./aiops-mcp)
 - 基础概念：[AI Agent 与 LLM 应用基础](./aiops-agent-basics)

@@ -14,28 +14,33 @@ export default defineConfig({
   title: '禾光知寒',
   description: '一个 SRE 的成长档案与随时可查的运维手册：命令速查、服务部署与排障训练',
 
-  // Mermaid 库体积较大，调高打包体积警告阈值，消除构建时的 chunk size 警告
+  // 本地搜索索引（328 页约 5.6MB，仅打开搜索框时异步加载）与 Mermaid 都已按需拆分，
+  // 调高打包体积警告阈值到 6000，消除这个无害的 chunk size 警告
   vite: {
     build: {
-      chunkSizeWarningLimit: 3000
+      chunkSizeWarningLimit: 6000
     }
   },
 
   // 页面底部显示最后更新时间（取 Git 提交时间）
   lastUpdated: true,
 
+  // 站点地图：构建时自动生成 sitemap.xml，帮助搜索引擎收录整站
+  sitemap: {
+    hostname: 'https://www.sresec.com'
+  },
+
   // 浏览器标签页图标（favicon），与导航栏 Logo 共用同一张 SVG
-  // 字体（自托管镜像，两跳不经过 Google；带完整系统 fallback，CDN 异常不影响可用性）
+  // 字体：拉丁字体自托管见 /fonts/fonts.css，中文直接用系统字体（无第三方字体依赖）
   head: [
     ['link', { rel: 'icon', type: 'image/svg+xml', href: '/logo.svg' }],
-    ['link', { rel: 'preconnect', href: 'https://miaoda.feishu.cn' }],
+    // RSS 订阅源自动发现（浏览器/阅读器可提示订阅）
     [
       'link',
-      {
-        rel: 'stylesheet',
-        href: 'https://miaoda.feishu.cn/fonts/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Noto+Sans+SC:wght@400;500;700&display=swap'
-      }
-    ]
+      { rel: 'alternate', type: 'application/rss+xml', title: '禾光知寒', href: '/feed.xml' }
+    ],
+    // 拉丁字体自托管（Space Grotesk / JetBrains Mono）；中文用系统字体
+    ['link', { rel: 'stylesheet', href: '/fonts/fonts.css' }]
   ],
 
   // 默认使用深色主题（用户仍可手动切换到浅色，选择会被记住）

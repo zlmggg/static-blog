@@ -130,7 +130,7 @@ BASE 是 AP 路线的落地哲学：**基本可用（Basically Available）、�
 
 - 机器到底该买多少：[容量估算与服务器选型](./architecture-capacity-sizing)
 - 怎么让系统挂一台还能跑：[高可用与容灾模式](./architecture-ha-blueprints)
-- 容量观测与弹性伸缩：[SLO 实践](./monitor-slo)、[Prometheus](./monitor-prometheus)
+- 容量观测与弹性伸缩：[SLO 实践](./monitor-slo)、[Prometheus](./monitor-prometheus-01-intro)
 - 数据库高可用细节：[MySQL 进阶与高可用](./data-mysql-advanced)
 - 容器与编排基础：[K8s 架构与集群](./container-k8s-01-architecture-cluster)
 - 容量规划与灾备专题：[容量规划、高可用与灾备](./sre-capacity-dr)
