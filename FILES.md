@@ -102,11 +102,11 @@
 | `automation-gitops.md` | GitLab CI / ArgoCD |
 | `automation-terraform.md` | Terraform 基础设施即代码 |
 
-## cases/ —— 故障与排障
+## cases/ —— 排障训练场
 
 | 文件名 | 中文标题 |
 |---|---|
-| `index.md` | 故障复盘（索引 + 模板） |
+| `index.md` | 排障训练场（案例索引 + 复盘模板） |
 | `troubleshooting.md` | 排障记录（表格速查） |
 
 ## 命名规律

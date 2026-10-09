@@ -12,7 +12,7 @@ export default defineConfig({
 
   // 站点标题（显示在顶部导航最左侧，也是浏览器标签页标题后缀）
   title: '禾光知寒',
-  description: '一个随时可查的 SRE 运维手册：命令速查、服务部署与故障复盘',
+  description: '一个 SRE 的成长档案与随时可查的运维手册：命令速查、服务部署与排障训练',
 
   // Mermaid 库体积较大，调高打包体积警告阈值，消除构建时的 chunk size 警告
   vite: {
@@ -141,8 +141,18 @@ export default defineConfig({
         text: '故障与排障',
         activeMatch: '/cases/',
         items: [
-          { text: '故障复盘', link: '/cases/' },
+          { text: '排障训练场', link: '/cases/' },
           { text: '排障记录', link: '/cases/troubleshooting' }
+        ]
+      },
+      {
+        text: '我的项目',
+        activeMatch: '/projects/',
+        items: [
+          { text: '项目总览', link: '/projects/' },
+          { text: '禾光知寒站点', link: '/projects/site-blog' },
+          { text: '阿里云部署', link: '/projects/aliyun-deploy' },
+          { text: '家庭实验室', link: '/projects/homelab' }
         ]
       },
       {
@@ -200,6 +210,16 @@ export default defineConfig({
         ]
       },
       {
+        text: '我的项目',
+        collapsed: false,
+        items: [
+          { text: '项目总览', link: '/projects/' },
+          { text: '禾光知寒站点', link: '/projects/site-blog' },
+          { text: '阿里云部署', link: '/projects/aliyun-deploy' },
+          { text: '家庭实验室', link: '/projects/homelab' }
+        ]
+      },
+      {
         text: '手记与职业',
         collapsed: false,
         items: [
@@ -212,7 +232,7 @@ export default defineConfig({
         text: '故障与排障',
         collapsed: false,
         items: [
-          { text: '故障复盘', link: '/cases/' },
+          { text: '排障训练场', link: '/cases/' },
           { text: '排障记录', link: '/cases/troubleshooting' }
         ]
       },
