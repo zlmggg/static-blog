@@ -139,7 +139,7 @@ const FEATS: Feat[] = [
   },
   {
     t: '故障排障',
-    d: '真实故障复盘与排障记录，呈现现象、定位、根因与解决，形成可复用 SOP。',
+    d: '典型故障场景与排障记录：从现象、定位、根因到解决，练一套可复用的排查套路。',
     g: '查看案例',
     i: '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M12 8v4M12 16h.01"/>',
     to: '/cases/troubleshooting'
@@ -185,6 +185,34 @@ const FEATS: Feat[] = [
     g: '获取脚本',
     i: '<path d="M13 2 3 14h9l-1 8 10-12h-9z"/>',
     to: '/guide/automation'
+  }
+]
+
+/* ---------------- 我的项目（首页特色条） ---------------- */
+interface Pj {
+  t: string
+  d: string
+  tags: string
+  to: string
+}
+const PROJECTS: Pj[] = [
+  {
+    t: '禾光知寒站点',
+    d: '你正在看的知识库：自定义主题、Mermaid 集成、容器化部署并开源。',
+    tags: 'VitePress · Vue · Docker',
+    to: '/projects/site-blog'
+  },
+  {
+    t: '阿里云个人站点部署',
+    d: 'ECS 挂数据盘，Docker Compose 跑 Nginx 与 Netdata，主机加固。',
+    tags: '阿里云 · Docker · Nginx',
+    to: '/projects/aliyun-deploy'
+  },
+  {
+    t: '家庭实验室 Homelab',
+    d: '双路 E5 + 128G ECC，部署 OpenStack / KVM，把云平台在真机练一遍。',
+    tags: 'X99 · OpenStack · KVM',
+    to: '/projects/homelab'
   }
 ]
 
@@ -282,7 +310,7 @@ onBeforeUnmount(() => {
             <span class="gradient-text">SRE 运维手册</span>
           </h1>
           <p class="lead">
-            Linux 系统、服务部署、容器编排、云原生与故障复盘——原理铺垫配合完整操作，学过忘了也能迅速接上，翻到即用。
+            Linux 系统、服务部署、容器编排、云原生与排障训练——原理铺垫配合完整操作，学过忘了也能迅速接上，翻到即用。
           </p>
           <div class="hero-actions">
             <button class="btn btn-primary" @click="go('/guide/linux')">
@@ -340,6 +368,30 @@ onBeforeUnmount(() => {
         <div class="stat reveal">
           <div class="num" data-count="24" data-suffix="">0</div>
           <div class="lbl">知识专题</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 我的项目 -->
+    <section class="projects">
+      <div class="home-wrap">
+        <div class="section-head reveal">
+          <h2>我的项目</h2>
+          <p>
+            真实动手做过的东西，从搭环境到上线——<a class="pj-more" href="/projects/">查看全部</a>
+          </p>
+        </div>
+        <div class="pj-grid">
+          <div
+            v-for="p in PROJECTS"
+            :key="p.t"
+            class="pj reveal"
+            @click="go(p.to)"
+          >
+            <h3>{{ p.t }}</h3>
+            <p>{{ p.d }}</p>
+            <span class="pj-tags">{{ p.tags }}</span>
+          </div>
         </div>
       </div>
     </section>
@@ -814,6 +866,52 @@ html:not(.dark) .home-root .term-header {
   transform: translateX(4px);
 }
 
+/* 我的项目特色条 */
+.home-root .projects {
+  padding: 56px 0 24px;
+}
+.home-root .pj-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+.home-root .pj {
+  position: relative;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px 26px;
+  cursor: pointer;
+  overflow: hidden;
+  backdrop-filter: blur(14px) saturate(160%);
+  transition: 0.28s;
+}
+.home-root .pj:hover {
+  transform: translateY(-4px);
+  border-color: var(--border-strong);
+  box-shadow: var(--shadow);
+}
+.home-root .pj h3 {
+  font-size: 17px;
+  font-weight: 600;
+}
+.home-root .pj p {
+  margin-top: 8px;
+  font-size: 14px;
+  color: var(--muted);
+}
+.home-root .pj-tags {
+  display: inline-block;
+  margin-top: 14px;
+  font-family: var(--vp-font-family-mono);
+  font-size: 12px;
+  color: var(--brand-2);
+}
+.home-root .pj-more {
+  color: var(--brand-2);
+  font-weight: 500;
+}
+
 /* 入场动效 */
 .home-root .reveal {
   opacity: 0;
@@ -831,7 +929,8 @@ html:not(.dark) .home-root .term-header {
     grid-template-columns: 1fr;
     gap: 40px;
   }
-  .home-root .feat-grid {
+  .home-root .feat-grid,
+  .home-root .pj-grid {
     grid-template-columns: 1fr 1fr;
   }
   .home-root .stats-grid {
@@ -843,7 +942,8 @@ html:not(.dark) .home-root .term-header {
   }
 }
 @media (max-width: 560px) {
-  .home-root .feat-grid {
+  .home-root .feat-grid,
+  .home-root .pj-grid {
     grid-template-columns: 1fr;
   }
   .home-root .hero {
