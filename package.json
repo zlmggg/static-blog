@@ -12,8 +12,5 @@
     "markdown-it-container": "^4.0.0",
     "mermaid": "^11.17.2",
     "vitepress": "^1.6.4"
-  },
-  "dependencies": {
-    "debug": "^4.4.3"
   }
 }

@@ -79,9 +79,10 @@ body {
 }
 
 /* ============================================================
- * 3. 全局背景 bg-fx（fixed 铺满，首页与内容页一致）
+ * 3. 全局背景 bg-fx（fixed 铺满）
  *    深色：#08080d + 顶部网格 mask 渐隐 + 三团光晕
  *    浅色：多段 radial 渐变 + 线性渐变
+ *    光晕：内页（.VPDoc）淡雅护眼，首页（.VPPage）恢复氛围
  * ============================================================ */
 .bg-fx {
   position: fixed;
@@ -120,7 +121,7 @@ body {
   background: #6366f1;
   top: -180px;
   left: 8%;
-  opacity: 0.5;
+  opacity: 0.12;
 }
 .bg-fx .glow.g2 {
   width: 460px;
@@ -128,7 +129,7 @@ body {
   background: #8b5cf6;
   top: -140px;
   right: 6%;
-  opacity: 0.4;
+  opacity: 0.10;
 }
 .bg-fx .glow.g3 {
   width: 380px;
@@ -136,7 +137,7 @@ body {
   background: #22d3ee;
   top: 60px;
   left: 42%;
-  opacity: 0.18;
+  opacity: 0.06;
 }
 html:not(.dark) .bg-fx {
   background:
@@ -146,8 +147,14 @@ html:not(.dark) .bg-fx {
     linear-gradient(180deg, #f3f4fb 0%, #eceffa 46%, #f2f3fa 100%);
 }
 html:not(.dark) .bg-fx .glow {
-  opacity: 0.32;
+  opacity: 0.14;
 }
+
+/* 首页（.VPPage）恢复氛围光晕；内页（.VPDoc）保持淡雅、长时间阅读不刺眼 */
+.Layout:has(.VPPage) .bg-fx .glow.g1 { opacity: 0.5; }
+.Layout:has(.VPPage) .bg-fx .glow.g2 { opacity: 0.4; }
+.Layout:has(.VPPage) .bg-fx .glow.g3 { opacity: 0.18; }
+html:not(.dark) .Layout:has(.VPPage) .bg-fx .glow { opacity: 0.32; }
 
 /* 透明链：让全局 bg-fx 透出来。
    body / VPApp / VPContent / VPSidebar 及其顶部 .curtain 兜底元素、
