@@ -1,0 +1,12 @@
+services:
+  sre-notes:
+    build:
+      # compose 文件在 deploy/ 下，构建上下文需要回到项目根目录
+      context: ..
+      dockerfile: deploy/Dockerfile
+    image: sre-notes:latest
+    container_name: sre-notes
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+#（注：内容由AI生成）
