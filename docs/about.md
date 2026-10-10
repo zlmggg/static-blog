@@ -47,8 +47,8 @@
 - 岗位方向：Linux SRE / 运维开发（容器化、监控告警、自动化方向）
 - 技术兴趣：Linux 系统原理、KVM/OpenStack 私有云、Docker 与 Kubernetes、Prometheus/Zabbix 监控、Ansible/Terraform 自动化
 - 联系方式 / 邮箱：[zlmops@163.com](mailto:zlmops@163.com)
-- GitHub：[嘿嘿嘿](https://github.com/heiheihei)
-- Gitee：[本站](https://gitee.com/zlmggg/static-blog)
+- GitHub：[我的 GitHub](https://github.com/zlmggg)
+- Gitee：[我的 Gitee](https://gitee.com/zlmggg/static-blog)
 
 ## 技术栈
 
