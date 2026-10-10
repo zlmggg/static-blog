@@ -33,6 +33,7 @@ export default defineConfig({
   // 浏览器标签页图标（favicon），与导航栏 Logo 共用同一张 SVG
   // 字体：拉丁字体自托管见 /fonts/fonts.css，中文直接用系统字体（无第三方字体依赖）
   head: [
+    ['meta', { name: 'keywords', content: 'SRE,运维,Linux命令,Docker,Kubernetes,K8s,命令速查,排障,监控告警' }],
     ['link', { rel: 'icon', type: 'image/svg+xml', href: '/logo.svg' }],
     // RSS 订阅源自动发现（浏览器/阅读器可提示订阅）
     [

@@ -409,7 +409,7 @@ html {
 }
 .vp-doc div[class*='language-'] > pre {
   background: transparent;
-  padding-top: 42px;
+  padding-top: 58px;
 }
 /* 语言标签定位进头部条左侧 */
 .vp-doc div[class*='language-'] > span.lang {
