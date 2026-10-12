@@ -103,6 +103,53 @@ find /path -xdev -type f | wc -l     # 统计某目录文件数量，定位小�
 
 ## 四、硬链接与软链接
 
+```bash
+ln 相关选项 中文说明
+ln --help
+Usage: ln [OPTION]... [-T] TARGET LINK_NAME
+  or:  ln [OPTION]... TARGET
+  or:  ln [OPTION]... TARGET... DIRECTORY
+  or:  ln [OPTION]... -t DIRECTORY TARGET...
+
+在第一种形式中，创建一个指向TARGET的链接，链接名为LINK_NAME。  
+在第二种形式中，创建一个指向当前目录下TARGET的链接。  
+在第三种和第四种形式中，为DIRECTORY中的每个TARGET创建链接。  
+默认情况下创建硬链接，使用--symbolic参数创建符号链接。  
+默认情况下，每个目标（新链接的名称）不应已存在。  
+创建硬链接时，每个TARGET必须已存在。符号链接可以包含任意文本；当后续解析时，相对链接将相对于其父目录进行解释。
+
+长选项的必需参数对短选项也是必需的。
+      --backup [=CONTROL]      # 为每个现有目标文件创建备份
+  -b                          # 类似于 --backup，但不接受参数
+  -d, -F, --directory         # 允许超级用户尝试硬链接目录（注意：由于系统限制，即使对超级用户也可能失败）
+  -f, --force                 # 删除现有目标文件
+  -i, --interactive           # 交互式确认删除现有目标文件
+  -L, --logical               # 解引用符号链接的 TARGETs
+  -n, --no-dereference        # 如果 LINK_NAME 是指向目录的符号链接，则将其视为普通文件
+  -P, --physical              # 创建硬链接，而不是符号链接 直接将硬链接指向符号链接
+  -r, --relative              # 创建相对链接（与链接所在目录相关），而不是绝对链接
+  -s, --symbolic              # 创建符号链接（软链接），而不是硬链接
+  -S, --suffix=SUFFIX         # 重写默认备份后缀 ~
+  -t, --target-directory=DIRECTORY  # 在 DIRECTORY 目录下创建链接
+  -T, --no-target-directory   # 如果 LINK_NAME 是指向目录的符号链接，则将其视为普通文件
+  -v, --verbose               # 打印每个链接文件名
+      --help        # 显示帮助信息并退出
+      --version     # 输出版本信息并退出
+
+备份后缀为 '~'，除非使用 --suffix 或 SIMPLE_BACKUP_SUFFIX 进行设置。  
+版本控制方式可通过 --backup 选项或环境变量 VERSION_CONTROL 来选择。以下为可用值：
+
+none, off       不创建备份（即使指定了 --backup）  
+numbered, t     创建带编号的备份  
+existing, nil   若存在带编号的备份，则创建编号备份；否则创建简单备份  
+simple, never    始终创建简单备份  
+
+使用 -s 时，-L 和 -P 会被忽略。否则，最后一个指定的选项将控制当目标为符号链接时的行为，默认为 -P。
+
+GNU coreutils 在线帮助：https://www.gnu.org/software/coreutils/ 
+完整文档： https://www.gnu.org/software/coreutils/ln 
+```
+
 ### 1. 软链接（符号链接）
 
 ```bash
