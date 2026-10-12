@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vitepress dev docs",
     "build": "vitepress build docs && node scripts/gen-feed.mjs",
+    "check": "node scripts/check.mjs",
     "preview": "vitepress preview docs"
   },
   "devDependencies": {
