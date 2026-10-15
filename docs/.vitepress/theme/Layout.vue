@@ -187,10 +187,19 @@ function initCopyEnhance() {
         >
           黑ICP备2026011822号
         </a>
+        <a
+          class="footer-item footer-beian"
+          href="https://beian.mps.gov.cn/#/query/webSearch?code=23022102000118"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <img src="/beian-police.png" alt="公安备案" />
+          黑公网安备23022102000118号
+        </a>
       </div>
     </template>
-  </DefaultTheme.Layout>
-</template>
+
+
 
 <style>
 /* 主题切换圆形涟漪（View Transitions） */

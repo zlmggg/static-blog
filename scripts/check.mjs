@@ -27,6 +27,8 @@ function walkMd(dir, acc = []) {
 const DIFFS = new Set(['初级', '中级', '高级'])
 // 注意：`【】` 不是占位符——它是 ai-prompts.md / ops-templates.md 里「让用户自行替换」的模板约定
 const PLACEHOLDERS = ['待补充', '待完善', 'TODO', 'FIXME']
+// 占位符检查豁免清单（相对 docs 路径）：这些是「有意保留的待办提示」，不算未完成
+const SKIP_PLACEHOLDER = new Set(['projects/homelab.md'])
 
 // 站点内链接 → 本地 md 绝对路径；外链 / 邮件 / 锚点返回 null 由调用方跳过
 function resolveLink(link) {
@@ -84,10 +86,12 @@ function checkContent() {
       }
     }
 
-    for (const p of PLACEHOLDERS) {
-      if (text.includes(p)) {
-        problems.push(`疑似未完成：${rel} 含 "${p}"`)
-        break
+    if (!SKIP_PLACEHOLDER.has(rel)) {
+      for (const p of PLACEHOLDERS) {
+        if (text.includes(p)) {
+          problems.push(`疑似未完成：${rel} 含 "${p}"`)
+          break
+        }
       }
     }
   }
