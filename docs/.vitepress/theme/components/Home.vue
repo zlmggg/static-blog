@@ -467,8 +467,8 @@ onBeforeUnmount(() => {
     <section class="section" id="features">
       <div class="home-wrap">
         <div class="section-head reveal">
-          <h2>一个“活生生”的高级运维站点</h2>
-          <p>从基础到高级，从排障到前沿，按分类快速找到你要的内容</p>
+          <h2>一个运维的学习笔记</h2>
+          <p>操作、排障、手记都在这儿，按分类慢慢沉淀</p>
         </div>
         <div class="list2">
           <div

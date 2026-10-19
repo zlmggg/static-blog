@@ -683,6 +683,16 @@ html.dark .theme-toggle-btn .moon {
   color: var(--vp-c-brand-1);
   text-decoration: underline;
 }
+.site-footer .footer-beian {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+.site-footer .footer-beian img {
+  height: 15px;
+  width: auto;
+  display: block;
+}
 
 /* ============================================================
  * 10. code-group：group 统一卡片框，tabs 为唯一顶部条，

@@ -198,8 +198,8 @@ function initCopyEnhance() {
         </a>
       </div>
     </template>
-
-
+  </DefaultTheme.Layout>
+</template>
 
 <style>
 /* 主题切换圆形涟漪（View Transitions） */
