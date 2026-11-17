@@ -3,8 +3,8 @@ import container from 'markdown-it-container'
 
 // 文档：https://vitepress.dev/zh/reference/site-config
 
-// 【单站方案】原「面试专区」已拆解：技术题并入故障与排障的「问与答」(/cases/qa/)，
-// 求职、简历、HR、谈薪类内容不再上公开站；站点不区分公开/私有构建。
+// 【单站方案】技术问答题并入故障与排障的「问与答」(/cases/qa/)，
+// 求职、简历、HR、谈薪类个人内容不上公开站；站点不区分公开/私有构建。
 
 export default defineConfig({
   // 站点语言：设置为中文后，界面内置文案会自动使用中文
