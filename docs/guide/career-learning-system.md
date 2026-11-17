@@ -130,7 +130,6 @@ flowchart LR
 ## 相关速查
 
 - 学习是为了上台阶：[能力台阶与突破](./career-levels)
-- 学的东西怎么变成 offer：[求职实战](./career-jobhunt)
 - 行业往哪走、AI 怎么用：[行业观点](./career-industry-views)
 - 把知识库做成 RAG：[运维知识库与 RAG](./aiops-rag)
 - 写脚本的基本功：[Python 运维自动化](./sre-python)

@@ -136,7 +136,6 @@ flowchart LR
 ## 相关速查
 
 - 你现在在哪个台阶、怎么突破：[能力台阶与突破](./career-levels)
-- 把判断力和代表作落到简历与面试：[求职实战](./career-jobhunt)
 - 平台工程到底在做什么：[平台工程与 IDP](./devops-platform-engineering)
 - AI/Agent 怎么用在运维上：[AI Agent 基础](./aiops-agent-basics)、[Agent 运维实战](./aiops-agent-practice)
 - 稳定性方法论（判断力的根基）：[SLO 与错误预算](./monitor-slo)、[事故管理与无指责复盘](./sre-incident)
