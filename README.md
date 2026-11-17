@@ -60,7 +60,6 @@
 ├─ scripts/
 │  └─ gen-feed.mjs                  # 构建后生成 RSS 订阅源
 ├─ deploy/                          # 部署示例（Dockerfile / compose / nginx）
-├─ .github/workflows/build.yml       # CI：push / PR 自动构建
 ├─ FILES.md                         # 英文文件名 ↔ 中文标题对照表
 └─ package.json
 ```
@@ -172,10 +171,6 @@
 | `Dockerfile` | 多阶段构建：Node 阶段编译站点 → Nginx 阶段托管静态产物 |
 | `docker-compose.yml` | 一条命令构建并运行容器（映射 8080 端口） |
 | `nginx.conf` | 静态站配置：安全响应头、gzip、带 hash 资源长缓存、路由回退 |
-
-### 11. 持续集成 `.github/workflows/build.yml`
-
-- 推送到 GitHub 的 master/main（或发起 PR）时，自动安装依赖并构建；构建过程会顺带检查死链。项目目前主要托管在 Gitee，此配置在同步到 GitHub 后自动生效。
 
 ## 🚀 快速开始
 
