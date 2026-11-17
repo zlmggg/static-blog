@@ -3,8 +3,8 @@ import container from 'markdown-it-container'
 
 // 文档：https://vitepress.dev/zh/reference/site-config
 
-// 【单站方案】面经内容（interview）已合并到主站公开访问，
-// 不再区分公开/私有构建，也不再使用 q 子站与 Nginx Basic Auth。
+// 【单站方案】原「面试专区」已拆解：技术题并入故障与排障的「问与答」(/cases/qa/)，
+// 求职、简历、HR、谈薪类内容不再上公开站；站点不区分公开/私有构建。
 
 export default defineConfig({
   // 站点语言：设置为中文后，界面内置文案会自动使用中文
@@ -148,7 +148,8 @@ export default defineConfig({
         activeMatch: '/cases/',
         items: [
           { text: '排障训练场', link: '/cases/' },
-          { text: '排障记录', link: '/cases/troubleshooting' }
+          { text: '排障记录', link: '/cases/troubleshooting' },
+          { text: '问与答', link: '/cases/qa/' }
         ]
       },
       {
@@ -170,7 +171,6 @@ export default defineConfig({
           { text: '职业发展与行业思考', link: '/guide/career' }
         ]
       },
-      { text: '面试专区', link: '/interview/', activeMatch: '/interview/' },
       { text: '关于', link: '/about' }
     ],
 
@@ -239,13 +239,9 @@ export default defineConfig({
         collapsed: false,
         items: [
           { text: '排障训练场', link: '/cases/' },
-          { text: '排障记录', link: '/cases/troubleshooting' }
+          { text: '排障记录', link: '/cases/troubleshooting' },
+          { text: '问与答', link: '/cases/qa/' }
         ]
-      },
-      {
-        text: '面试专区',
-        collapsed: false,
-        items: [{ text: '面试题总览', link: '/interview/' }]
       }
     ],
 

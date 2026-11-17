@@ -149,7 +149,7 @@ sudo systemctl reload bind9
 ### 4.1 区域声明
 
 ```conf
-# 网段 47.109.132.0/24，反向域写反：113.0.203.in-addr.arpa
+# 网段 203.0.113.0/24，反向域写反：113.0.203.in-addr.arpa
 zone "113.0.203.in-addr.arpa" IN {
     type master;
     file "113.0.203.zone";

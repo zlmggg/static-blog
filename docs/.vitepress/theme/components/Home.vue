@@ -32,8 +32,8 @@ function scrollToContent() {
   document.querySelector('.projects')?.scrollIntoView({ behavior: 'smooth' })
 }
 
-// 面经卡片链接：面经已并入主站，直接走站内路径
-const INTERVIEW_TO = '/interview/'
+// 问答卡片链接：技术题已并入「故障与排障」下的问与答
+const QA_TO = '/cases/qa/'
 
 const termBody = ref<HTMLElement | null>(null)
 let alive = true
@@ -194,11 +194,11 @@ const FEATS: Feat[] = [
     to: '/guide/career'
   },
   {
-    t: '面试专区',
-    d: 'Linux、网络、容器、云原生高频面试与场景题，公开可查、随时翻阅。',
-    g: '进入面试',
+    t: '问与答',
+    d: 'Linux、网络、数据库、容器与云原生的高频问题与自测答案，按主题速查。',
+    g: '去自测',
     i: '<rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>',
-    to: INTERVIEW_TO
+    to: QA_TO
   },
   {
     t: '架构设计实战',

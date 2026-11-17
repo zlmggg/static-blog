@@ -99,4 +99,4 @@
 ## 相关链接
 
 - [相关文档](/cases/troubleshooting)
-- [网络排障](/interview/network-troubleshooting)
+- [网络排障](./network-troubleshooting)
