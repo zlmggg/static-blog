@@ -1,3 +1,7 @@
+---
+title: "kubectl describe 命令详解：看资源详情和 Events 排障"
+description: "本文是 kubectl 命令速查 中 kubectl describe 的从 0 到 1 详解。 目标：把 kubectl describe --help 里的每个选项讲清楚，多看几遍后，你在服务器上敲 kubectl describe --help 就知道该用哪个选项。 环境依据：kubectl…"
+---
 # kubectl describe 命令详解：看资源详情和 Events 排障
 
 > 本文是 [kubectl 命令速查](../kubectl-commands#调试与排障) 中 `kubectl describe` 的从 0 到 1 详解。
@@ -228,6 +232,6 @@ kubectl describe pods nginx
 - 速查页：[kubectl 命令速查](../kubectl-commands#调试与排障)
 - 看状态简表：[get 详解](./get)
 - 看崩溃前的日志：[logs 详解](./logs)
-- 进容器里查：[exec 详解](./exec)
-- 概念补课（Pod 生命周期/探针）：[Pod 与服务发现](../../guide/container-k8s-02-pod-service-discovery)
+- 进容器里查：[exec 详解](/reference/kubectl-commands)
+- 概念补课（Pod 生命周期/探针）：[Pod 与服务发现](/services/container/kubernetes/01-理论)
 - 官方命令参考：https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#describe

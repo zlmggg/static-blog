@@ -1,3 +1,7 @@
+---
+title: "git reset、git revert、git restore 命令详解：撤销改动的三把「后悔药」"
+description: "本文是 Git 命令速查 中 git reset、git revert、git restore 的从 0 到 1 详解。本篇一次讲清「本地后悔」和「公共历史安全回退」分别用哪个。 目标：搞懂 reset --soft/--mixed/--hard 的区别，知道公共历史回退必须用 revert，以及…"
+---
 # git reset、git revert、git restore 命令详解：撤销改动的三把「后悔药」
 
 > 本文是 [Git 命令速查](../git-commands#撤销与回退) 中 `git reset`、`git revert`、`git restore` 的从 0 到 1 详解。本篇一次讲清「本地后悔」和「公共历史安全回退」分别用哪个。
@@ -230,12 +234,16 @@ git restore --source=HEAD~2 f.txt
 3. **`reset --soft` 和 `--mixed` 别记反**：`--soft` 暂存区不动（改动留在暂存区）；`--mixed` 暂存区也退回（改动留在工作区）。
 4. **`git restore f.txt` 和 `git restore --staged f.txt` 区别**：前者恢复工作区（丢弃改动）；后者恢复暂存区（撤销 add，工作区改动保留）。
 5. **revert 产生冲突**：和 merge 一样解冲突，`git add` 后 `git revert --continue`，或 `--abort`。
-6. **`reset --hard` 到错的提交**：还好有 reflog（见 [advanced](./advanced)），`git reflog` 能找回来，但别依赖这个。
-7. **危险：`git clean -fd` 配合 reset --hard** 会连未跟踪文件一起删，见 [advanced](./advanced)。
+6. **`reset --hard` 到错的提交**：还好有 reflog（见 [advanced](/reference/git-commands)），`git reflog` 能找回来，但别依赖这个。
+7. **危险：`git clean -fd` 配合 reset --hard** 会连未跟踪文件一起删，见 [advanced](/reference/git-commands)。
 
 ## 八、相关命令与文档
 
 - 速查页：[Git 命令速查](../git-commands#撤销与回退)
-- 找回误删提交：`git reflog`（详解见 [advanced](./advanced)）
-- 整理本地提交历史：[rebase](./rebase)
-- 丢弃工作区改动的老写法对照：[checkout-switch](./checkout-switch)
+- 找回误删提交：`git reflog`（详解见 [advanced](/reference/git-commands)）
+- 整理本地提交历史：[rebase](/reference/git-commands)
+- 丢弃工作区改动的老写法对照：[checkout-switch](/reference/git-commands)
+
+## 官方文档
+
+- [git reset](https://git-scm.com/docs/git-reset)

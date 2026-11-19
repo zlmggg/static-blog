@@ -1,8 +1,8 @@
 ---
 category: 职业
 difficulty: 中级
+description: "第一人称复合案例，系统/人名/IP 均为化名。技术行为（连接池、慢 SQL、告警规则）是真实的。"
 ---
-
 # 值班惊魂：一次告警风暴的真实处置
 
 ::: tip 本篇定位
@@ -133,11 +133,11 @@ kubectl -n prod scale deployment/order-svc --replicas=8
 
 ## 相关速查
 
-- 排障时怎么一步步推理、分层排查：[信息不全时的排障推理框架](./blog-troubleshooting-reasoning)
+- 排障时怎么一步步推理、分层排查：[信息不全时的排障推理框架](/guide/blog#合并资料)
 - 值班该背下来的现场法则：[现场经验法则与"土办法"](./blog-field-rules)
 - SLO 与错误预算、告警怎么定阈值：[SLO/SLI、错误预算与 Burn Rate](./monitor-slo)
-- 主机性能命令（看连接数/慢查询）：[Linux 性能排查](./linux-performance)
-- 真实故障案例：[排障案例](/cases/troubleshooting)
+- 主机性能命令（看连接数/慢查询）：[Linux 性能排查](/guide/linux#合并资料)
+- 真实故障案例：[排障案例](/cases/)
 
 ### 官方文档
 

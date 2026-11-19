@@ -1,8 +1,8 @@
 ---
 category: 安全
 difficulty: 高级
+description: "第一原则：先隔离，再处置，别急着删文件。 一上来 rm -rf 或重启，会删掉入侵痕迹、把攻击者逼到静默潜伏，下次更难查。"
 ---
-
 # 安全应急响应：主机被入侵 / 挖矿 / 木马 / WebShell 处置闭环
 
 ::: tip 本篇定位
@@ -218,9 +218,9 @@ grep "xxx.php" /var/log/nginx/access.log
 
 ## 相关速查
 
-- 预防加固（账号/SSH/防火墙）：[Linux 安全加固](./linux-security)、[iptables 防火墙](./linux-security-iptables)
+- 预防加固（账号/SSH/防火墙）：[Linux 安全加固](./linux-security)、[iptables 防火墙](/guide/linux#合并资料)
 - 异常进程/内存定位：[疑难杂症专题](./expert-tough-cases)
-- 应急 Checklist：[/reference/ops-checklists](/reference/ops-checklists)
+- 应急 Checklist：[/reference/ops-templates#运维检查清单](/reference/ops-templates#运维检查清单)
 - 事故复盘流程：[事故管理与无指责复盘](./sre-incident)
 
 ### 官方文档

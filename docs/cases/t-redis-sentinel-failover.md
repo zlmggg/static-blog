@@ -1,10 +1,11 @@
 ---
+id: R-02
 category: 数据
 difficulty: 高级
-date: 2023-10-16
+description: "Redis 主库所在机房网络抖动后，哨兵本应自动把从库提升为主库，但切换后出现诡异状态：客户端写入报错，且 INFO replication 显示旧主库'复活'后又变回了主——出现两个主库（脑裂）。"
 ---
 
-# Redis 哨兵故障切换异常 / 主从漂移（2023-10-16）
+# R-02 · Redis 哨兵故障切换异常 / 主从漂移
 
 ## 现象
 
@@ -161,4 +162,4 @@ redis-cli -p 26379 SENTINEL get-master-addr-by-name mymaster
 ## 相关
 
 - 命令速查：[Linux 命令速查](/reference/linux-commands) ｜ [网络命令速查](/reference/network-commands)
-- 同组短文：[Redis 内存打满 OOM](/cases/t-redis-memory-oom) ｜ [缓存穿透/击穿/雪崩](/cases/t-redis-cache-avalanche) ｜ [集群脑裂](/cases/t-cluster-split-brain)
+- 同组短文：[Redis 内存打满 OOM](/cases/t-redis-memory-oom) ｜ [缓存穿透/击穿/雪崩](/cases/) ｜ [集群脑裂](/cases/)

@@ -1,3 +1,7 @@
+---
+title: "Git 团队工作流详解：GitFlow、Trunk-based、GitHub Flow 与 PR/分支保护"
+description: "本文是 Git 命令速查 中团队协作方法论的从 0 到 1 详解。本篇偏方法论，但仍按八段组织，命令都可直接复制。 目标：搞清三种主流分支模型怎么选、Conventional Commits 怎么写、PR/MR 怎么走、分支保护配什么规则。 环境依据：Git 2.34.1（命令部分本机实跑；流程部分…"
+---
 # Git 团队工作流详解：GitFlow、Trunk-based、GitHub Flow 与 PR/分支保护
 
 > 本文是 [Git 命令速查](../git-commands#团队协作工作流) 中团队协作方法论的从 0 到 1 详解。本篇偏方法论，但仍按八段组织，命令都可直接复制。
@@ -134,8 +138,12 @@ git push --force origin main   # 被服务器拒绝
 ## 八、相关命令与文档
 
 - 速查页：[Git 命令速查](../git-commands#团队协作工作流)
-- 合并与变基的命令细节：[merge](./merge)、[rebase](./rebase)
-- push 与 force-with-lease：[push](./push)
-- 标签发版：[tag](./tag)
+- 合并与变基的命令细节：[merge](/reference/git-commands)、[rebase](/reference/git-commands)
+- push 与 force-with-lease：[push](/reference/git-commands)
+- 标签发版：[tag](/reference/git-commands)
 - CI/CD 怎么接 PR 与自动发版：[devops-cicd-advanced](../../guide/devops-cicd-advanced)
-- GitOps 里 Git 作为部署源：[automation-gitops](../../guide/automation-gitops)
+- GitOps 里 Git 作为部署源：[automation-gitops](/guide/devops-cicd-advanced#合并资料)
+
+## 官方文档
+
+- [Pro Git 团队协作](https://git-scm.com/book/en/v2/Distributed-Git-Contributing-to-a-Project)

@@ -1,6 +1,7 @@
 ---
 category: 自动化
 difficulty: 中级
+description: "用 Terraform 以'基础设施即代码（IaC）'的方式，通过代码创建和管理云服务器、网络、数据库等资源。本篇版本：Terraform v1.16.4，以阿里云 Provider 为例。"
 ---
 
 # Terraform 基础设施即代码实战
@@ -296,7 +297,7 @@ module "vpc" {
 - 变更通过 Merge Request 评审 plan 结果后再合并、再 apply；
 - 生产 apply 由流水线或受控流程执行；回滚优先用代码版本回退 + apply，而非直接 destroy。
 
-## 面试自测
+## 本章自测
 
 1. 什么是基础设施即代码？相比手工在控制台操作有哪些优势？
 2. Terraform 和 Ansible 的定位有什么区别？它们如何配合？

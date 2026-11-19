@@ -1,0 +1,58 @@
+# ============================================================
+# 全局变量：所有主机共用
+# ============================================================
+
+# ---- 基础环境 ----
+timezone: Asia/Shanghai
+locale: en_US.UTF-8
+ntp_server: ntp.aliyun.com
+dns_server: 10.0.0.100          # bastion 上的 dnsmasq
+domain: lab.local
+
+# ---- 网段 ----
+private_net: 10.0.0.0/24
+private_gw: 10.0.0.1
+public_net: 192.168.10.0/24
+public_gw: 192.168.10.1
+
+# ---- 账号 ----
+admin_user: ubuntu
+ssh_key: "{{ lookup('file', '~/.ssh/id_ed25519.pub') }}"
+
+# ---- 组件端口 ----
+nginx_app_port: 8080
+mysql_port: 3306
+redis_port: 6379
+minio_port: 9000
+minio_console_port: 9001
+es_http_port: 9200
+es_transport_port: 9300
+nacos_port: 8848
+
+# ---- 业务 ----
+app_name: edu-platform
+app_version_blue: v1
+app_version_green: v2
+app_image_repo: 10.0.0.210/edu-platform
+app_image_tag: latest
+
+# ---- 域名（内网 DNS 解析）----
+app_domain: "{{ app_name }}.{{ domain }}"
+harbor_domain: "harbor.{{ domain }}"
+gitlab_domain: "gitlab.{{ domain }}"
+grafana_domain: "grafana.{{ domain }}"
+
+# ---- 常用运维包 ----
+common_packages:
+  - curl
+  - wget
+  - vim
+  - htop
+  - net-tools
+  - dnsutils
+  - chrony
+  - ca-certificates
+  - jq
+  - rsync
+  - lsof
+  - sysstat

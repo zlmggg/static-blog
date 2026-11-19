@@ -1,3 +1,7 @@
+---
+title: "docker build 命令详解：用 Dockerfile 把代码打包成镜像"
+description: "本文是 Docker 命令速查 中 docker build 的从 0 到 1 详解。 目标：把 docker build --help 里的每个选项讲清楚，多看几遍后，你在服务器上敲 docker build --help 就知道该用哪个选项。 环境依据：Docker Engine 28.x，do…"
+---
 # docker build 命令详解：用 Dockerfile 把代码打包成镜像
 
 > 本文是 [Docker 命令速查](../docker-commands#镜像管理) 中 `docker build` 的从 0 到 1 详解。
@@ -215,8 +219,8 @@ dist
 ## 八、相关命令与文档
 
 - 速查页：[Docker 命令速查](../docker-commands#镜像管理)
-- 拉/推/删镜像：`docker images/pull/push/rmi`（详解见 [images](./images)）
+- 拉/推/删镜像：`docker images/pull/push/rmi`（详解见 [images](/reference/docker-commands)）
 - 起容器：`docker run`（详解见 [run](./run)）
 - Compose 里构建：`docker compose build`（详解见 [compose](./compose)）
-- 原理与实战：[Docker 实战手册](../../guide/container-docker)
+- 原理与实战：[Docker 实战手册](/services/container/docker/01-理论)
 - 官方参考：https://docs.docker.com/reference/cli/docker/buildx/build/

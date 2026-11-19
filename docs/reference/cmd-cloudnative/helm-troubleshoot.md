@@ -1,3 +1,7 @@
+---
+title: "Helm 排障命令详解：status / history / rollback / get / template / lint"
+description: "本文是 云原生排障命令速查 中「Helm（release 排障）」一组命令的从 0 到 1 详解，本篇一次讲清 helm status、helm history、helm rollback、helm get、helm template、helm lint 与 --dry-run。"
+---
 # Helm 排障命令详解：status / history / rollback / get / template / lint
 
 > 本文是 [云原生排障命令速查](../cloudnative-commands) 中「Helm（release 排障）」一组命令的从 0 到 1 详解，本篇一次讲清 `helm status`、`helm history`、`helm rollback`、`helm get`、`helm template`、`helm lint` 与 `--dry-run`。
@@ -249,6 +253,6 @@ Helm 是单个 Go 二进制，**RHEL/Rocky 与 Ubuntu/Debian 上用法完全一�
 - 速查页：[云原生排障命令速查](../cloudnative-commands)
 - 基础 kubectl 命令：[kubectl 命令速查](../kubectl-commands)
 - 渲染出的清单怎么逐条解读：见 [kubectl 进阶排障](./kubectl-advanced)
-- 取资源字段/输出做脚本：见 [jsonpath 与 jq](./jsonpath-jq)
-- 概念与部署：[K8s 架构系列指南](../../guide/container-k8s-01-architecture-cluster)
+- 取资源字段/输出做脚本：见 [jsonpath 与 jq](/reference/cloudnative-commands)
+- 概念与部署：[K8s 架构系列指南](/services/container/kubernetes/01-理论)
 - 官方文档：https://helm.sh/docs/ ；命令：https://helm.sh/docs/helm/helm_status/ 、https://helm.sh/docs/helm/helm_rollback/ 、https://helm.sh/docs/helm/helm_get/

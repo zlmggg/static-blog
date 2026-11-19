@@ -1,4 +1,11 @@
+---
+title: "我的项目"
+description: "我的项目：（真实的机器、版本、网络拓扑，尽量写具体）。含关键步骤、验证与常见坑。"
+
+---
 # 我的项目
+
+<!-- V3 记忆提醒：项目页正文后续单独修改；本轮只做问答/SEO/视觉，不改项目叙述。 -->
 
 > 这里放我**真实动手做过的东西**——自己搭的环境、部署的服务、踩过的坑，每一个都能讲出细节。
 >
@@ -10,19 +17,20 @@
 |---|---|---|---|
 | [禾光知寒站点](./site-blog) | 你正在看的这个知识库：从主题定制到部署上线 | VitePress · Vue · Docker · Nginx | ✅ 已上线 |
 | [阿里云个人站点部署](./aliyun-deploy) | ECS 挂数据盘、Docker Compose 跑 Nginx 与监控、主机加固 | 阿里云 · Docker · Nginx · Netdata | ✅ 已上线 |
-| [家庭实验室 Homelab](./homelab) | 双路 E5 + 128G ECC，部署 OpenStack / KVM 练手云平台 | X99 · OpenStack · KVM/QEMU | 🚧 持续折腾 |
+| [项目架构：在线教育平台 37 台实验集群](./homelab) | 业务模型、六层结构、请求/发布/观测链路、节点与地址规划，架构单页说明 | PVE · LVS · MySQL · K8s · CI/CD | 🚧 方案落地中 |
 
 ## 真实踩坑记录
 
 > 这些是在上面项目里实际遇到、当场解决的问题：
 
-- [Docker swap 限制不生效（No swap limit support）](/cases/t-docker-swap)
+- [训练案例库：Docker swap、容器网络、K8s 等实验复现](/cases/)
 
 ## 项目文章怎么写
 
 ::: details 新建项目文章时，复制这个结构
 ```markdown
 ---
+
 category: 项目
 difficulty: 中级
 date: YYYY-MM-DD

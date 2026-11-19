@@ -1,10 +1,10 @@
 ---
+id: N-01
 category: 网络
 difficulty: 初级
-date: 2022-08-30
+description: "DNS 解析失败：nslookup/dig/resolv.conf：说明网络本身没问题，是 DNS 解析坏了。"
 ---
-
-# DNS 解析失败：nslookup/dig/resolv.conf（2022-08-30）
+# N-01 · DNS 解析失败：nslookup/dig/resolv.conf
 
 ## 现象
 
@@ -171,6 +171,6 @@ search my.local
 ## 相关
 
 - 命令速查：[网络命令速查](/reference/network-commands)
-- 网络方向：[网络不通丢包](/cases/t-net-unreachable-mtr)
-- 网络方向：[端口 Connection refused](/cases/t-port-connection-refused)
-- 网络方向：[连接超时防火墙](/cases/t-connection-timeout-firewall)
+- 网络方向：[网络不通丢包](/cases/)
+- 网络方向：[端口 Connection refused](/cases/)
+- 网络方向：[连接超时防火墙](/cases/)

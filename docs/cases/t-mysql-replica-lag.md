@@ -1,10 +1,11 @@
 ---
+id: M-01
 category: 数据
 difficulty: 中级
-date: 2022-06-14
+description: "业务反馈：从库读到的数据'慢半拍'，主库刚写入的记录，在从库接口里要等十几秒甚至更久才出现。监控告警 Seconds_Behind_Source 持续飙高，峰值超过 300s。"
 ---
 
-# MySQL 主从复制延迟排查（2022-06-14）
+# M-01 · MySQL 主从复制延迟排查
 
 ## 现象
 
@@ -165,4 +166,4 @@ SHOW REPLICA STATUS\G
 ## 相关
 
 - 命令速查：[Linux 命令速查](/reference/linux-commands)
-- 同组短文：[MySQL 慢查询排查](/cases/t-mysql-slow-query) ｜ [连接数打满 Too many connections](/cases/t-mysql-too-many-connections) ｜ [实例无法启动](/cases/t-mysql-cannot-start)
+- 同组短文：[MySQL 慢查询排查](/cases/t-mysql-slow-query) ｜ [连接数打满 Too many connections](/cases/) ｜ [实例无法启动](/cases/)

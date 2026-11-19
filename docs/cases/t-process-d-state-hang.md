@@ -1,10 +1,11 @@
 ---
+id: L-02
 category: Linux
 difficulty: 高级
-date: 2023-02-19
+description: "一台数据库服务器，业务卡住，SSH 登录上去后 top 里 CPU 很闲（idle 90%+），但 load average 高达 30+。"
 ---
 
-# 进程 D 状态不可中断、服务假死（2023-02-19）
+# L-02 · 进程 D 状态不可中断、服务假死
 
 ## 现象
 
@@ -166,6 +167,6 @@ timeout 5 ls /data/.healthcheck && echo OK || echo "NFS STALE"
 ## 相关
 
 - 命令速查：[Linux 命令速查](/reference/linux-commands)
-- 存储方向：[NFS Stale file handle](/cases/t-nfs-stale-handle)
-- CPU 方向：[CPU 飙高与 load average](/cases/t-cpu-high-load)
+- 存储方向：[NFS Stale file handle](/cases/)
+- CPU 方向：[CPU 飙高与 load average](/cases/)
 - 磁盘方向：[磁盘空间写满](/cases/t-disk-space-full)

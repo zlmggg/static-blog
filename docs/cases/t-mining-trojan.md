@@ -1,10 +1,10 @@
 ---
+id: SEC-01
 category: 安全
 difficulty: 高级
-date: 2023-09-05
+description: "监控告警：某台公网服务器 CPU 突然 100%，但上面业务很闲。登录一看，有个陌生进程在狂吃 CPU"
 ---
-
-# 服务器被植入挖矿木马（2023-09-05）
+# SEC-01 · 服务器被植入挖矿木马
 
 ## 现象
 
@@ -151,4 +151,4 @@ ss -tunlp
 ## 相关
 
 - 命令速查：[Linux 命令速查](/reference/linux-commands) ｜ [网络命令速查](/reference/network-commands)
-- 同组短文：[Webshell 排查处置](/cases/t-webshell-investigation) ｜ [异常外联/C2 回连](/cases/t-malicious-c2-traffic)
+- 同组短文：[Webshell 排查处置](/cases/) ｜ [异常外联/C2 回连](/cases/)

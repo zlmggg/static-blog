@@ -1,10 +1,10 @@
 ---
+id: K-02
 category: 容器
 difficulty: 初级
-date: 2024-04-08
+description: "ImagePullBackOff 排障：新发布的 Pod 一直起不来，卡在镜像拉取。含关键步骤、验证与常见坑。"
 ---
-
-# ImagePullBackOff 排障（2024-04-08）
+# K-02 · ImagePullBackOff 排障
 
 ## 现象
 

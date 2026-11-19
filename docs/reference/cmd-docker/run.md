@@ -1,3 +1,7 @@
+---
+title: "docker run 命令详解：一条命令把容器跑起来"
+description: "本文是 Docker 命令速查 中 docker run 的从 0 到 1 详解。 目标：把 docker run --help 里的每个选项讲清楚，多看几遍后，你在服务器上敲 docker run --help 就知道该用哪个选项。 环境依据：Docker Engine 28.x（docker C…"
+---
 # docker run 命令详解：一条命令把容器跑起来
 
 > 本文是 [Docker 命令速查](../docker-commands#容器生命周期) 中 `docker run` 的从 0 到 1 详解。
@@ -52,7 +56,7 @@ docker run nginx
 | 选项 | 中文含义 | 什么场景用 |
 |---|---|---|
 | `--name` | 给容器起名字 | 后续用名字而不是 ID 操作容器（极常用） |
-| `--network` | 把容器接到哪个网络 | 多容器互通时接自定义 bridge（见 [network](./network)） |
+| `--network` | 把容器接到哪个网络 | 多容器互通时接自定义 bridge（见 [network](/reference/docker-commands)） |
 | `--network-alias` | 在网络里给容器起别名 | 同网络其他容器用别名解析到它 |
 | `-h`，`--hostname` | 容器内的主机名 | 想看 `hostname` 命令输出时 |
 | `--dns` | 自定义容器 DNS 服务器 | 默认 DNS 不够用、内网 DNS 时 |
@@ -72,7 +76,7 @@ docker run nginx
 
 | 选项 | 中文含义 | 什么场景用 |
 |---|---|---|
-| `-v`，`--volume` | 挂载卷或 bind mount | `-v 宿主机路径:容器路径` 或 `-v 卷名:容器路径`（见 [volume](./volume)） |
+| `-v`，`--volume` | 挂载卷或 bind mount | `-v 宿主机路径:容器路径` 或 `-v 卷名:容器路径`（见 [volume](/reference/docker-commands)） |
 | `--mount` | 同上但语法更明确 | `--mount type=bind,source=...,target=...` |
 | `--volumes-from` | 继承另一个容器的所有挂载 | 多容器共享同一份数据 |
 | `--tmpfs` | 挂一个内存临时目录 | 缓存类、不留痕的数据 |
@@ -315,24 +319,24 @@ docker run --rm \
 
 ## 七、新手易错点
 
-1. **`-it` 和 `-d` 不要同时用**：`-d` 是后台，`-it` 是交互终端，语义冲突。想进后台容器用 `docker exec -it`（见 [exec](./exec)）。
+1. **`-it` 和 `-d` 不要同时用**：`-d` 是后台，`-it` 是交互终端，语义冲突。想进后台容器用 `docker exec -it`（见 [exec](/reference/docker-commands)）。
 2. **`-p 80:80` 左边是宿主机、右边是容器**：写反了会访问不到；宿主机端口被占会启动失败。
 3. **不加 `--name` 会拿到随机名字**：如 `vibrant_cannon`，后面命令还得 `docker ps` 去抄，很麻烦，服务容器一定 `--name`。
-4. **`-v 卷名:/容器路径` 才是持久化；`-v /容器路径`（匿名卷）退出不删但名字随机**：重要数据要么用命名卷，要么用 bind mount（见 [volume](./volume)）。
+4. **`-v 卷名:/容器路径` 才是持久化；`-v /容器路径`（匿名卷）退出不删但名字随机**：重要数据要么用命名卷，要么用 bind mount（见 [volume](/reference/docker-commands)）。
 5. **`--privileged` 极其危险**：等于把宿主机 root 直接给容器，容器被攻破=宿主机被攻破。能用 `--cap-add` 精确授权就别用它。
 6. **镜像名不写标签默认 `:latest`**：`latest` 不代表"最新"，只是个普通标签，生产环境一定要写死版本标签。
 7. **端口映射只对 `bridge` 网络有意义**：`--network=host` 时容器直接用宿主机网络栈，`-p` 会被忽略（或报错）。
-8. **`docker run` 后退出的容器不会自动消失**：会停在 `Exited` 状态占磁盘，定期用 `docker container prune` 清理（见 [system-prune](./system-prune)）。
+8. **`docker run` 后退出的容器不会自动消失**：会停在 `Exited` 状态占磁盘，定期用 `docker container prune` 清理（见 [system-prune](/reference/docker-commands)）。
 
 ## 八、相关命令与文档
 
 - 速查页：[Docker 命令速查](../docker-commands)
-- 只建不起：`docker create`（详解见 [lifecycle](./lifecycle)）
-- 进正在跑的容器：`docker exec`（详解见 [exec](./exec)）
+- 只建不起：`docker create`（详解见 [lifecycle](/reference/docker-commands)）
+- 进正在跑的容器：`docker exec`（详解见 [exec](/reference/docker-commands)）
 - 看容器日志：`docker logs`（详解见 [logs](./logs)）
-- 删容器：`docker rm`（详解见 [lifecycle](./lifecycle)）
-- 网络与端口原理：`docker network`（详解见 [network](./network)）
-- 数据持久化：`docker volume`（详解见 [volume](./volume)）
-- 系统清理：`docker system prune`（详解见 [system-prune](./system-prune)）
-- 原理与实战：[Docker 实战手册](../../guide/container-docker)
+- 删容器：`docker rm`（详解见 [lifecycle](/reference/docker-commands)）
+- 网络与端口原理：`docker network`（详解见 [network](/reference/docker-commands)）
+- 数据持久化：`docker volume`（详解见 [volume](/reference/docker-commands)）
+- 系统清理：`docker system prune`（详解见 [system-prune](/reference/docker-commands)）
+- 原理与实战：[Docker 实战手册](/services/container/docker/01-理论)
 - 官方参考：https://docs.docker.com/reference/cli/docker/container/run/

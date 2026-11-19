@@ -1,6 +1,7 @@
 ---
 category: 架构
 difficulty: 中级
+description: "回答三件事：机器该买多少才不浪费也不扛不住（容量规划）、怎么让系统挂了一台还能继续跑（高可用）、整个机房都没了怎么办（灾备）。读完你能说清 RTO/RPO，会对比主备/双活/两地三中心，并有一份备份与 DR 演练检查清单。"
 ---
 
 # 容量规划、高可用与灾备
@@ -97,7 +98,7 @@ kubectl get hpa order-hpa          # 观察当前/目标副本数
 | 限流降级 | 扛不住时先保核心功能，非核心功能先关掉 |
 | 熔断 | 下游挂了别让请求堆积拖垮自己，快速失败 |
 
-服务网格的熔断/重试/限流见 [Service Mesh 服务网格](./container-servicemesh)；四层高可用见 [LVS 与 Keepalived](./services-lvs-keepalived)。
+服务网格的熔断/重试/限流见 [Service Mesh 服务网格](/guide/container#合并资料)；四层高可用见 [LVS 与 Keepalived](/services/web/lvs-keepalived)。
 
 ## 四、灾备：RTO 与 RPO
 
@@ -148,7 +149,7 @@ flowchart TB
 
 ### 5.1 备份与恢复验证示例
 
-以 MySQL 为例（见 [MySQL 数据管理](./data-mysql)），备份后必须在另一台机器上真恢复一遍：
+以 MySQL 为例（见 [MySQL 数据管理](/services/database/mysql/01-理论)），备份后必须在另一台机器上真恢复一遍：
 
 ```bash
 # 1. 定时备份（crontab 每天 2 点）
@@ -210,11 +211,11 @@ mysql -u root -p test_restore -e "SELECT COUNT(*) FROM orders;"
 
 ## 相关速查
 
-- 主动找脆弱点：[混沌工程](./sre-chaos)
+- 主动找脆弱点：[混沌工程](/guide/sre-incident#合并资料)
 - 故障后应对：[事故管理与无指责复盘](./sre-incident)
-- 指标观测与水位告警：[Prometheus 从 0 到 1](./monitor-prometheus-01-intro)
-- K8s 调度与伸缩：[Kubernetes 架构与集群](./container-k8s-01-architecture-cluster)
-- 四层高可用：[LVS 与 Keepalived](./services-lvs-keepalived)
+- 指标观测与水位告警：[Prometheus 从 0 到 1](/services/observability/prometheus/01-理论)
+- K8s 调度与伸缩：[Kubernetes 架构与集群](/services/container/kubernetes/01-理论)
+- 四层高可用：[LVS 与 Keepalived](/services/web/lvs-keepalived)
 - 发布与回滚：[CI/CD 进阶与渐进式交付](./devops-cicd-advanced)
 - 云原生排障命令：[云原生排障命令速查](/reference/cloudnative-commands)
 

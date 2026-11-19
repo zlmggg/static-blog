@@ -153,7 +153,7 @@ top -b -n 1      # 批处理模式，只输出一次（适合脚本/采集）
 ```bash
 pstree -p              # 树状显示并带 PID
 pstree -p | grep nginx # 查看某程序的进程树
-pstree zlmggg          # 只看某用户的进程树
+pstree rocky          # 只看某用户的进程树
 ```
 
 ### 2.4 pgrep / pidof：按名查找
@@ -161,7 +161,7 @@ pstree zlmggg          # 只看某用户的进程树
 ```bash
 pgrep nginx            # 显示名为 nginx 的所有 PID
 pgrep -a sshd          # 同时显示完整命令
-pgrep -u zlmggg        # 按用户查找
+pgrep -u rocky        # 按用户查找
 pgrep -f "sshd.*debug" # 匹配完整命令行（正则）
 
 pidof nginx            # 按程序名返回 PID
@@ -170,7 +170,7 @@ pidof -s nginx         # 只返回一个
 
 ### 2.5 其他相关工具
 
-内存、I/O、系统整体性能的查看（`free`、`vmstat`、`iostat`、`lsof`、`pmap`）属于性能监控范畴，详见 [系统性能监控](/guide/linux-performance)。
+内存、I/O、系统整体性能的查看（`free`、`vmstat`、`iostat`、`lsof`、`pmap`）属于性能监控范畴，详见 [系统性能监控](/guide/linux#合并资料)。
 
 - `lsof -i :80`：查看谁占用了 80 端口；
 - `lsof -p PID`：查看某进程打开的文件；
@@ -214,7 +214,7 @@ kill -l             # 列出所有信号
 ```bash
 killall nginx        # 杀掉所有名为 nginx 的进程（默认 15）
 killall -9 nginx     # 强杀
-pkill -u zlmggg      # 杀掉某用户的所有进程
+pkill -u rocky      # 杀掉某用户的所有进程
 pkill -f "ping.*baidu" # 按完整命令行匹配
 ```
 
@@ -411,7 +411,7 @@ systemctl edit --full nginx # 完整复制一份再改
 
 ### 5.3 手写一个服务（完整示例）
 
-假设写了一个应用 `/opt/myapp/run.sh`，希望以用户 `zlmggg` 身份运行、开机自启、崩溃自动拉起：
+假设写了一个应用 `/opt/myapp/run.sh`，希望以用户 `rocky` 身份运行、开机自启、崩溃自动拉起：
 
 ```bash
 sudo vim /etc/systemd/system/myapp.service
@@ -425,8 +425,8 @@ Wants=network-online.target
 
 [Service]
 Type=simple
-User=zlmggg
-Group=zlmggg
+User=rocky
+Group=rocky
 WorkingDirectory=/opt/myapp
 ExecStart=/opt/myapp/run.sh
 ExecReload=/bin/kill -HUP $MAINPID
@@ -529,7 +529,7 @@ ps -eo pid,ppid,stat,cmd | awk '$3 ~ /Z/'
 
 ---
 
-## 面试自测
+## 本章自测
 
 1. 程序和进程的区别？进程和线程的区别？
 2. PID/PPID 是什么？系统的 1 号进程是谁、负责什么？
@@ -547,4 +547,4 @@ ps -eo pid,ppid,stat,cmd | awk '$3 ~ /Z/'
 ## 相关速查
 
 - [Linux 命令速查](/reference/linux-commands)
-- [系统性能监控](/guide/linux-performance)
+- [系统性能监控](/guide/linux#合并资料)

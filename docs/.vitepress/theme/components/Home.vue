@@ -10,16 +10,13 @@ const PATHS = Object.keys(import.meta.glob('/**/*.md')).filter(
 )
 const STATS = {
   total: PATHS.length,
-  cmd: PATHS.filter((p) => p.startsWith('/reference/cmd')).length,
+  cmd: PATHS.filter((p) => p.startsWith('/commands/') && !p.endsWith('/index.md')).length,
   cases: PATHS.filter((p) => /^\/cases\/t-[^/]+\.md$/.test(p)).length,
-  // 知识专题 = 12 个指南/手记聚合页 + 9 个速查页 + 2 个排障入口 + 1 个项目总览
+  // 知识专题 = 服务详情页 + 组合方案 + 命令/服务分组导读
   topics:
-    PATHS.filter((p) =>
-      /^\/guide\/(linux|services|data|monitor|container|automation|devops|aiops|architecture|blog|opsdev|career)\.md$/.test(p)
-    ).length +
-    PATHS.filter((p) => /^\/reference\/[^/]+\.md$/.test(p)).length +
-    PATHS.filter((p) => p === '/cases/index.md' || p === '/cases/troubleshooting.md').length +
-    PATHS.filter((p) => p === '/projects/index.md').length
+    PATHS.filter((p) => /^\/services\/.+\.md$/.test(p) && !p.endsWith('/index.md')).length +
+    PATHS.filter((p) => p.startsWith('/deploy/stacks/')).length +
+    PATHS.filter((p) => /^\/(commands|services)\/[^/]+\/index\.md$/.test(p)).length
 }
 
 /* ---------------- 首屏向下箭头 ---------------- */
@@ -32,8 +29,8 @@ function scrollToContent() {
   document.querySelector('.projects')?.scrollIntoView({ behavior: 'smooth' })
 }
 
-// 问答卡片链接：技术题已并入「故障与排障」下的问与答
-const QA_TO = '/cases/qa/'
+// 问答入口：78 个问题已并入各领域指南末尾的「常见问题 FAQ」
+const QA_TO = '/reference/#各领域常见问题-faq'
 
 const termBody = ref<HTMLElement | null>(null)
 let alive = true
@@ -152,67 +149,53 @@ interface Feat {
 }
 const FEATS: Feat[] = [
   {
-    t: '操作指南',
-    d: 'Linux 系统、服务部署、容器编排、监控日志与自动化 IaC，原理配合完整操作。',
-    g: '浏览指南',
-    i: '<circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2 5-5 2 2-5z"/>',
-    to: '/guide/linux'
-  },
-  {
-    t: '命令速查',
-    d: 'Linux、网络、Docker、kubectl 常用命令按场景分类汇总，翻到即用。',
-    g: '查看速查',
+    t: '命令手册',
+    d: 'OS 级命令按 9 分组收录，--help 全量中文化、按频率分级，查看与操作并重。',
+    g: '查命令',
     i: '<rect x="3" y="4" width="18" height="16" rx="2"/><path d="m7 9 3 3-3 3M13 15h4"/>',
-    to: '/reference/linux-commands'
+    to: '/commands/'
   },
   {
-    t: '故障排障',
-    d: '典型故障场景与排障记录：从现象、定位、根因到解决，练一套可复用的排查套路。',
-    g: '查看案例',
+    t: '服务详解',
+    d: '22 个服务按企业场景分 7 组，统一理论→部署→功能→实战四段模板。',
+    g: '学服务',
+    i: '<circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2 5-5 2 2-5z"/>',
+    to: '/services/'
+  },
+  {
+    t: '部署方案',
+    d: '部署形态矩阵快速定位，跨服务组合方案：接入层高可用、CI/CD、监控栈。',
+    g: '找方案',
+    i: '<rect x="3" y="4" width="18" height="6" rx="1"/><rect x="3" y="14" width="18" height="6" rx="1"/><path d="M7 7h.01M7 17h.01"/>',
+    to: '/deploy/'
+  },
+  {
+    t: '故障与排障',
+    d: '20 个排障案例与排障记录：现象→定位→根因→修复→复盘，练可复用套路。',
+    g: '练排障',
     i: '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M12 8v4M12 16h.01"/>',
-    to: '/cases/troubleshooting'
+    to: '/cases/'
   },
   {
-    t: 'DevOps 与平台工程',
-    d: 'CI/CD、GitOps、制品库与平台化实践，打通从代码到生产的完整链路。',
-    g: '进入专题',
-    i: '<line x1="6" y1="3" x2="6" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/>',
-    to: '/guide/devops'
-  },
-  {
-    t: '智能运维与 AI',
-    d: 'AIOps、可观测性、LLM 与 Agent 在运维场景的最新前沿实践。',
-    g: '了解前沿',
-    i: '<rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M9 1v3M15 1v3M1 9h3M1 14h3M20 9h3M20 14h3M9 20v3M15 20v3"/>',
-    to: '/guide/aiops'
-  },
-  {
-    t: '运维手记与职业思考',
-    d: '值班经历、行业看法、就业心得与成长方向，一个“活生生”的工程师视角。',
-    g: '阅读手记',
-    i: '<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>',
-    to: '/guide/career'
-  },
-  {
-    t: '问与答',
-    d: 'Linux、网络、数据库、容器与云原生的高频问题与自测答案，按主题速查。',
-    g: '去自测',
+    t: '常见问题',
+    d: '各领域高频 FAQ，随服务迁入实战参考，点开看答案。',
+    g: '去查 FAQ',
     i: '<rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>',
     to: QA_TO
   },
   {
-    t: '架构设计实战',
-    d: '网站、微服务、银行、游戏等多架构方案：服务器选型、服务编排与上线风险。',
-    g: '查看方案',
-    i: '<rect x="3" y="4" width="18" height="6" rx="1"/><rect x="3" y="14" width="18" height="6" rx="1"/><path d="M7 7h.01M7 17h.01"/>',
-    to: '/guide/architecture'
+    t: '我的项目',
+    d: '真实动手做过的东西：项目架构 + 10-实操 13 篇，从搭环境到上线。',
+    g: '看项目',
+    i: '<line x1="6" y1="3" x2="6" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/>',
+    to: '/projects/'
   },
   {
-    t: '实战脚本与自动化',
-    d: '巡检、备份、批量操作与告警脚本集，拿来即用，减少重复手工劳动。',
-    g: '获取脚本',
-    i: '<path d="M13 2 3 14h9l-1 8 10-12h-9z"/>',
-    to: '/guide/automation'
+    t: '运维手记',
+    d: '值班经历、行业看法与成长方向，一个“活生生”的工程师视角。',
+    g: '读手记',
+    i: '<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>',
+    to: '/guide/blog'
   }
 ]
 
@@ -237,9 +220,9 @@ const PROJECTS: Pj[] = [
     to: '/projects/aliyun-deploy'
   },
   {
-    t: '家庭实验室 Homelab',
-    d: '双路 E5 + 128G ECC，部署 OpenStack / KVM，把云平台在真机练一遍。',
-    tags: 'X99 · OpenStack · KVM',
+    t: '项目架构 · 37 台实验集群',
+    d: '在线教育平台：LVS+Nginx 接入、MySQL/Redis 数据层、CI/CD 与蓝绿发布，PVE 37 台落地。',
+    tags: 'PVE · LVS · MySQL · K8s · CI/CD',
     to: '/projects/homelab'
   }
 ]
@@ -338,7 +321,7 @@ onBeforeUnmount(() => {
             Linux 系统、服务部署、容器编排、云原生与排障训练——原理铺垫配合完整操作，学过忘了也能迅速接上，翻到即用。
           </p>
           <div class="hero-actions">
-            <button class="btn btn-primary" @click="go('/guide/linux')">
+            <button class="btn btn-primary" @click="go('/commands/')">
               浏览知识库
               <svg
                 width="16"
@@ -353,8 +336,8 @@ onBeforeUnmount(() => {
                 <path d="M5 12h14M13 6l6 6-6 6" />
               </svg>
             </button>
-            <button class="btn btn-ghost" @click="go('/reference/linux-commands')">
-              命令速查
+            <button class="btn btn-ghost" @click="go('/services/')">
+              服务详解
             </button>
             <button class="btn btn-ghost" @click="go('/cases/troubleshooting')">
               排障记录
@@ -504,27 +487,27 @@ onBeforeUnmount(() => {
 <!-- 非 scoped：明暗 token + 终端动态 DOM 样式（.home-root 命名空间，不污染他页） -->
 <style>
 html.dark .home-root {
-  --bg: #08080d;
-  --surface: rgba(255, 255, 255, 0.035);
-  --surface-2: rgba(255, 255, 255, 0.06);
-  --border: rgba(255, 255, 255, 0.09);
-  --border-strong: rgba(255, 255, 255, 0.16);
-  --text: #ececf3;
-  --muted: #9a9ab0;
-  --term-bg: #0b0f16;
-  --term-header: #141a23;
+  --bg: #0e1116;
+  --surface: rgba(255, 255, 255, 0.04);
+  --surface-2: rgba(255, 255, 255, 0.065);
+  --border: rgba(255, 255, 255, 0.1);
+  --border-strong: rgba(255, 255, 255, 0.18);
+  --text: #e6e9ee;
+  --muted: #98a1ad;
+  --term-bg: #080b10;
+  --term-header: #121820;
   --shadow: 0 24px 60px -24px rgba(0, 0, 0, 0.8);
 }
 html:not(.dark) .home-root {
-  --surface: rgba(255, 255, 255, 0.6);
-  --surface-2: rgba(255, 255, 255, 0.92);
-  --border: rgba(30, 35, 70, 0.09);
-  --border-strong: rgba(30, 35, 70, 0.16);
-  --text: #181b28;
-  --muted: #585e76;
-  --term-bg: #1e293b;
-  --term-header: #1b2638;
-  --shadow: 0 22px 52px -26px rgba(55, 65, 140, 0.32);
+  --surface: rgba(255, 255, 255, 0.72);
+  --surface-2: rgba(255, 255, 255, 0.95);
+  --border: rgba(17, 24, 39, 0.1);
+  --border-strong: rgba(17, 24, 39, 0.18);
+  --text: #111827;
+  --muted: #5b6472;
+  --term-bg: #ffffff;
+  --term-header: #f1f3f6;
+  --shadow: 0 22px 52px -26px rgba(17, 24, 39, 0.28);
 }
 .home-root {
   position: relative;
@@ -586,21 +569,9 @@ html:not(.dark) .home-root {
   letter-spacing: -0.02em;
   font-weight: 700;
 }
+/* 标题强调色：V3 用单一品牌蓝，不做渐变文字（渐变是 V2 的产品化语言） */
 .home-root .gradient-text {
-  background: linear-gradient(
-    110deg,
-    var(--brand-1),
-    var(--brand-2) 55%,
-    var(--brand-3)
-  );
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-html:not(.dark) .home-root .gradient-text {
-  background: linear-gradient(110deg, #4f46e5, #7c3aed 58%, #0284c7);
-  -webkit-background-clip: text;
-  background-clip: text;
+  color: var(--brand-1);
 }
 .home-root .lead {
   margin-top: 18px;
@@ -628,13 +599,13 @@ html:not(.dark) .home-root .gradient-text {
   font-family: var(--vp-font-family-base);
 }
 .home-root .btn-primary {
-  background: linear-gradient(135deg, var(--brand-1), var(--brand-2));
+  background: var(--brand-solid);
   color: #fff;
-  box-shadow: 0 12px 28px -12px var(--brand-1);
+  box-shadow: 0 12px 28px -12px rgba(37, 99, 235, 0.45);
 }
 .home-root .btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 18px 34px -12px var(--brand-1);
+  box-shadow: 0 18px 34px -12px rgba(37, 99, 235, 0.58);
 }
 .home-root .btn-ghost {
   background: var(--surface);
@@ -696,11 +667,24 @@ html:not(.dark) .home-root .gradient-text {
   overflow: hidden;
 }
 html:not(.dark) .home-root .term {
-  border-color: #334155;
+  border-color: #dde1e6;
+  box-shadow: 0 18px 40px -26px rgba(17, 24, 39, 0.22);
 }
 html:not(.dark) .home-root .term-header {
-  border-bottom-color: rgba(255, 255, 255, 0.07);
+  border-bottom-color: rgba(17, 24, 39, 0.08);
 }
+html:not(.dark) .home-root .term-header .tt {
+  color: #6b7280;
+}
+/* 浅色终端：文字与输出改用深色系（同一套语义色，只是翻转明度） */
+html:not(.dark) .home-root .term-body .t-prompt { color: #6b7280; }
+html:not(.dark) .home-root .term-body .t-cmd { color: #111827; }
+html:not(.dark) .home-root .term-body .t-out { color: #4b5563; }
+html:not(.dark) .home-root .term-body .t-ok { color: #15803d; }
+html:not(.dark) .home-root .term-body .t-info { color: #1d4ed8; }
+html:not(.dark) .home-root .term-body .t-warn { color: #b45309; }
+html:not(.dark) .home-root .term-body .t-cyan { color: #0e7490; }
+html:not(.dark) .home-root .term-body .t-cursor { background: #111827; }
 
 /* 终端动态行（JS 创建） */
 .home-root .term-body .ln {
@@ -914,7 +898,7 @@ html:not(.dark) .home-root .term-header {
 /* 各分类图标配色（按索引循环） */
 .home-root .lc0 .ic { background: color-mix(in srgb, var(--brand-1) 18%, transparent); color: var(--brand-1); }
 .home-root .lc1 .ic { background: color-mix(in srgb, var(--brand-2) 18%, transparent); color: var(--brand-2); }
-.home-root .lc2 .ic { background: color-mix(in srgb, #22d3ee 18%, transparent); color: #22d3ee; }
+.home-root .lc2 .ic { background: color-mix(in srgb, #3b82f6 18%, transparent); color: #3b82f6; }
 .home-root .lc3 .ic { background: color-mix(in srgb, #34d399 18%, transparent); color: #34d399; }
 .home-root .lc4 .ic { background: color-mix(in srgb, #fbbf24 18%, transparent); color: #fbbf24; }
 .home-root .lc5 .ic { background: color-mix(in srgb, #fb7185 18%, transparent); color: #fb7185; }

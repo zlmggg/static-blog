@@ -1,3 +1,7 @@
+---
+title: "kubectl 进阶排障命令详解：events / debug / explain / wait / diff"
+description: "本文是 云原生排障命令速查 中「kubectl 进阶排障」一组命令的从 0 到 1 详解，本篇一次讲清 kubectl get events、kubectl debug（临时容器 / node 调试）、kubectl explain、kubectl wait、kubectl diff。"
+---
 # kubectl 进阶排障命令详解：events / debug / explain / wait / diff
 
 > 本文是 [云原生排障命令速查](../cloudnative-commands) 中「kubectl 进阶排障」一组命令的从 0 到 1 详解，本篇一次讲清 `kubectl get events`、`kubectl debug`（临时容器 / node 调试）、`kubectl explain`、`kubectl wait`、`kubectl diff`。
@@ -216,7 +220,7 @@ kubectl diff -f deploy.yaml
 - 速查页：[云原生排障命令速查](../cloudnative-commands)
 - 基础 get/describe/logs/exec：[kubectl 命令速查](../kubectl-commands)
 - Helm release 排障：[helm-troubleshoot](./helm-troubleshoot)
-- 用 jsonpath 取字段：[jsonpath 与 jq](./jsonpath-jq)
-- 节点容器层排障：[crictl](./crictl) 、[ctr](./ctr)
-- eBPF/内核观测：[Linux eBPF 指南](../../guide/linux-ebpf)
+- 用 jsonpath 取字段：[jsonpath 与 jq](/reference/cloudnative-commands)
+- 节点容器层排障：[crictl](./crictl) 、[ctr](/reference/cloudnative-commands)
+- eBPF/内核观测：[Linux eBPF 指南](/guide/linux#合并资料)
 - 官方文档：https://kubernetes.io/docs/reference/kubectl/generated/kubectl_debug/ 、https://kubernetes.io/docs/reference/kubectl/generated/kubectl_wait/ 、https://kubernetes.io/docs/reference/kubectl/generated/kubectl_explain/ ；临时容器：https://kubernetes.io/docs/tasks/debug/debug-application/debug-running-pod/

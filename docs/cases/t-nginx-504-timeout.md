@@ -1,10 +1,10 @@
 ---
+id: S-02
 category: 服务
 difficulty: 中级
-date: 2023-06-24
+description: "Nginx 504 Gateway Timeout：用户访问接口，等了 60 多秒后 Nginx 返回"
 ---
-
-# Nginx 504 Gateway Timeout（2023-06-24）
+# S-02 · Nginx 504 Gateway Timeout
 
 ## 现象
 
@@ -134,5 +134,5 @@ Tomcat 也要有超时，不要让一个慢请求占着线程：
 
 - 命令速查：[网络命令速查](/reference/network-commands)
 - 服务方向：[Nginx 502 Bad Gateway](/cases/t-nginx-502)
-- 服务方向：[Tomcat 内存溢出崩溃](/cases/t-tomcat-oom-crash)
+- 服务方向：[Tomcat 内存溢出崩溃](/cases/)
 - 网络方向：[TCP 重传率高](/cases/t-tcp-retransmission)

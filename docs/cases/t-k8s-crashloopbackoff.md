@@ -1,10 +1,10 @@
 ---
+id: K-03
 category: 容器
 difficulty: 中级
-date: 2023-08-30
+description: "Pod CrashLoopBackOff 排障：发布后 Pod 起来又挂、挂了又拉起，反复重启。含关键步骤、验证与常见坑。"
 ---
-
-# Pod CrashLoopBackOff 排障（2023-08-30）
+# K-03 · Pod CrashLoopBackOff 排障
 
 ## 现象
 
@@ -63,7 +63,7 @@ Last State:     Terminated
 |---|---|
 | 0 | 正常退出（但不该退出，说明主进程跑完就结束了） |
 | 1 | 应用内部错误（看日志栈） |
-| 137 | 被 SIGKILL，通常是 OOMKilled（见 [OOMKilled](/cases/t-k8s-oomkilled)） |
+| 137 | 被 SIGKILL，通常是 OOMKilled（见 [OOMKilled](/cases/)） |
 | 143 | 被 SIGTERM 正常终止 |
 | 139 | 段错误 |
 
@@ -147,4 +147,4 @@ kubectl describe pod <pod>  # 探针正常通过
 ## 相关
 
 - 命令速查：[kubectl 命令速查](/reference/kubectl-commands) ｜ [云原生排障命令速查](/reference/cloudnative-commands)
-- 同组短文：[Pod Pending](/cases/t-k8s-pod-pending) ｜ [OOMKilled](/cases/t-k8s-oomkilled) ｜ [ImagePullBackOff](/cases/t-k8s-imagepullbackoff)
+- 同组短文：[Pod Pending](/cases/t-k8s-pod-pending) ｜ [OOMKilled](/cases/) ｜ [ImagePullBackOff](/cases/t-k8s-imagepullbackoff)

@@ -1,10 +1,10 @@
 ---
+id: K-05
 category: 容器
 difficulty: 高级
-date: 2024-06-19
+description: "K8s 集群整体卡顿，API Server 响应极慢，kubectl 命令经常超时。master 节点上 etcd 报空间不足"
 ---
-
-# etcd 故障 / 空间满 / 不一致（2024-06-19）
+# K-05 · etcd 故障 / 空间满 / 不一致
 
 ## 现象
 
@@ -142,4 +142,4 @@ etcdctl ... endpoint status         # DB SIZE 明显下降
 ## 相关
 
 - 命令速查：[云原生排障命令速查](/reference/cloudnative-commands) ｜ [kubectl 命令速查](/reference/kubectl-commands)
-- 同组短文：[集群证书过期](/cases/t-k8s-cert-expired) ｜ [节点 NotReady](/cases/t-k8s-node-notready)
+- 同组短文：[集群证书过期](/cases/) ｜ [节点 NotReady](/cases/t-k8s-node-notready)

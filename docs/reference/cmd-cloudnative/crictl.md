@@ -1,3 +1,7 @@
+---
+title: "crictl 命令详解：节点上看 K8s 容器的官方工具"
+description: "本文是 云原生排障命令速查 中「containerd / CRI 运行时」一组命令的从 0 到 1 详解，本篇一次讲清 crictl ps/pods/logs/inspect/images/stats/info/exec/port-forward 与 config runtime-endpoint。"
+---
 # crictl 命令详解：节点上看 K8s 容器的官方工具
 
 > 本文是 [云原生排障命令速查](../cloudnative-commands) 中「containerd / CRI 运行时」一组命令的从 0 到 1 详解，本篇一次讲清 `crictl ps/pods/logs/inspect/images/stats/info/exec/port-forward` 与 `config runtime-endpoint`。
@@ -222,7 +226,7 @@ debug: false
 ## 八、相关命令与文档
 
 - 速查页：[云原生排障命令速查](../cloudnative-commands)
-- 更底层的 containerd 原生工具：[ctr](./ctr)
+- 更底层的 containerd 原生工具：[ctr](/reference/cloudnative-commands)
 - Pod 调试入口：[kubectl-advanced](./kubectl-advanced)
 - 基础 kubectl：[kubectl 命令速查](../kubectl-commands)
 - 官方文档：https://github.com/kubernetes-sigs/cri-tools/blob/master/docs/crictl.md ；https://kubernetes.io/docs/tasks/debug/debug-cluster/crictl/

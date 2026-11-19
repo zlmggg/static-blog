@@ -1,10 +1,10 @@
 ---
+id: N-02
 category: 网络
 difficulty: 高级
-date: 2023-07-21
+description: "TCP 重传率高、拥塞定位：监控显示业务接口延迟偶尔飙高，错误率上升。服务器 nstat 看到 TCP 重传率高"
 ---
-
-# TCP 重传率高、拥塞定位（2023-07-21）
+# N-02 · TCP 重传率高、拥塞定位
 
 ## 现象
 
@@ -160,6 +160,6 @@ ethtool -L eth0 combined 8
 ## 相关
 
 - 命令速查：[网络命令速查](/reference/network-commands)
-- 网络方向：[网络不通丢包](/cases/t-net-unreachable-mtr)
-- 网络方向：[MTU 黑洞](/cases/t-mtu-black-hole)
+- 网络方向：[网络不通丢包](/cases/)
+- 网络方向：[MTU 黑洞](/cases/)
 - 服务方向：[Nginx 504 Gateway Timeout](/cases/t-nginx-504-timeout)

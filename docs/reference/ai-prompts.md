@@ -1,8 +1,12 @@
+---
+title: "运维 AI Prompt 与 Agent 指令模板速查"
+description: "把日常运维任务（解释命令、写脚本、诊断日志、审配置）打包成可直接复制的 Prompt 模板。 用法：复制下方代码块 → 替换占位符（）→ 粘贴给任意 LLM。右侧「本页目录」可跳转。 原理与进阶见 AI Agent 基础、Agent 运维实战、MCP 协议。"
+---
 # 运维 AI Prompt 与 Agent 指令模板速查
 
 > 把日常运维任务（解释命令、写脚本、诊断日志、审配置）打包成可直接复制的 Prompt 模板。
 > 用法：复制下方代码块 → 替换占位符（`<...>`）→ 粘贴给任意 LLM。右侧「本页目录」可跳转。
-> 原理与进阶见 [AI Agent 基础](/guide/aiops-agent-basics)、[Agent 运维实战](/guide/aiops-agent-practice)、[MCP 协议](/guide/aiops-mcp)。
+> 原理与进阶见 [AI Agent 基础](/guide/aiops-agent-basics)、[Agent 运维实战](/guide/aiops-agent-basics#合并资料)、[MCP 协议](/guide/aiops-agent-basics#合并资料)。
 
 ::: warning 使用前提
 - **先脱敏**：把真实 IP、域名、密钥、密码、用户名、内部主机名替换成 `<IP>`、`<域名>`、`<token>` 再粘贴。
@@ -196,8 +200,8 @@
 ## 相关指南
 
 - 想搞懂 Agent 是什么、怎么调：[AI Agent 与 LLM 应用基础](/guide/aiops-agent-basics)
-- 把 Prompt 用在真实值班里：[Agent 运维实战](/guide/aiops-agent-practice)
-- 让 Agent 连上你的工具/知识库：[MCP 模型上下文协议](/guide/aiops-mcp)
+- 把 Prompt 用在真实值班里：[Agent 运维实战](/guide/aiops-agent-basics#合并资料)
+- 让 Agent 连上你的工具/知识库：[MCP 模型上下文协议](/guide/aiops-agent-basics#合并资料)
 - 配套命令：[Git 速查](/reference/git-commands)、[云原生排障速查](/reference/cloudnative-commands)、[Linux 命令速查](/reference/linux-commands)
 
 ### 官方文档

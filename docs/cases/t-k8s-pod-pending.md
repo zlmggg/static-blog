@@ -1,10 +1,10 @@
 ---
+id: K-01
 category: 容器
 difficulty: 初级
-date: 2023-07-25
+description: "Pod 一直 Pending 排障：发布新服务后，Pod 一直停在 Pending 状态，半天起不来"
 ---
-
-# Pod 一直 Pending 排障（2023-07-25）
+# K-01 · Pod 一直 Pending 排障
 
 ## 现象
 
@@ -139,4 +139,4 @@ kubectl describe pod <pod>     # Events 有 "Successfully assigned"
 ## 相关
 
 - 命令速查：[kubectl 命令速查](/reference/kubectl-commands) ｜ [云原生排障命令速查](/reference/cloudnative-commands)
-- 同组短文：[CrashLoopBackOff](/cases/t-k8s-crashloopbackoff) ｜ [OOMKilled](/cases/t-k8s-oomkilled) ｜ [ImagePullBackOff](/cases/t-k8s-imagepullbackoff)
+- 同组短文：[CrashLoopBackOff](/cases/t-k8s-crashloopbackoff) ｜ [OOMKilled](/cases/) ｜ [ImagePullBackOff](/cases/t-k8s-imagepullbackoff)

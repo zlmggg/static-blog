@@ -1,3 +1,8 @@
+---
+title: "关于本站"
+description: "这是我的个人 SRE 运维知识库，攒的都是 Linux 运维、服务部署、监控告警、日常排障、容器与云原生、自动化这些方向的笔记和实战记录。"
+---
+
 # 关于本站
 
 ## 这是什么网站
@@ -24,7 +29,7 @@
 
 | 板块 | 内容 |
 |---|---|
-| [速查手册](/reference/linux-commands) | Linux / 网络 / Docker / kubectl 命令速查长文档 |
+| [速查手册](/reference/) | 8 本速查总览：Linux / 网络 / Docker / Git / kubectl / 云原生 + AI Prompt、模板与清单 |
 | [Linux 系统](/guide/linux) | 系统管理、存储、用户权限、Shell、安全加固 |
 | [服务部署](/guide/services) | Nginx、Apache/Tomcat、DNS、文件共享 |
 | [数据与中间件](/guide/data) | MySQL、Redis、Kafka、Spring Cloud、APISIX |
@@ -45,7 +50,7 @@
 一名 Linux 运维工程师，坐标成都。喜欢把踩过的坑整理成可复制的方案，坚持"用过一次的操作就沉淀成文档"。
 
 - 岗位方向：Linux SRE / 运维开发（容器化、监控告警、自动化方向）
-- 技术兴趣：Linux 系统原理、KVM/OpenStack 私有云、Docker 与 Kubernetes、Prometheus/Zabbix 监控、Ansible/Terraform 自动化
+- 技术兴趣：Linux 系统原理、KVM/PVE 虚拟化与私有云、Docker 与 Kubernetes、Prometheus/Zabbix 监控、Ansible/Terraform 自动化
 - GitHub：[我的 GitHub](https://github.com/zlmggg)
 - Gitee：[我的 Gitee](https://gitee.com/zlmggg/static-blog)
 
@@ -59,5 +64,5 @@
 
 - 如果你是新学习的运维同学，欢迎来到这个知识库。
 - 不知道从哪开始：看 [学习路线](/roadmap)
-- 忘了命令：查 [速查手册](/reference/linux-commands)
-- 日常排障：记 [排障记录](/cases/troubleshooting)
+- 忘了命令：查 [速查手册](/reference/)
+- 日常排障：记 [排障记录](/cases/)

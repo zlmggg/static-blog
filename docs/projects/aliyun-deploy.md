@@ -2,8 +2,8 @@
 category: 项目
 difficulty: 中级
 date: 2026-10-09
+description: "在一台阿里云 ECS 上，从挂数据盘开始，用 Docker Compose 把 Nginx 站点和监控跑起来，并完成基础加固。"
 ---
-
 # 阿里云个人站点部署与运维
 
 > 在一台阿里云 ECS 上，从挂数据盘开始，用 Docker Compose 把 Nginx 站点和监控跑起来，并完成基础加固。
@@ -44,7 +44,7 @@ date: 2026-10-09
 
 ```bash
 # 本地隧道访问监控（在自己电脑执行）
-ssh -p 22022 -L 19999:127.0.0.1:19999 zlmggg@<服务器IP>
+ssh -p 22022 -L 19999:127.0.0.1:19999 ubuntu@<服务器IP>
 # 然后浏览器打开 http://localhost:19999
 ```
 
@@ -57,7 +57,7 @@ ssh -p 22022 -L 19999:127.0.0.1:19999 zlmggg@<服务器IP>
 
 ## 五、踩过的坑
 
-- **Docker swap 限制不生效**：`docker info` 报 `No swap limit support`，需在内核启动参数加 `swapaccount=1` 后重启。详见 [这篇记录](/cases/t-docker-swap)。
+- **Docker swap 限制不生效**：`docker info` 报 `No swap limit support`，需在内核启动参数加 `swapaccount=1` 后重启。详见 [排障训练场](/cases/)。
 - **地域 IP 白名单误伤爬虫**：曾用「境外 IP 一律拦截 + Basic Auth」，结果误伤 Bing / Google 爬虫，影响收录 → 移除白名单和密码，改为只按扫描特征拦截。
 
 ## 六、成果 / 复盘

@@ -83,7 +83,7 @@ sudo ufw allow 22022/tcp
 sudo ufw enable
 ```
 
-iptables/nftables 的完整表链、规则和 NAT 详见独立文章 [防火墙 iptables](/guide/linux-security-iptables)。
+iptables/nftables 的完整表链、规则和 NAT 详见独立文章 [防火墙 iptables](/guide/linux#合并资料)。
 
 ::: warning 云服务器还要看"安全组"
 阿里云/腾讯云等在宿主机网络层还有**安全组（云防火墙）**，相当于机器外面的一层防火墙。即使系统内放行，安全组没开端口也访问不了；两边都要配置。
@@ -206,7 +206,7 @@ PermitEmptyPasswords no
 Port 22022
 
 # 4. 限制可登录用户
-AllowUsers zlmggg
+AllowUsers rocky
 # AllowGroups sshusers
 
 # 5. 其他
@@ -227,15 +227,15 @@ sudo systemctl restart sshd
 ```bash
 # 客户端生成密钥（ed25519 更短更安全）
 ssh-keygen -t ed25519
-ssh-copy-id -p 22022 zlmggg@服务器IP      # 把公钥推到服务器 ~/.ssh/authorized_keys
-ssh -p 22022 zlmggg@服务器IP             # 验证密钥能登录后，再关密码登录
+ssh-copy-id -p 22022 rocky@服务器IP      # 把公钥推到服务器 ~/.ssh/authorized_keys
+ssh -p 22022 rocky@服务器IP             # 验证密钥能登录后，再关密码登录
 ```
 
 ::: danger 别把自己关在外面
 关闭密码登录、改端口、禁 root 之前，**务必保留一个已登录的会话别动**，另开新窗口验证密钥能正常登录，确认无误后再关闭旧会话。否则配置有误将无法远程登录，只能走云控制台 VNC 救援。
 :::
 
-> 完整的 SSH 密钥、MobaXterm 配置、sudo 用户创建步骤，见部署文档和 [用户与权限](/guide/linux-users)。
+> 完整的 SSH 密钥、MobaXterm 配置、sudo 用户创建步骤，见部署文档和 [用户与权限](/guide/linux#合并资料)。
 
 ---
 
@@ -368,7 +368,7 @@ sudo timedatectl set-ntp true        # 开启网络时间同步
 
 ---
 
-## 面试自测
+## 本章自测
 
 1. 什么是纵深防御？列举至少 5 项基础加固措施。
 2. Linux 防火墙有哪些常见工具？默认策略应该是什么？
@@ -385,7 +385,7 @@ sudo timedatectl set-ntp true        # 开启网络时间同步
 
 ## 相关速查
 
-- [防火墙 iptables](/guide/linux-security-iptables)
-- [用户与权限](/guide/linux-users)
+- [防火墙 iptables](/guide/linux#合并资料)
+- [用户与权限](/guide/linux#合并资料)
 - [网络命令速查](/reference/network-commands)
 - [Linux 命令速查](/reference/linux-commands)

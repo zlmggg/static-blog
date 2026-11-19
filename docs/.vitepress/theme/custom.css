@@ -18,9 +18,12 @@
   --vp-font-family-mono: 'JetBrains Mono', 'Cascadia Code', 'Cascadia Mono',
     Consolas, 'Noto Sans Mono CJK SC', ui-monospace, monospace;
 
-  --brand-1: #6366f1;
-  --brand-2: #8b5cf6;
-  --brand-3: #22d3ee;
+  /* V3 · A 石墨白：品牌收敛为单一钢蓝，不再用紫/靛/青三色 */
+  --brand-1: #2563eb;
+  --brand-2: #1d4ed8;
+  --brand-3: #60a5fa;
+  /* 实心填充色（按钮/选中/hover）：深色模式下也保持白字可读，不跟随 --brand-1 提亮 */
+  --brand-solid: #2563eb;
   --radius: 16px;
 
   /* 侧栏宽度 */
@@ -40,6 +43,51 @@
   --content-top-gap: 0px;
 }
 
+/* V3 · A 石墨白 · 浅色：与 VitePress 原生色板对齐，
+   让链接、blockquote、表格、搜索框等内置组件同一套蓝，不再有默认紫色残留 */
+:root {
+  --vp-c-brand-1: #2563eb;
+  --vp-c-brand-2: #1d4ed8;
+  --vp-c-brand-3: #3b82f6;
+  --vp-c-brand-soft: rgba(37, 99, 235, 0.1);
+
+  --vp-c-bg: #ffffff;
+  --vp-c-bg-alt: #f6f7f9;
+  --vp-c-bg-soft: #f1f3f6;
+  --vp-c-bg-elv: #ffffff;
+
+  --vp-c-text-1: #111827;
+  --vp-c-text-2: #5b6472;
+  --vp-c-text-3: #8a93a0;
+
+  --vp-c-divider: #dde1e6;
+  --vp-c-gutter: #e7eaee;
+}
+
+/* V3 · A 石墨白 · 深色：跟随系统主题时 VitePress 自动打上 html.dark */
+html.dark {
+  --brand-1: #60a5fa;
+  --brand-2: #3b82f6;
+  --brand-3: #93c5fd;
+
+  --vp-c-brand-1: #60a5fa;
+  --vp-c-brand-2: #3b82f6;
+  --vp-c-brand-3: #2563eb;
+  --vp-c-brand-soft: rgba(96, 165, 250, 0.15);
+
+  --vp-c-bg: #0e1116;
+  --vp-c-bg-alt: #151a21;
+  --vp-c-bg-soft: #1b212a;
+  --vp-c-bg-elv: #20262f;
+
+  --vp-c-text-1: #e6e9ee;
+  --vp-c-text-2: #98a1ad;
+  --vp-c-text-3: #6b7480;
+
+  --vp-c-divider: #2a313b;
+  --vp-c-gutter: #20262f;
+}
+
 /* ---------- 2. 布局宽度 ---------- */
 :root {
   --vp-layout-max-width: 1580px;
@@ -51,10 +99,12 @@
 }
 
 /* 全局横向溢出兜底：装饰背景 .bg-fx 已是 fixed+overflow:hidden 自行裁切，
-   这里再锁死页面级横向滚动，避免任何窄屏元素把页面撑宽。 */
+   这里再锁死页面级横向滚动，避免任何窄屏元素把页面撑宽。
+   注意用 clip 而不是 hidden：hidden 会把 html/body 变成滚动容器，
+   导致 .VPLocalNav（“本页目录”条）的 position:sticky 失效、一滚就消失。 */
 html,
 body {
-  overflow-x: hidden;
+  overflow-x: clip;
   max-width: 100vw;
 }
 
@@ -79,10 +129,9 @@ body {
 }
 
 /* ============================================================
- * 3. 全局背景 bg-fx（fixed 铺满）
- *    深色：#08080d + 顶部网格 mask 渐隐 + 三团光晕
- *    浅色：多段 radial 渐变 + 线性渐变
- *    光晕：内页（.VPDoc）淡雅护眼，首页（.VPPage）恢复氛围
+ * 3. 全局背景 bg-fx（fixed 铺满，V3 · A 石墨白）
+ *    浅色 #F6F7F9   深色 #0E1116
+ *    纯底色：不铺网格、不叠光晕、不做渐变 —— 背景不参与内容竞争
  * ============================================================ */
 .bg-fx {
   position: fixed;
@@ -90,71 +139,38 @@ body {
   z-index: -1;
   overflow: hidden;
   pointer-events: none;
-  background: #08080d;
+  background: #f6f7f9;
 }
-.bg-grid {
-  position: absolute;
-  inset: 0;
-  background-image: linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
-  background-size: 56px 56px;
-  -webkit-mask-image: radial-gradient(
-    ellipse 90% 60% at 50% 0%,
-    #000 30%,
-    transparent 75%
-  );
-  mask-image: radial-gradient(
-    ellipse 90% 60% at 50% 0%,
-    #000 30%,
-    transparent 75%
-  );
-}
-.bg-fx .glow {
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(90px);
-  transition: opacity 0.4s;
-}
-.bg-fx .glow.g1 {
-  width: 520px;
-  height: 520px;
-  background: #6366f1;
-  top: -180px;
-  left: 8%;
-  opacity: 0.12;
-}
-.bg-fx .glow.g2 {
-  width: 460px;
-  height: 460px;
-  background: #8b5cf6;
-  top: -140px;
-  right: 6%;
-  opacity: 0.10;
-}
-.bg-fx .glow.g3 {
-  width: 380px;
-  height: 380px;
-  background: #22d3ee;
-  top: 60px;
-  left: 42%;
-  opacity: 0.06;
-}
-html:not(.dark) .bg-fx {
-  background:
-    radial-gradient(1100px 480px at 50% -8%, rgba(124, 92, 246, 0.13), transparent 60%),
-    radial-gradient(900px 520px at 82% 52%, rgba(99, 102, 241, 0.09), transparent 65%),
-    radial-gradient(760px 480px at 12% 78%, rgba(34, 211, 238, 0.07), transparent 65%),
-    linear-gradient(180deg, #f3f4fb 0%, #eceffa 46%, #f2f3fa 100%);
-}
-html:not(.dark) .bg-fx .glow {
-  opacity: 0.14;
+html.dark .bg-fx {
+  background: #0e1116;
 }
 
-/* 首页（.VPPage）恢复氛围光晕；内页（.VPDoc）保持淡雅、长时间阅读不刺眼 */
-.Layout:has(.VPPage) .bg-fx .glow.g1 { opacity: 0.5; }
-.Layout:has(.VPPage) .bg-fx .glow.g2 { opacity: 0.4; }
-.Layout:has(.VPPage) .bg-fx .glow.g3 { opacity: 0.18; }
-html:not(.dark) .Layout:has(.VPPage) .bg-fx .glow { opacity: 0.32; }
+/* 首页专属装饰：蓝图网格（顶部向下渐隐）
+   规则：装饰只挂在 .VPPage（首页），正文页（.VPDoc）保持纯底色，长文阅读不受干扰。
+   强度想再明显一档：把下面两处 0.045 / 0.06 调大（如 0.07 / 0.09）。 */
+.Layout:has(.VPPage) .bg-fx::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: linear-gradient(rgba(37, 99, 235, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(37, 99, 235, 0.045) 1px, transparent 1px);
+  background-size: 48px 48px;
+  -webkit-mask-image: radial-gradient(
+    ellipse 110% 70% at 50% 0%,
+    #000 30%,
+    transparent 76%
+  );
+  mask-image: radial-gradient(
+    ellipse 110% 70% at 50% 0%,
+    #000 30%,
+    transparent 76%
+  );
+}
+html.dark .Layout:has(.VPPage) .bg-fx::before {
+  background-image: linear-gradient(rgba(96, 165, 250, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(96, 165, 250, 0.06) 1px, transparent 1px);
+}
 
 /* 透明链：让全局 bg-fx 透出来。
    body / VPApp / VPContent / VPSidebar 及其顶部 .curtain 兜底元素、
@@ -308,16 +324,46 @@ body,
   background-color: transparent !important;
 }
 
-/* ---------- 顶部搜索弹窗毛玻璃（手动调整区） ----------
-   弹窗玻璃浓度默认复用 --glass-bg（= var(--vp-c-bg) 72%）；想让搜索框单独调，
-   直接改下面 .shell 的 color-mix 百分比（越大越实、越小越透）。
-   外层遮罩深浅改 .backdrop 的 36%；模糊强度改 blur()。 */
+/* VPLocalNav（“本页目录”条）默认带整条白底：
+   - <960 纯移动端会铺满整屏，在页面底色上切出一条白带；
+   - 960–1279 会盖住左侧 sidebar 顶部的“开始”。
+   统一去掉它自身的底色和下边线；宽屏需要时再由 ::before 只给内容区补底色。 */
+.VPLocalNav,
+.VPLocalNav.has-sidebar {
+  background: transparent !important;
+  border-bottom: none !important;
+}
+
+@media (min-width: 960px) {
+  .VPLocalNav.has-sidebar::before {
+    content: '';
+    position: absolute;
+    left: var(--vp-sidebar-width);
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background: var(--vp-c-bg);
+    border-bottom: 1px solid var(--vp-c-divider);
+    z-index: -1;
+    pointer-events: none;
+  }
+}
+
+/* ---------- 顶部搜索弹窗 ----------
+   搜索面板单独给实色（不再复用 0% 的 --glass-bg）：深浅两套都要"看得出是一块面板"。
+   想更透/更实就改下面 rgba 的最后一位（0.96 = 96% 不透明）。 */
 .VPLocalSearchBox .shell.shell {
-  background: var(--glass-bg);
-  -webkit-backdrop-filter: var(--glass-blur);
-  backdrop-filter: var(--glass-blur);
-  border: 1px solid color-mix(in srgb, var(--vp-c-bg) 88%, transparent);
+  background: rgba(255, 255, 255, 0.96);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  backdrop-filter: blur(14px) saturate(140%);
+  border: 1px solid #dde1e6;
   border-radius: 12px;
+  box-shadow: 0 24px 60px -24px rgba(17, 24, 39, 0.35);
+}
+html.dark .VPLocalSearchBox .shell.shell {
+  background: rgba(14, 17, 22, 0.96);
+  border-color: #2a313b;
+  box-shadow: 0 24px 60px -24px rgba(0, 0, 0, 0.8);
 }
 .VPLocalSearchBox .backdrop.backdrop {
   background: color-mix(in srgb, var(--vp-c-bg) 36%, transparent);
@@ -354,7 +400,7 @@ html {
   background: transparent;
 }
 ::selection {
-  background: var(--brand-1);
+  background: var(--brand-solid);
   color: #fff;
 }
 
@@ -364,16 +410,18 @@ html {
  *    pre 顶部预留空间，避免与第一行代码重叠；中性灰、浅色不带蓝调。
  * ============================================================ */
 :root {
-  --cb-body: color-mix(in srgb, #f6f7f9 32%, transparent);
-  /* 标题栏（语言标签行 / tabs）背景：比 body 实一些以压住层次；百分比越小越透 */
-  --cb-head: color-mix(in srgb, #eff1f3 72%, transparent);
+  /* 实色：不能用 color-mix(..., transparent)，否则 transparent 的黑色会参与混色把底压暗 */
+  --cb-body: #ffffff;
+  /* 标题栏（语言标签行 / tabs）背景：比正文略灰一档，压住层次 */
+  --cb-head: #f1f3f6;
   --cb-border: rgba(15, 23, 42, 0.09);
-  --cb-blur: blur(10px);
+  --cb-blur: none;
 }
 .dark {
-  --cb-body: color-mix(in srgb, #0e1116 52%, transparent);
-  --cb-head: color-mix(in srgb, #161b22 70%, transparent);
+  --cb-body: #080b10;
+  --cb-head: #121820;
   --cb-border: rgba(255, 255, 255, 0.09);
+  --cb-blur: none;
 }
 
 
@@ -411,6 +459,11 @@ html {
   background: transparent;
   padding-top: 58px;
 }
+/* 代码正文颜色：无高亮的纯文本统一用正文色，避免落在低对比的灰上 */
+.vp-doc div[class*='language-'] code {
+  color: var(--vp-c-text-1) !important;
+}
+
 /* 语言标签定位进头部条左侧 */
 .vp-doc div[class*='language-'] > span.lang {
   position: absolute;
@@ -589,10 +642,10 @@ html:not(.dark) .vp-doc div[class*='language-']::before {
   transition: background-color 0.15s ease;
 }
 .vp-doc table tbody tr:hover {
-  background: rgba(99, 102, 241, 0.12); /* hover 才高亮：品牌淡紫，比常态毛玻璃更实 */
+  background: rgba(37, 99, 235, 0.1); /* hover 才高亮：品牌蓝淡底，比常态毛玻璃更实 */
 }
 .dark .vp-doc table tbody tr:hover {
-  background: rgba(139, 92, 246, 0.22);
+  background: rgba(96, 165, 250, 0.14);
 }
 /* 首列（命令/日期/标题/缩写）不换行（聚合 idx 第1列另有覆盖） */
 .vp-doc table th:first-child,
@@ -783,5 +836,10 @@ html.dark .theme-toggle-btn .moon {
   .vp-doc table th,
   .vp-doc table td {
     white-space: nowrap;
+  }
+  /* 聚合页 idx 中间列是长描述：允许换行，避免 nowrap 把表格撑出横向滚动 */
+  .vp-doc .idx-table table th:nth-child(2),
+  .vp-doc .idx-table table td:nth-child(2) {
+    white-space: normal;
   }
 }

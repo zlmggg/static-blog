@@ -1,3 +1,7 @@
+---
+title: "kubectl logs 命令详解：看容器日志、排查崩溃"
+description: "本文是 kubectl 命令速查 中 kubectl logs 的从 0 到 1 详解。 目标：把 kubectl logs --help 里的每个选项讲清楚，多看几遍后，你在服务器上敲 kubectl logs --help 就知道该用哪个选项。 环境依据：kubectl 客户端，对应 Kuber…"
+---
 # kubectl logs 命令详解：看容器日志、排查崩溃
 
 > 本文是 [kubectl 命令速查](../kubectl-commands#调试与排障) 中 `kubectl logs` 的从 0 到 1 详解。
@@ -186,7 +190,7 @@ default/nginx-6f5b9d7c8-x2zqk/nginx 2026-09-29T10:05:21.123Z 10.244.1.1 - - "GET
 
 - 速查页：[kubectl 命令速查](../kubectl-commands#调试与排障)
 - 看 Pod 为什么崩：[describe 详解](./describe)
-- 进容器里手查：[exec 详解](./exec)
-- 实时把本地端口对到 Pod：[port-forward 详解](./port-forward)
-- 概念补课：[Pod 与服务发现](../../guide/container-k8s-02-pod-service-discovery)
+- 进容器里手查：[exec 详解](/reference/kubectl-commands)
+- 实时把本地端口对到 Pod：[port-forward 详解](/reference/kubectl-commands)
+- 概念补课：[Pod 与服务发现](/services/container/kubernetes/01-理论)
 - 官方命令参考：https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#logs

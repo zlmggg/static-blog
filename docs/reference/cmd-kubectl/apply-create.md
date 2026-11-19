@@ -1,3 +1,7 @@
+---
+title: "apply 与 create 命令详解：声明式 vs 命令式创建"
+description: "本文是 kubectl 命令速查 中 kubectl apply 与 kubectl create 的从 0 到 1 详解。"
+---
 # apply 与 create 命令详解：声明式 vs 命令式创建
 
 > 本文是 [kubectl 命令速查](../kubectl-commands#创建与应用) 中 `kubectl apply` 与 `kubectl create` 的从 0 到 1 详解。
@@ -191,8 +195,8 @@ kubectl create deployment my-dep --image=nginx --dry-run=client -o yaml > my-dep
 ## 八、相关命令与文档
 
 - 速查页：[kubectl 命令速查](../kubectl-commands#创建与应用)
-- 直接在线改资源：[edit 详解](./edit)
-- 改镜像/滚动发布：[rollout 与 set 详解](./rollout-set)
-- 删资源：[delete 详解](./delete)
-- 概念补课：[K8s 架构与集群](../../guide/container-k8s-01-architecture-cluster)
+- 直接在线改资源：[edit 详解](/reference/kubectl-commands)
+- 改镜像/滚动发布：[rollout 与 set 详解](/reference/kubectl-commands)
+- 删资源：[delete 详解](/reference/kubectl-commands)
+- 概念补课：[K8s 架构与集群](/services/container/kubernetes/01-理论)
 - 官方命令参考：https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#apply

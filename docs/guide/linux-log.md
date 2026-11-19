@@ -430,7 +430,7 @@ auditd 偏安全合规场景，普通排障用 journalctl/rsyslog 即可。
 
 ---
 
-## 面试自测
+## 本章自测
 
 1. /var/log/messages（syslog）和 secure（auth.log）分别记录什么？
 2. wtmp、btmp、lastlog 是什么？分别用哪个命令查看？

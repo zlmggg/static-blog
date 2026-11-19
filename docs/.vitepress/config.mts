@@ -1,9 +1,14 @@
 import { defineConfig } from 'vitepress'
 import container from 'markdown-it-container'
 
+// 站点常量：canonical / Open Graph 统一用同一套，避免每页手写
+const SITE_URL = 'https://www.sresec.com'
+const SITE_NAME = '禾光知寒'
+const DEFAULT_DESCRIPTION = '一个 SRE 的成长档案与随时可查的运维手册：命令速查、服务部署与排障训练'
+
 // 文档：https://vitepress.dev/zh/reference/site-config
 
-// 【单站方案】技术问答题并入故障与排障的「问与答」(/cases/qa/)，
+// 【单站方案】技术问答并入各领域指南末尾的「常见问题 FAQ」，
 // 求职、简历、HR、谈薪类个人内容不上公开站；站点不区分公开/私有构建。
 
 export default defineConfig({
@@ -14,7 +19,10 @@ export default defineConfig({
   title: '禾光知寒',
   description: '一个 SRE 的成长档案与随时可查的运维手册：命令速查、服务部署与排障训练',
 
-  // 本地搜索索引（328 页约 5.6MB，仅打开搜索框时异步加载）与 Mermaid 都已按需拆分，
+  // 实验项目附件是 public 下的静态文件，不是文档页；只忽略这一组静态下载链接
+  ignoreDeadLinks: [/^\/ops-project\/files\//],
+
+  // 本地搜索索引（125 页约 2MB，仅打开搜索框时异步加载）与 Mermaid 都已按需拆分，
   // 调高打包体积警告阈值到 6000，消除这个无害的 chunk size 警告
   vite: {
     build: {
@@ -44,8 +52,38 @@ export default defineConfig({
     ['link', { rel: 'stylesheet', href: '/fonts/fonts.css' }]
   ],
 
-  // 默认使用深色主题（用户仍可手动切换到浅色，选择会被记住）
-  appearance: 'dark',
+  // 每页注入 canonical / Open Graph / Twitter 卡片，便于搜索引擎和分享卡片识别
+  transformHead({ pageData }: any) {
+    const rel = String(pageData.relativePath || '')
+      .replace(/\.md$/, '')
+      .replace(/(^|\/)index$/, '$1')
+    const path = rel === 'index' ? '' : rel
+    const canonical = `${SITE_URL}/${path}`
+    const title = pageData.title
+      ? String(pageData.title).includes(SITE_NAME)
+        ? pageData.title
+        : `${pageData.title} · ${SITE_NAME}`
+      : SITE_NAME
+    const description = pageData.description || DEFAULT_DESCRIPTION
+    const isHome = pageData.relativePath === 'index.md'
+    return [
+      ['link', { rel: 'canonical', href: canonical }],
+      ['meta', { property: 'og:type', content: isHome ? 'website' : 'article' }],
+      ['meta', { property: 'og:site_name', content: SITE_NAME }],
+      ['meta', { property: 'og:title', content: title }],
+      ['meta', { property: 'og:description', content: description }],
+      ['meta', { property: 'og:url', content: canonical }],
+      ['meta', { property: 'og:locale', content: 'zh_CN' }],
+      ['meta', { name: 'twitter:card', content: 'summary' }],
+      ['meta', { name: 'twitter:title', content: title }],
+      ['meta', { name: 'twitter:description', content: description }]
+    ]
+  },
+
+  // 默认跟随操作系统主题（prefers-color-scheme）：
+  //   appearance: true  → 系统深色则深色、系统浅色则浅色；用户手动切换后记住选择
+  //   appearance: 'dark' → 强制深色（V2 行为，V3 已弃用）
+  appearance: true,
 
   // Markdown 解析增强
   markdown: {
@@ -67,7 +105,8 @@ export default defineConfig({
       logql: 'sql',      // Loki LogQL 查询
       traceql: 'sql',    // Tempo TraceQL 查询
       cron: 'bash',      // crontab 定时任务行
-      crontab: 'bash'    // 部分笔记围栏用 crontab，统一别名消除 not loaded 警告
+      crontab: 'bash',   // 部分笔记围栏用 crontab，统一别名消除 not loaded 警告
+      tmux: 'bash'       // tmux 配置/命令片段按 shell 高亮
     },
     config: (md: any) => {
       // 自定义容器 ::: idx：包裹聚合页「文章索引表」，配合 CSS 固定状态列宽度
@@ -113,45 +152,10 @@ export default defineConfig({
     // —— 顶部导航 ——
     nav: [
       { text: '首页', link: '/' },
-      {
-        text: '速查手册',
-        activeMatch: '/reference/',
-        items: [
-          { text: 'Linux 命令速查', link: '/reference/linux-commands' },
-          { text: '网络命令速查', link: '/reference/network-commands' },
-          { text: 'Docker 命令速查', link: '/reference/docker-commands' },
-          { text: 'kubectl 命令速查', link: '/reference/kubectl-commands' },
-          { text: 'Git 工作流速查', link: '/reference/git-commands' },
-          { text: '云原生命令速查', link: '/reference/cloudnative-commands' },
-          { text: 'AI Prompt 模板', link: '/reference/ai-prompts' },
-          { text: '运维文档模板', link: '/reference/ops-templates' },
-          { text: '运维清单大全', link: '/reference/ops-checklists' }
-        ]
-      },
-      {
-        text: '操作指南',
-        activeMatch: '/guide/(?!blog|opsdev|career)',
-        items: [
-          { text: 'Linux 系统', link: '/guide/linux' },
-          { text: '服务部署', link: '/guide/services' },
-          { text: '数据与中间件', link: '/guide/data' },
-          { text: '监控与日志', link: '/guide/monitor' },
-          { text: '容器与编排', link: '/guide/container' },
-          { text: '自动化与 IaC', link: '/guide/automation' },
-          { text: 'DevOps 与平台工程', link: '/guide/devops' },
-          { text: '智能运维与 AI', link: '/guide/aiops' },
-          { text: '架构设计', link: '/guide/architecture' }
-        ]
-      },
-      {
-        text: '故障与排障',
-        activeMatch: '/cases/',
-        items: [
-          { text: '排障训练场', link: '/cases/' },
-          { text: '排障记录', link: '/cases/troubleshooting' },
-          { text: '问与答', link: '/cases/qa/' }
-        ]
-      },
+      { text: '命令手册', link: '/commands/', activeMatch: '/commands/' },
+      { text: '服务详解', link: '/services/', activeMatch: '/services/' },
+      { text: '部署方案', link: '/deploy/', activeMatch: '/deploy/' },
+      { text: '故障与排障', link: '/cases/', activeMatch: '/cases/' },
       {
         text: '我的项目',
         activeMatch: '/projects/',
@@ -159,16 +163,7 @@ export default defineConfig({
           { text: '项目总览', link: '/projects/' },
           { text: '禾光知寒站点', link: '/projects/site-blog' },
           { text: '阿里云部署', link: '/projects/aliyun-deploy' },
-          { text: '家庭实验室', link: '/projects/homelab' }
-        ]
-      },
-      {
-        text: '手记 / 职业',
-        activeMatch: '/guide/(blog|opsdev|career)',
-        items: [
-          { text: '运维手记', link: '/guide/blog' },
-          { text: '运维开发 / 平台自研', link: '/guide/opsdev' },
-          { text: '职业发展与行业思考', link: '/guide/career' }
+          { text: '项目架构', link: '/projects/homelab' }
         ]
       },
       { text: '关于', link: '/about' }
@@ -186,33 +181,183 @@ export default defineConfig({
         ]
       },
       {
-        text: '速查手册',
+        text: '命令手册',
         collapsed: false,
         items: [
-          { text: 'Linux 命令速查', link: '/reference/linux-commands' },
-          { text: '网络命令速查', link: '/reference/network-commands' },
-          { text: 'Docker 命令速查', link: '/reference/docker-commands' },
-          { text: 'kubectl 命令速查', link: '/reference/kubectl-commands' },
-          { text: 'Git 工作流速查', link: '/reference/git-commands' },
-          { text: '云原生命令速查', link: '/reference/cloudnative-commands' },
-          { text: 'AI Prompt 模板', link: '/reference/ai-prompts' },
-          { text: '运维文档模板', link: '/reference/ops-templates' },
-          { text: '运维清单大全', link: '/reference/ops-checklists' }
+          { text: '命令手册总览', link: '/commands/' },
+          { text: '文件与文本', link: '/commands/basic/' },
+          { text: '用户与权限', link: '/commands/identity/' },
+          { text: '进程与系统', link: '/commands/system/' },
+          { text: '磁盘与存储', link: '/commands/storage/' },
+          { text: '网络', link: '/commands/network/' },
+          { text: '排障观测', link: '/commands/observe/' },
+          { text: '软件包管理', link: '/commands/package/' },
+          { text: 'Shell 与脚本', link: '/commands/shell/' },
+          { text: '开发与效率', link: '/commands/devtools/' }
         ]
       },
       {
-        text: '操作指南',
+        text: '服务详解',
         collapsed: false,
         items: [
-          { text: 'Linux 系统', link: '/guide/linux' },
-          { text: '服务部署', link: '/guide/services' },
-          { text: '数据与中间件', link: '/guide/data' },
-          { text: '监控与日志', link: '/guide/monitor' },
-          { text: '容器与编排', link: '/guide/container' },
-          { text: '自动化与 IaC', link: '/guide/automation' },
-          { text: 'DevOps 与平台工程', link: '/guide/devops' },
-          { text: '智能运维与 AI', link: '/guide/aiops' },
-          { text: '架构设计', link: '/guide/architecture' }
+          { text: '服务全景', link: '/services/' },
+          {
+            text: '接入与网络',
+            collapsed: true,
+            items: [
+              { text: '分组导读', link: '/services/web/' },
+              {
+                text: 'Nginx',
+                collapsed: true,
+                items: [
+                  { text: '01 服务理论', link: '/services/web/nginx/01-理论' },
+                  { text: '02 部署方案', link: '/services/web/nginx/02-部署' },
+                  { text: '03 功能详解', link: '/services/web/nginx/03-功能' },
+                  { text: '04 实战参考', link: '/services/web/nginx/04-实战' }
+                ]
+              },
+              { text: 'LVS + Keepalived', link: '/services/web/lvs-keepalived' },
+              { text: 'HAProxy', link: '/services/web/haproxy' },
+              { text: 'DNS（Bind）', link: '/services/web/dns' }
+            ]
+          },
+          {
+            text: '数据库与缓存',
+            collapsed: true,
+            items: [
+              { text: '分组导读', link: '/services/database/' },
+              {
+                text: 'MySQL',
+                collapsed: true,
+                items: [
+                  { text: '01 服务理论', link: '/services/database/mysql/01-理论' },
+                  { text: '02 部署方案', link: '/services/database/mysql/02-部署' },
+                  { text: '03 功能详解', link: '/services/database/mysql/03-功能' },
+                  { text: '04 实战参考', link: '/services/database/mysql/04-实战' }
+                ]
+              },
+              {
+                text: 'Redis',
+                collapsed: true,
+                items: [
+                  { text: '01 服务理论', link: '/services/database/redis/01-理论' },
+                  { text: '02 部署方案', link: '/services/database/redis/02-部署' },
+                  { text: '03 功能详解', link: '/services/database/redis/03-功能' },
+                  { text: '04 实战参考', link: '/services/database/redis/04-实战' }
+                ]
+              }
+            ]
+          },
+          {
+            text: '中间件',
+            collapsed: true,
+            items: [
+              { text: '分组导读', link: '/services/middleware/' },
+              { text: 'Nacos', link: '/services/middleware/nacos' },
+              { text: 'Kafka', link: '/services/middleware/kafka' },
+              { text: 'RabbitMQ', link: '/services/middleware/rabbitmq' }
+            ]
+          },
+          {
+            text: '容器与编排',
+            collapsed: true,
+            items: [
+              { text: '分组导读', link: '/services/container/' },
+              {
+                text: 'Docker',
+                collapsed: true,
+                items: [
+                  { text: '01 服务理论', link: '/services/container/docker/01-理论' },
+                  { text: '02 部署方案', link: '/services/container/docker/02-部署' },
+                  { text: '03 功能详解', link: '/services/container/docker/03-功能' },
+                  { text: '04 实战参考', link: '/services/container/docker/04-实战' }
+                ]
+              },
+              { text: 'Docker Compose', link: '/services/container/compose' },
+              {
+                text: 'Kubernetes',
+                collapsed: true,
+                items: [
+                  { text: '01 服务理论', link: '/services/container/kubernetes/01-理论' },
+                  { text: '02 部署方案', link: '/services/container/kubernetes/02-部署' },
+                  { text: '03 功能详解', link: '/services/container/kubernetes/03-功能' },
+                  { text: '04 实战参考', link: '/services/container/kubernetes/04-实战' }
+                ]
+              },
+              { text: 'Helm', link: '/services/container/helm' },
+              { text: 'Harbor', link: '/services/container/harbor' }
+            ]
+          },
+          {
+            text: '存储与搜索',
+            collapsed: true,
+            items: [
+              { text: '分组导读', link: '/services/storage-search/' },
+              { text: 'MinIO', link: '/services/storage-search/minio' },
+              {
+                text: 'Elasticsearch',
+                collapsed: true,
+                items: [
+                  { text: '01 服务理论', link: '/services/storage-search/elasticsearch/01-理论' },
+                  { text: '02 部署方案', link: '/services/storage-search/elasticsearch/02-部署' },
+                  { text: '03 功能详解', link: '/services/storage-search/elasticsearch/03-功能' },
+                  { text: '04 实战参考', link: '/services/storage-search/elasticsearch/04-实战' }
+                ]
+              }
+            ]
+          },
+          {
+            text: 'CI/CD 与自动化',
+            collapsed: true,
+            items: [
+              { text: '分组导读', link: '/services/cicd/' },
+              { text: 'GitLab', link: '/services/cicd/gitlab' },
+              {
+                text: 'Jenkins',
+                collapsed: true,
+                items: [
+                  { text: '01 服务理论', link: '/services/cicd/jenkins/01-理论' },
+                  { text: '02 部署方案', link: '/services/cicd/jenkins/02-部署' },
+                  { text: '03 功能详解', link: '/services/cicd/jenkins/03-功能' },
+                  { text: '04 实战参考', link: '/services/cicd/jenkins/04-实战' }
+                ]
+              },
+              { text: 'Ansible', link: '/services/cicd/ansible' }
+            ]
+          },
+          {
+            text: '监控与日志',
+            collapsed: true,
+            items: [
+              { text: '分组导读', link: '/services/observability/' },
+              {
+                text: 'Prometheus',
+                collapsed: true,
+                items: [
+                  { text: '01 服务理论', link: '/services/observability/prometheus/01-理论' },
+                  { text: '02 部署方案', link: '/services/observability/prometheus/02-部署' },
+                  { text: '03 功能详解', link: '/services/observability/prometheus/03-功能' },
+                  { text: '04 实战参考', link: '/services/observability/prometheus/04-实战' }
+                ]
+              },
+              { text: 'Grafana', link: '/services/observability/grafana' },
+              { text: 'Alertmanager', link: '/services/observability/alertmanager' },
+              { text: 'ELK 日志平台', link: '/services/observability/elk' }
+            ]
+          }
+        ]
+      },
+      {
+        text: '部署方案',
+        collapsed: false,
+        items: [
+          { text: '部署形态矩阵', link: '/deploy/' },
+          { text: '接入层高可用', link: '/deploy/stacks/lb-ha' },
+          { text: 'MySQL 主从读写分离', link: '/deploy/stacks/mysql-ha' },
+          { text: 'Redis 哨兵集群', link: '/deploy/stacks/redis-sentinel' },
+          { text: 'CI/CD 流水线', link: '/deploy/stacks/cicd-pipeline' },
+          { text: '监控告警栈', link: '/deploy/stacks/monitor-stack' },
+          { text: '日志链路', link: '/deploy/stacks/log-stack' }
         ]
       },
       {
@@ -222,25 +367,43 @@ export default defineConfig({
           { text: '项目总览', link: '/projects/' },
           { text: '禾光知寒站点', link: '/projects/site-blog' },
           { text: '阿里云部署', link: '/projects/aliyun-deploy' },
-          { text: '家庭实验室', link: '/projects/homelab' }
-        ]
-      },
-      {
-        text: '手记与职业',
-        collapsed: false,
-        items: [
-          { text: '运维手记', link: '/guide/blog' },
-          { text: '运维开发 / 平台自研', link: '/guide/opsdev' },
-          { text: '职业发展与行业思考', link: '/guide/career' }
+          { text: '项目架构', link: '/projects/homelab' },
+          {
+            text: '10-实操',
+            collapsed: true,
+            items: [
+              { text: '10-实操总览', link: '/projects/homelab/practice/' },
+              { text: '资料清单', link: '/projects/homelab/materials' },
+              { text: 'D0 装机与 PVE 初始化', link: '/projects/homelab/practice/01-D0-装机与PVE初始化' },
+              { text: 'D1-P0 管理平面', link: '/projects/homelab/practice/02-D1-P0管理平面' },
+              { text: 'D1-P1 最小链路', link: '/projects/homelab/practice/03-D1-P1最小链路' },
+              { text: 'D1-P1.5 堡垒机', link: '/projects/homelab/practice/04-D1-P15堡垒机' },
+              { text: 'D2-P2-1 数据层高可用', link: '/projects/homelab/practice/05-D2-P2-1数据层高可用' },
+              { text: 'D2-P2-2 对象存储与搜索', link: '/projects/homelab/practice/06-D2-P2-2对象存储与搜索' },
+              { text: 'D2-P2-3 蓝绿发布', link: '/projects/homelab/practice/07-D2-P2-3蓝绿发布' },
+              { text: 'P3-0 中间件 Nacos 与日志', link: '/projects/homelab/practice/08-P3-0中间件Nacos与日志' },
+              { text: 'P3-1 若依与 MinIO', link: '/projects/homelab/practice/09-P3-1若依部署与MinIO' },
+              { text: 'P3-2 若依接入 ES', link: '/projects/homelab/practice/10-P3-2若依接入ES' },
+              { text: 'P3-3 若依蓝绿发布', link: '/projects/homelab/practice/11-P3-3若依蓝绿发布' },
+              { text: 'P4 K8s 迁移', link: '/projects/homelab/practice/12-P4-K8s迁移' },
+              { text: 'P5 mall-swarm', link: '/projects/homelab/practice/13-P5-mall-swarm' }
+            ]
+          }
         ]
       },
       {
         text: '故障与排障',
         collapsed: false,
         items: [
-          { text: '排障训练场', link: '/cases/' },
-          { text: '排障记录', link: '/cases/troubleshooting' },
-          { text: '问与答', link: '/cases/qa/' }
+          { text: '排障记录（聚合）', link: '/cases/' }
+        ]
+      },
+      {
+        text: '运维手记',
+        collapsed: true,
+        items: [
+          { text: '运维手记', link: '/guide/blog' },
+          { text: '职业发展与行业思考', link: '/guide/career' }
         ]
       }
     ],

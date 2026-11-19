@@ -1,0 +1,8 @@
+[Unit]
+Description=LVM thin pool usage check
+Documentation=file:///etc/thin-alert.conf
+After=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/thin-alert.sh

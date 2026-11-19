@@ -1,3 +1,7 @@
+---
+title: "docker logs 命令详解：查看容器里程序打印的日志"
+description: "本文是 Docker 命令速查 中 docker logs 的从 0 到 1 详解。 目标：把 docker logs --help 里的每个选项讲清楚，多看几遍后，你在服务器上敲 docker logs --help 就知道该用哪个选项。 环境依据：Docker Engine 28.x（docke…"
+---
 # docker logs 命令详解：查看容器里程序打印的日志
 
 > 本文是 [Docker 命令速查](../docker-commands#进入与日志) 中 `docker logs` 的从 0 到 1 详解。
@@ -151,9 +155,9 @@ docker logs web 2>&1 | grep -i error
 ## 八、相关命令与文档
 
 - 速查页：[Docker 命令速查](../docker-commands#进入与日志)
-- 进容器读文件日志：`docker exec`（详解见 [exec](./exec)）
-- 看容器资源占用：`docker stats`（详解见 [stats](./stats)）
-- 看容器详情：`docker inspect`（详解见 [ps-inspect](./ps-inspect)）
+- 进容器读文件日志：`docker exec`（详解见 [exec](/reference/docker-commands)）
+- 看容器资源占用：`docker stats`（详解见 [stats](/reference/docker-commands)）
+- 看容器详情：`docker inspect`（详解见 [ps-inspect](/reference/docker-commands)）
 - 多服务日志：`docker compose logs`（详解见 [compose](./compose)）
-- 原理与实战：[Docker 实战手册](../../guide/container-docker)
+- 原理与实战：[Docker 实战手册](/services/container/docker/01-理论)
 - 官方参考：https://docs.docker.com/reference/cli/docker/container/logs/

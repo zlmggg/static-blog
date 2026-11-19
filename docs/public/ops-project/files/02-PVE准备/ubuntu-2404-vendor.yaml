@@ -1,0 +1,62 @@
+#cloud-config
+# ============================================================
+# Ubuntu 24.04 实验机通用初始化（PVE vendor-data）
+# 放置路径：/var/lib/vz/snippets/ubuntu-2404-vendor.yaml
+# 挂载方式：qm set <vmid> --cicustom "vendor=local:snippets/ubuntu-2404-vendor.yaml"
+# ============================================================
+
+timezone: Asia/Shanghai
+package_update: true
+package_upgrade: false
+
+packages:
+  - qemu-guest-agent
+  - chrony
+  - curl
+  - wget
+  - vim
+  - htop
+  - net-tools
+  - dnsutils
+  - ca-certificates
+  - jq
+  - unzip
+  - rsync
+  - tree
+
+write_files:
+  # 关闭 IPv6：只保留 IPv4，符合实验网规划
+  - path: /etc/sysctl.d/99-disable-ipv6.conf
+    permissions: '0644'
+    content: |
+      net.ipv6.conf.all.disable_ipv6 = 1
+      net.ipv6.conf.default.disable_ipv6 = 1
+      net.ipv6.conf.lo.disable_ipv6 = 1
+
+  # SSH 只允许密钥登录
+  - path: /etc/ssh/sshd_config.d/99-lab.conf
+    permissions: '0644'
+    content: |
+      PasswordAuthentication no
+      KbdInteractiveAuthentication no
+      PermitRootLogin no
+      ClientAliveInterval 300
+      ClientAliveCountMax 2
+
+  # 登录提示
+  - path: /etc/motd
+    permissions: '0644'
+    content: |
+      ============================================
+        Ubuntu 24.04 LTS  ·  PVE Lab VM
+        私网: 10.0.0.0/24   网关: 10.0.0.1
+      ============================================
+
+runcmd:
+  - [ sysctl, --system ]
+  - [ systemctl, enable, --now, qemu-guest-agent ]
+  - [ systemctl, enable, --now, chrony ]
+  - [ systemctl, restart, ssh ]
+  - [ touch, /var/lib/cloud/lab-ready ]
+
+final_message: "lab vm ready after $UPTIME seconds"

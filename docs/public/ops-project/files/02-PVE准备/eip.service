@@ -1,0 +1,13 @@
+[Unit]
+Description=EIP 1:1 NAT for lab VMs (reads /etc/eip.map)
+Documentation=file:///etc/eip.map
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/eip-apply.sh
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

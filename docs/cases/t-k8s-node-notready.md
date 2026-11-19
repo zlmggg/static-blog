@@ -1,10 +1,10 @@
 ---
+id: K-04
 category: 容器
 difficulty: 高级
-date: 2025-03-10
+description: "集群里一个 worker 节点突然变成 NotReady，上面跑的 Pod 被驱逐，业务受损"
 ---
-
-# 节点 NotReady 排障（2025-03-10）
+# K-04 · 节点 NotReady 排障
 
 ## 现象
 
@@ -68,7 +68,7 @@ crictl info
 | `failed to run Kubelet: misconfiguration` | kubelet 配置错 | 看 /var/lib/kubelet/config.yaml |
 | `runtime network not ready: NetworkReady=false` | CNI 插件没装/Pod 网段没配 | 查 CNI |
 | `disk usage on / is 95%` | 磁盘满 | 清理磁盘（见 [Docker 存储](/cases/t-docker-storage-driver)） |
-| `certificate has expired` | kubelet 证书过期（见 [证书过期](/cases/t-k8s-cert-expired)） | 续证书 |
+| `certificate has expired` | kubelet 证书过期（见 [证书过期](/cases/)） | 续证书 |
 | `connection refused 10250` | kubelet 进程没起来 | systemctl restart kubelet |
 
 ### 5. 本次实际：磁盘满导致 containerd 起不来
@@ -148,4 +148,4 @@ kubectl get nodes                                       # Ready
 ## 相关
 
 - 命令速查：[kubectl 命令速查](/reference/kubectl-commands) ｜ [云原生排障命令速查](/reference/cloudnative-commands) ｜ [Linux 命令速查](/reference/linux-commands)
-- 同组短文：[etcd 故障](/cases/t-k8s-etcd-failure) ｜ [集群证书过期](/cases/t-k8s-cert-expired) ｜ [OOMKilled](/cases/t-k8s-oomkilled)
+- 同组短文：[etcd 故障](/cases/t-k8s-etcd-failure) ｜ [集群证书过期](/cases/) ｜ [OOMKilled](/cases/)

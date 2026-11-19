@@ -1,10 +1,11 @@
 ---
+id: D-03
 category: 容器
 difficulty: 中级
-date: 2023-11-13
+description: "新建的容器之间互相 ping 不通，容器也访问不了外网；但宿主机本身网络正常。宿主机上 curl 容器IP:端口 也不通。"
 ---
 
-# 容器网络不通排查（2023-11-13）
+# D-03 · 容器网络不通排查
 
 ## 现象
 
@@ -163,4 +164,4 @@ curl -I http://localhost:8080
 ## 相关
 
 - 命令速查：[Docker 命令速查](/reference/docker-commands) ｜ [网络命令速查](/reference/network-commands)
-- 同组短文：[dockerd 启动失败](/cases/t-docker-daemon-fail) ｜ [存储驱动 overlay2](/cases/t-docker-storage-driver) ｜ [镜像拉取失败](/cases/t-docker-image-pull-fail)
+- 同组短文：[dockerd 启动失败](/cases/t-docker-daemon-fail) ｜ [存储驱动 overlay2](/cases/t-docker-storage-driver) ｜ [镜像拉取失败](/cases/)

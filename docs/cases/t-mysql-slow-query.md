@@ -1,10 +1,11 @@
 ---
+id: M-02
 category: 数据
 difficulty: 中级
-date: 2020-09-22
+description: "后台报表接口越来越慢，一个原本 200ms 的查询慢慢退化到 8s 以上，高峰期直接超时。DBA 反馈慢查询日志里同一类 SQL 每天累积上万条。"
 ---
 
-# MySQL 慢查询与索引失效（2020-09-22）
+# M-02 · MySQL 慢查询与索引失效
 
 ## 现象
 
@@ -156,4 +157,4 @@ SHOW GLOBAL STATUS LIKE 'Slow_queries';
 ## 相关
 
 - 命令速查：[Linux 命令速查](/reference/linux-commands)
-- 同组短文：[主从复制延迟](/cases/t-mysql-replica-lag) ｜ [InnoDB 死锁](/cases/t-mysql-deadlock) ｜ [连接数打满](/cases/t-mysql-too-many-connections)
+- 同组短文：[主从复制延迟](/cases/t-mysql-replica-lag) ｜ [InnoDB 死锁](/cases/t-mysql-deadlock) ｜ [连接数打满](/cases/)

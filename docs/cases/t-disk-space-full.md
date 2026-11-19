@@ -1,10 +1,10 @@
 ---
+id: L-01
 category: Linux
 difficulty: 初级
-date: 2020-11-03
+description: "磁盘空间写满：一台应用服务器突然报错，业务写不进去。含关键步骤、验证与常见坑。"
 ---
-
-# 磁盘空间写满（2020-11-03）
+# L-01 · 磁盘空间写满
 
 ## 现象
 
@@ -155,6 +155,6 @@ logrotate -d /etc/logrotate.d/nginx   # -d 干跑，不真执行
 ## 相关
 
 - 命令速查：[Linux 命令速查](/reference/linux-commands)
-- Inode 方向：[inode 耗尽问题](/cases/t-inode-exhausted)
-- 文件句柄方向：[Too many open files](/cases/t-too-many-open-files)
-- 巡检清单：[运维巡检清单](/reference/ops-checklists)
+- Inode 方向：[inode 耗尽问题](/cases/)
+- 文件句柄方向：[Too many open files](/cases/)
+- 巡检清单：[运维巡检清单](/reference/ops-templates#运维检查清单)

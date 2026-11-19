@@ -1,10 +1,10 @@
 ---
+id: S-01
 category: 服务
 difficulty: 中级
-date: 2022-12-11
+description: "Nginx 502 Bad Gateway：用户访问网站，Nginx 返回 502。含关键步骤、验证与常见坑。"
 ---
-
-# Nginx 502 Bad Gateway（2022-12-11）
+# S-01 · Nginx 502 Bad Gateway
 
 ## 现象
 
@@ -51,7 +51,7 @@ Nginx error.log 里：
 | `connect() failed (111: Connection refused)` | 端口没监听 | 后端服务没启动 |
 | `upstream prematurely closed connection` | 后端进程崩了 | PHP-FPM 池崩溃/segfault |
 | `recv() failed (104: Connection reset by peer)` | 后端 RST | 后端 panic/SELinux |
-| `no live upstreams` | 所有后端都被摘了 | [LB 后端被摘](/cases/t-lb-backend-ejected) |
+| `no live upstreams` | 所有后端都被摘了 | [LB 后端被摘](/cases/) |
 
 ### 2. 确认后端进程在不在
 
@@ -96,7 +96,7 @@ ausearch -m avc -ts recent | grep httpd
 
 ## 根因
 
-PHP-FPM 进程池被慢请求打满，新请求进来没 worker 处理，`listen.backlog` 队列满后内核直接 RST，Nginx 收到 RST 返回 502。参考 [PHP-FPM 502](/cases/t-phpfpm-502)。
+PHP-FPM 进程池被慢请求打满，新请求进来没 worker 处理，`listen.backlog` 队列满后内核直接 RST，Nginx 收到 RST 返回 502。参考 [PHP-FPM 502](/cases/)。
 
 另一个常见根因：后端 Java/PHP 进程 OOM 被 kill，端口没人监听。
 
@@ -114,7 +114,7 @@ ss -tlnp | grep :9000
 
 ### 2. 彻底修复：根据根因
 
-如果是 PHP-FPM 池打满（参考 [PHP-FPM 502](/cases/t-phpfpm-502)）：
+如果是 PHP-FPM 池打满（参考 [PHP-FPM 502](/cases/)）：
 
 ```
 ; /etc/php-fpm.d/www.conf
@@ -128,7 +128,7 @@ request_terminate_timeout = 30s
 ```
 
 如果是后端进程 OOM：
-- 加内存或修泄漏（参考 [OOM Killer](/cases/t-memory-leak-oom)）。
+- 加内存或修泄漏（参考 [OOM Killer](/cases/)）。
 
 如果是 SELinux 拦了：
 
@@ -170,5 +170,5 @@ upstream backend {
 
 - 命令速查：[网络命令速查](/reference/network-commands)
 - 服务方向：[Nginx 504 Gateway Timeout](/cases/t-nginx-504-timeout)
-- 服务方向：[PHP-FPM 进程池打满](/cases/t-phpfpm-502)
-- 网络方向：[Connection refused](/cases/t-port-connection-refused)
+- 服务方向：[PHP-FPM 进程池打满](/cases/)
+- 网络方向：[Connection refused](/cases/)

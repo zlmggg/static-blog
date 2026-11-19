@@ -1,3 +1,7 @@
+---
+title: "kubectl get 命令详解：查看集群里的一切资源"
+description: "本文是 kubectl 命令速查 中 kubectl get 的从 0 到 1 详解。 目标：把 kubectl get --help 里的每个选项讲清楚，多看几遍后，你在服务器上敲 kubectl get --help 就知道该用哪个选项。 环境依据：kubectl 客户端，对应 Kubernet…"
+---
 # kubectl get 命令详解：查看集群里的一切资源
 
 > 本文是 [kubectl 命令速查](../kubectl-commands#资源查看) 中 `kubectl get` 的从 0 到 1 详解。
@@ -268,6 +272,6 @@ kubectl get pod nginx-6f5b9d7c8-x2zqk -o jsonpath='{.status.podIP}'
 - 速查页：[kubectl 命令速查](../kubectl-commands#资源查看)
 - 看资源详情和 Events：[describe 详解](./describe)
 - 看日志：[logs 详解](./logs)
-- 删资源：[delete 详解](./delete)
-- 概念补课（Pod/Service）：[Pod 与服务发现](../../guide/container-k8s-02-pod-service-discovery)
+- 删资源：[delete 详解](/reference/kubectl-commands)
+- 概念补课（Pod/Service）：[Pod 与服务发现](/services/container/kubernetes/01-理论)
 - 官方命令参考：https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#get

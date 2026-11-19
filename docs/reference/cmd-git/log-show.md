@@ -1,3 +1,7 @@
+---
+title: "git log、git show、git blame 命令详解：翻历史、看某次提交、查某行是谁写的"
+description: "本文是 Git 命令速查 中 git log、git show、git blame 的从 0 到 1 详解。本篇一次讲清「翻提交历史」「看某次提交的详情」「查某行代码最后是谁改的」。 目标：把 git log 的过滤/格式化选项讲清楚，搞懂 --oneline、--graph、-p、--author…"
+---
 # git log、git show、git blame 命令详解：翻历史、看某次提交、查某行是谁写的
 
 > 本文是 [Git 命令速查](../git-commands#查看历史) 中 `git log`、`git show`、`git blame` 的从 0 到 1 详解。本篇一次讲清「翻提交历史」「看某次提交的详情」「查某行代码最后是谁改的」。
@@ -247,5 +251,9 @@ git log -S "def login" --oneline
 
 - 速查页：[Git 命令速查](../git-commands#查看历史)
 - 看错了怎么回去：[reset-revert-restore](./reset-revert-restore)
-- 找回归 bug 引入点：`git bisect`（详解见 [advanced](./advanced)）
-- 找回误删的提交：`git reflog`（详解见 [advanced](./advanced)）
+- 找回归 bug 引入点：`git bisect`（详解见 [advanced](/reference/git-commands)）
+- 找回误删的提交：`git reflog`（详解见 [advanced](/reference/git-commands)）
+
+## 官方文档
+
+- [git log](https://git-scm.com/docs/git-log)

@@ -1,10 +1,11 @@
 ---
+id: M-03
 category: 数据
 difficulty: 高级
-date: 2021-11-08
----
+description: "InnoDB 死锁排查：LATEST DETECTED DEADLOCK。含关键步骤、验证与常见坑。"
 
-# InnoDB 死锁排查（2021-11-08）
+---
+# M-03 · InnoDB 死锁排查
 
 ## 现象
 
@@ -47,7 +48,9 @@ SHOW ENGINE INNODB STATUS\G
 输出里找 `LATEST DETECTED DEADLOCK` 段：
 
 ```text
-------------------------
+---
+
+---------------------
 LATEST DETECTED DEADLOCK
 ------------------------
 *** (1) TRANSACTION:
@@ -165,4 +168,4 @@ SHOW STATUS LIKE 'Innodb_deadlocks';  -- 计数器不再增长
 ## 相关
 
 - 命令速查：[Linux 命令速查](/reference/linux-commands)
-- 同组短文：[主从复制延迟](/cases/t-mysql-replica-lag) ｜ [慢查询排查](/cases/t-mysql-slow-query) ｜ [连接数打满](/cases/t-mysql-too-many-connections)
+- 同组短文：[主从复制延迟](/cases/t-mysql-replica-lag) ｜ [慢查询排查](/cases/t-mysql-slow-query) ｜ [连接数打满](/cases/)

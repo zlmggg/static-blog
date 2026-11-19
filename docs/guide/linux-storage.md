@@ -1,6 +1,7 @@
 ---
 category: Linux
 difficulty: 中级
+description: "这是一篇从零讲透的文档：不只是给命令，而是讲清楚'一块磁盘在 Linux 里经历了什么、为什么要分区/格式化/LVM'。"
 ---
 
 # 磁盘存储（详细指南）
@@ -459,5 +460,5 @@ quotaon /data
 ## 速查与相关文档
 
 - 想快速找命令：[Linux 命令速查](/reference/linux-commands)
-- inode、文件类型、软硬链接：[文件系统](./linux-filesystem)
+- inode、文件类型、软硬链接：[文件系统](/guide/linux#合并资料)
 - 进程、内存、OOM 排查：[进程与服务管理](./linux-process)

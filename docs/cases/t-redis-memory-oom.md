@@ -1,10 +1,10 @@
 ---
+id: R-01
 category: 数据
 difficulty: 中级
-date: 2023-08-11
+description: "Redis 内存打满 OOM：Redis 突然拒绝写入，业务侧大量报错。含关键步骤、验证与常见坑。"
 ---
-
-# Redis 内存打满 OOM（2023-08-11）
+# R-01 · Redis 内存打满 OOM
 
 ## 现象
 
@@ -141,7 +141,7 @@ maxmemory-policy allkeys-lru
 cache:product:all  →  cache:product:{id%16}  每片几万 field
 ```
 
-3. 强制所有缓存 key 必须带 TTL，业务侧封装写入时统一加过期时间，并加随机抖动防雪崩（见 [缓存穿透/击穿/雪崩](/cases/t-redis-cache-avalanche)）。
+3. 强制所有缓存 key 必须带 TTL，业务侧封装写入时统一加过期时间，并加随机抖动防雪崩（见 [缓存穿透/击穿/雪崩](/cases/)）。
 
 ## 验证与预防
 
@@ -157,4 +157,4 @@ redis-cli CONFIG GET maxmemory-policy
 ## 相关
 
 - 命令速查：[Linux 命令速查](/reference/linux-commands)
-- 同组短文：[缓存穿透/击穿/雪崩](/cases/t-redis-cache-avalanche) ｜ [哨兵故障切换异常](/cases/t-redis-sentinel-failover)
+- 同组短文：[缓存穿透/击穿/雪崩](/cases/) ｜ [哨兵故障切换异常](/cases/t-redis-sentinel-failover)

@@ -1,3 +1,7 @@
+---
+title: "docker compose 命令详解：一条命令管起一整组容器"
+description: "本文是 Docker 命令速查 中 docker compose 的从 0 到 1 详解，本篇一次讲清 up、down、ps、logs、build、restart、exec、run、config、pull，以及 compose.yaml 的核心字段。"
+---
 # docker compose 命令详解：一条命令管起一整组容器
 
 > 本文是 [Docker 命令速查](../docker-commands#docker-compose) 中 `docker compose` 的从 0 到 1 详解，本篇一次讲清 `up`、`down`、`ps`、`logs`、`build`、`restart`、`exec`、`run`、`config`、`pull`，以及 `compose.yaml` 的核心字段。
@@ -68,6 +72,42 @@ volumes:
 | `environment:` | 环境变量，列表或字典写法都行 |
 | `depends_on:` | 先起依赖的服务再起我（只保证启动顺序，不等它"就绪"） |
 | `volumes:`（顶级） | 声明命名卷，供上面 services 引用 |
+
+补充常用字段（按需加，不是每个项目都要）：
+
+| 字段 | 作用 | 典型写法 |
+|---|---|---|
+| `restart:` | 容器退出后的重启策略 | `restart: unless-stopped` |
+| `healthcheck:` | 健康检查，配合 `depends_on` 等就绪 | `test: ["CMD","curl","-f","http://localhost"]` |
+| `depends_on:`（带条件） | 等依赖服务健康后再启动 | `depends_on: { db: { condition: service_healthy } }` |
+| `networks:` | 自定义网络，服务间用服务名互访 | 顶级声明后在各服务引用 |
+| `profiles:` | 可选服务，默认不启动 | `profiles: ["debug"]`，用 `--profile debug` 启用 |
+| `env_file:` | 从文件加载环境变量 | `env_file: .env` |
+| `command:` | 覆盖镜像默认 CMD | `command: ["--port=8080"]` |
+| `entrypoint:` | 覆盖镜像 ENTRYPOINT | `entrypoint: ["/bin/sh","-c"]` |
+| `deploy:` | 副本数、资源限制（Compose 本地部分生效） | `deploy: { replicas: 2 }` |
+
+健康检查 + 等就绪的最小例子：
+
+```yaml
+services:
+  web:
+    build: .
+    ports: ["8080:80"]
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: mysql:8.4
+    environment:
+      MYSQL_ROOT_PASSWORD: example
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+```
 
 ## 四、常用子命令
 
@@ -218,7 +258,7 @@ docker compose pull
 - 命令两系一致；
 - **安装**：两系装 `docker-ce` 都会带 `docker-compose-plugin` 包，装完直接 `docker compose` 可用；老教程里 `apt install docker-compose` 装的是 v1，已废弃；
 - **yml/yaml 格式**：两系都认 `compose.yaml`（新）和 `docker-compose.yaml`（老名字）；
-- **路径挂载**：RHEL 系 SELinux 下 bind mount 可能要加 `:z`，Debian 系不用（见 [volume](./volume) 差异段）。
+- **路径挂载**：RHEL 系 SELinux 下 bind mount 可能要加 `:z`，Debian 系不用（见 [volume](/reference/docker-commands) 差异段）。
 
 ## 八、新手易错点
 
@@ -234,10 +274,11 @@ docker compose pull
 ## 九、相关命令与文档
 
 - 速查页：[Docker 命令速查](../docker-commands#docker-compose)
-- 单容器起停：`docker run/stop/rm`（详解见 [run](./run) / [lifecycle](./lifecycle)）
-- 进容器：`docker exec`（详解见 [exec](./exec)）
+- 单容器起停：`docker run/stop/rm`（详解见 [run](./run) / [lifecycle](/reference/docker-commands)）
+- 进容器：`docker exec`（详解见 [exec](/reference/docker-commands)）
 - 看日志：`docker logs`（详解见 [logs](./logs)）
-- 数据卷：`docker volume`（详解见 [volume](./volume)）
-- 一键清理：`docker system prune`（详解见 [system-prune](./system-prune)）
-- 原理与实战：[Docker 实战手册](../../guide/container-docker)
+- 数据卷：`docker volume`（详解见 [volume](/reference/docker-commands)）
+- 一键清理：`docker system prune`（详解见 [system-prune](/reference/docker-commands)）
+- 原理与实战：[Docker 实战手册](/services/container/docker/01-理论)
 - 官方参考：https://docs.docker.com/reference/cli/docker/compose/
+- Compose 文件规范：https://docs.docker.com/compose/compose-file/

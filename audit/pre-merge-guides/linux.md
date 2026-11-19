@@ -1,0 +1,503 @@
+---
+title: "Linux 系统管理"
+description: "本页聚合 Linux 操作系统层面的所有操作指南：从安装、文件、存储、用户权限，到进程、日志、Shell 编程和安全加固。"
+---
+# Linux 系统管理
+
+> 本页聚合 **Linux 操作系统层面**的所有操作指南：从安装、文件、存储、用户权限，到进程、日志、Shell 编程和安全加固。
+
+## 文章索引
+
+### 入门与基础
+
+::: idx
+
+| 文章 | 解决什么问题 | 状态 |
+|---|---|---|
+| [安装与初始环境](./linux-install) | 装系统、虚拟机、配 IP/SSH/软件源、发行版差异 | ✅️ 已完成 |
+| [文件系统](./linux-filesystem) | FHS 目录、文件类型、inode、软硬链接、挂载 | ✅️ 已完成 |
+| [磁盘存储](./linux-storage) | 分区、格式化、LVM、RAID、磁盘配额 | ✅️ 已完成 |
+
+:::
+
+### 用户与权限
+
+::: idx
+
+| 文章 | 解决什么问题 | 状态 |
+|---|---|---|
+| [用户与权限](./linux-users) | 用户组管理、rwx、特殊权限、ACL、sudo、LDAP | ✅️ 已完成 |
+
+:::
+
+### 进程与任务
+
+::: idx
+
+| 文章 | 解决什么问题 | 状态 |
+|---|---|---|
+| [进程与服务](./linux-process) | systemd 服务管理、进程查看/控制、前后台、优先级 | ✅️ 已完成 |
+| [定时任务](./linux-cron) | crontab、at、systemd timer | ✅️ 已完成 |
+| [性能排查](./linux-performance) | top/ps/vmstat/iostat/pidstat、USE 方法、CPU/内存/IO/网络四类瓶颈实战 | ✅️ 已完成 |
+
+:::
+
+### 内核与日志
+
+::: idx
+
+| 文章 | 解决什么问题 | 状态 |
+|---|---|---|
+| [内核调优](./linux-kernel) | sysctl 参数、内核模块、ulimit 资源限制 | ✅️ 已完成 |
+| [日志管理](./linux-log) | 日志分类、journalctl、rsyslog、logrotate、dmesg | ✅️ 已完成 |
+
+:::
+
+### 编程与安全
+
+::: idx
+
+| 文章 | 解决什么问题 | 状态 |
+|---|---|---|
+| [Shell 脚本编程](./linux-shell) | 语法、条件、循环、函数、数组、调试、生产脚本 | ✅️ 已完成 |
+| [安全加固](./linux-security) | 防火墙、SELinux、SSH 加固、SSL、VPN、NTP | ✅️ 已完成 |
+| [iptables 防火墙](./linux-security-iptables) | iptables 四表五链、规则编写实战 | ✅️ 已完成 |  
+
+:::
+
+
+### eBPF 与内核前沿
+
+::: idx
+
+| 文章 | 解决什么问题 | 状态 |
+|---|---|---|
+| [eBPF 原理与应用](./linux-ebpf) | eBPF 验证器/Maps、bcc/bpftrace、Cilium 数据面、可观测与安全 | ✅ 已完成 |
+
+:::
+
+## 命令速查
+
+- 通用命令（文件 / 用户 / 进程 / 内存 / 内核）：[Linux 命令速查](/reference/linux-commands)
+- 网络与防火墙命令：[网络命令速查](/reference/network-commands)
+
+<!-- merged-qa-faq:start -->
+## 常见问题 FAQ
+
+> Linux 系统操作问题的高频问题已并入本页。默认只显示问题，点开查看完整答案。
+
+### 一、部署前：发行版选型与系统初始化
+
+<details>
+<summary>Q1：RHEL 系与 Debian 系的主要区别？</summary>
+
+**答：**
+
+这俩是最常打交道的两大派，区别我按五个方面对比着说。
+
+第一**包管理**：RHEL 系（RHEL/Rocky/Alma/CentOS）用 `rpm` 包格式，命令是 `dnf`（老版本是 `yum`），装包 `dnf install nginx`，查包 `dnf provides */nginx`；Debian 系（Ubuntu/Debian）用 `deb` 包，命令是 `apt`，装包 `apt install nginx`，更新前要先 `apt update` 刷新索引。
+
+第二**防火墙**：RHEL 系默认 firewalld，用 `firewall-cmd --add-service=http --permanent` 加规则；Debian 系一般用 ufw，`ufw allow 80/tcp`，底层都是 netfilter。
+
+第三**安全模块**：RHEL 系默认开 SELinux，这是新手最容易踩的坑——服务起不来常常是 SELinux 拦的，用 `getenforce` 看状态；Debian 系默认是 AppArmor，管控思路不同。
+
+第四**网络配置**：RHEL 系老版写 `/etc/sysconfig/network-scripts/`，新版用 NetworkManager 的 `nmcli`；Ubuntu 用 netplan 写 YAML。
+
+第五**版本策略**：RHEL 系追求稳定保守，一个大版本支持 10 年，适合生产；Ubuntu 两年一个 LTS，更新更激进，桌面和云生态用得多。
+
+工作中以 RHEL 系为主线，遇到 Ubuntu 需要单独注意它防火墙是 ufw、没 SELinux、网络配置用 netplan 这三点差异。
+
+</details>
+
+<details>
+<summary>Q2：系统安装后的基础优化？</summary>
+
+**答：**
+
+新机器装好系统，按一套固定清单做初始化，保证它能安全、稳定地上生产。
+
+第一**配软件源和时间**：先把默认源换成内网或国内镜像，`dnf makecache`（或 `apt update`）；时间必须准，装 chrony 做时间同步，`timedatectl set-timezone Asia/Shanghai` 设时区——集群里时间不对，证书和日志全乱。
+
+第二**SSH 加固**：禁止 root 直接密码登录，先建普通用户并加入 wheel/sudo 组，再 `PermitRootLogin no`、改默认端口、用密钥登录关掉密码登录。
+
+第三**建普通用户、给 sudo**：日常不用 root 干活，`useradd -m ops`、`usermod -aG wheel ops`，再配 sudo 权限，所有操作可审计。
+
+第四**防火墙和 SELinux 按需开**：firewalld 默认只放必要端口；SELinux 不建议直接关，先 `getenforce` 确认是 enforcing，业务跑通后再按需调策略，关了等于少一层防护。
+
+第五**资源限制和内核参数**：改 `/etc/security/limits.conf` 调 ulimit（打开文件数调到 65535，不然高并发会 Too many open files）；按业务调 `/etc/sysctl.conf`，比如 `vm.overcommit_memory`、文件描述符上限，改完 `sysctl -p` 生效。
+
+这套做完，新机器才算从"能装完"到"能上岗"。
+
+</details>
+
+<details>
+<summary>Q3：描述 Linux 开机启动流程？</summary>
+
+**答：**
+
+可以按"从按下电源到登录"这条线分五步讲，每步出问题都能对上排查点。
+
+第一步**固件自检**：按电源后先跑 BIOS 或 UEFI，做加电自检（POST），初始化 CPU、内存、键盘这些硬件，然后按启动顺序找可引导磁盘。UEFI 相比老 BIOS 支持 GPT 大盘和图形化启动菜单。
+
+第二步**引导加载器**：从磁盘的引导记录拉 GRUB2。BIOS 模式读 MBR 前 512 字节，UEFI 模式读 EFI 分区里的 `grubx64.efi`。GRUB 会让你选内核，然后把内核镜像和 initramfs 加载进内存。
+
+第三步**内核与 initramfs**：内核解压运行，先靠 initramfs（一个小的临时根文件系统）里的驱动，把磁盘控制器、LVM、软RAID 这些模块加载起来，再挂载真正的根分区 `/`，最后切到根分区上。
+
+第四步**systemd 接管**：根挂好后启动 1 号进程 systemd（PID 永远是 1，所有进程的祖先）。它不直接按脚本顺序跑，而是按 target 来拉起服务——`multi-user.target` 对应字符界面多用户，`graphical.target` 再往上加图形界面。常用 `systemctl get-default` 看默认目标，`systemctl set-default multi-user.target` 修改。
+
+第五步**登录**：启动 getty，弹出登录提示符，进入可操作状态。
+
+排障上我会对应：起不来先看是卡在哪一步——屏幕没字是固件/硬件问题，GRUB 进不去是引导问题，内核 panic 看 initramfs/磁盘，服务起不来就 `systemctl status xxx` 看日志。
+
+</details>
+
+### 二、部署阶段：账号、权限与存储
+
+<details>
+<summary>Q4：rwx 权限如何计算？</summary>
+
+**答：**
+
+Linux 文件权限用三个数字表示，分别对应**属主、属组、其他人**三类人，每类占三位 rwx：读 r=4、写 w=2、执行 x=1，加起来就是该类人的权限值。
+
+举几个例子就清楚了。`755` 拆开是 7-5-5：属主是 7（4+2+1，rwx 全有），属组是 5（4+1，r-x），其他人也是 5（r-x）。这是**目录和可执行脚本最常用的权限**——谁都能进去和读，但只有属主能改。`644` 是 6-4-4：属主 6（rw-，能读写），组和其他人只有 4（r--，只读），这是**普通配置文件和文档的默认权限**。
+
+有两个点生产中常被追问。第一，**目录的 x 权限和文件不一样**：文件有 x 表示能执行它；目录有 x 表示"能不能进去（cd 进去）"，只有 r 没有 x 时，你能 `ls` 看到文件名列表，却进不去、也 stat 不了文件详情。第二，看权限用 `ls -l`，输出第一列 `-rwxr-xr--`，第一个字符 `-` 是普通文件、`d` 是目录、`l` 是软链接，后面九位才是三组 rwx。
+
+改权限命令：`chmod 755 script.sh` 用数字，或 `chmod u+x script.sh` 用符号给属主加执行位；改属主 `chown user:group file`，常用 `-R` 递归。
+
+</details>
+
+<details>
+<summary>Q5：su 和 sudo 的区别？</summary>
+
+**答：**
+
+这俩都能拿到 root 权限，但思路完全不同，可以这样对比。
+
+`su` 是**切换用户**：`su - root` 会把我整个shell环境切成 root 的（`-` 表示连环境变量一起切，不写 `-` 只切身份不切环境），需要输入的是**目标用户 root 的密码**。也就是说，谁要临时当 root，都得知道 root 密码——这在团队里就尴尬了，root 密码人尽等于没人能负责。
+
+`sudo` 是**授权执行**：我还是用自己的普通账号登录，在某条命令前加 `sudo`，临时以 root 身份跑这一条，需要输入的是**我自己的密码**。谁能 sudo、能跑哪些命令，由 `/etc/sudoers`（用 `visudo` 编辑）控制，比如 `ops ALL=(ALL) /usr/bin/systemctl restart nginx` 只允许 ops 重启 nginx。
+
+对比下来 sudo 有三个生产优势：一是**不用共享 root 密码**，每个人用自己账号，离职直接删账号；二是**最小权限**，只给需要的命令，不是一上来全放权；三是**可审计**，所有 sudo 操作都记在 `/var/log/secure`（RHEL）或 `/var/log/auth.log`（Debian）里，出问题能追到谁干的。所以生产环境一律禁用 root 直登、用 sudo，这也是我新机器初始化的必做项。
+
+</details>
+
+<details>
+<summary>Q6：硬链接和软链接区别？</summary>
+
+**答：**
+
+链接分硬链接和软链接（符号链接），核心区别是**它指向的是"文件本身"还是"文件名"**。
+
+先理解原理：Linux 里一个文件真正的身份是 **inode**，文件名只是指向 inode 的一个"标签"。
+
+**硬链接**：`ln 源文件 硬链接名`，它和源文件是**同一个 inode**，相当于同一个文件多挂了一个名字。特点是：删掉源文件后硬链接照样能用，因为 inode 还被硬链接引用着，磁盘数据没真删；缺点是**不能跨文件系统**（inode 只在本文件系统内唯一）、**不能给目录建**。适合防止误删重要文件——inode 链接数减到 0 数据才释放。
+
+**软链接**：`ln -s 源文件 软链接名`，它是一个**独立的小文件，里面存的是源文件的路径字符串**，像 Windows 的快捷方式。特点是：**可以跨文件系统、可以链目录**，用得更广；但它依赖路径——删掉或移走源文件后，软链接就变成"断链"（失效的红箭头），`ls -l` 看出来就是指向不存在的地方。
+
+一句话记：硬链接是"同一个文件的别名"，删源不影响；软链接是"指向路径的快捷方式"，源没了它就废了。日常做版本切换、目录映射（如 `ln -s /usr/local/nginx/sbin/nginx /usr/bin/nginx`）都用软链接。
+
+</details>
+
+<details>
+<summary>Q7：umask 的作用？</summary>
+
+**答：**
+
+umask 决定我**新建文件和目录时的默认权限**，它是一个"遮罩"，把不该有的权限位去掉。
+
+规则是：新建文件的默认最大权限是 `666`（rw-rw-rw-），新建目录是 `777`（rwxrwxrwx），然后**减掉 umask 的值**就是实际权限。注意文件默认不带执行位，所以即使 umask 算出来有 x，文件也不给 x，得手动 chmod。
+
+举个例子，默认 umask 一般是 `022`。那新建文件就是 666 减 022 = **644**（rw-r--r--），新建目录是 777 减 022 = **755**（rwxr-xr-x）——这就是为什么你刚 `touch` 一个文件权限总是 644、`mkdir` 出来是 755。
+
+如果想让新建文件更私密，把 umask 设成 `077`：文件就变成 600（只有属主能读写），目录变成 700，适合个人敏感环境。临时看和改：`umask` 看当前值，`umask 077` 临时设；永久生效写进 `/etc/profile` 或 `~/.bashrc`。
+
+延伸理解：umask 和 chmod 的关系是——chmod 是"你主动指定权限"，umask 是"系统默认给你遮掉哪些位"，两者配合控制文件刚创建出来的安全基线。
+
+</details>
+
+<details>
+<summary>Q8：LVM 原理和好处？</summary>
+
+**答：**
+
+LVM 是在磁盘分区和文件系统之间加的一层"弹性管理层"，解决的是传统分区写死大小、后期扩容要搬家的痛点。它分三层，从下往上是 **PV → VG → LV**。
+
+最底层 PV（物理卷）：把整块盘或分区 `pvcreate /dev/sdb` 打造成物理卷。中间 VG（卷组）：把多个 PV 拼成一个大池子 `vgcreate data_vg /dev/sdb /dev/sdc`。最上层 LV（逻辑卷）：从池子里切一块出来用 `lvcreate -L 100G -n data_lv data_vg`，然后 mkfs 格式化、挂载，业务看到的就是这块 LV。
+
+**好处有两个核心**。第一是**在线弹性扩容**：业务盘写满了，不用停机迁数据，往 VG 里加新盘再 `lvextend` 扩 LV、`xfs_growfs`（或 `resize2fs`）扩文件系统就行，全程在线。命令链是 `vgextend data_vg /dev/sdd && lvextend -L +50G /dev/data_vg/data_lv && xfs_growfs /data`。第二是**快照**：`lvcreate -s -n snap -L 1G data_vg/data_lv` 做个快照，相当于给文件系统拍个即时还原点，备份或测试时很有用。
+
+反面我也踩过坑：当初装机图省事没做 LVM，盘写满了只能临时软链，所以后来我个人实验室一律先规划 LVM，这是吃了亏换的经验。
+
+</details>
+
+<details>
+<summary>Q9：常见 RAID 级别及区别？</summary>
+
+**答：**
+
+RAID 是把多块盘组合成一块逻辑盘，换性能或冗余。我用一张对比说清楚常见四个级别。
+
+| 级别 | 原理 | 可用容量 | 冗余 | 性能 | 典型场景 |
+|---|---|---|---|---|---|
+| RAID0 | 条带，数据劈开同时写多盘 | N 盘全用 | 无，坏一块全丢 | 读写最快 | 临时缓存、不在乎丢的数据 |
+| RAID1 | 镜像，两块盘写一模一样 | 只用一半 | 能坏一块 | 读好写一般 | 系统盘、要求高可靠 |
+| RAID5 | 分布式奇偶校验，至少 3 块 | (N-1) 盘 | 能坏一块 | 读好写一般 | 通用文件/数据库常用 |
+| RAID10 | 先镜像再条带（1+0），至少 4 块 | 用一半 | 每组镜像能坏一块 | 读写都快 | 高要求数据库 |
+
+我用自己的话总结选择逻辑：**要性能不要安全选 0；要安全不在乎容量选 1；要平衡性价比选 5；又要快又要安全、不差钱选 10。** 数据库生产我倾向 RAID10，写性能和冗余都顾得上；普通日志/备份用 RAID5 性价比最高。
+
+补充一句：RAID 不等于备份。RAID 防的是单盘物理损坏，误删、病毒、逻辑损坏它都救不了，所以该备份还得备份。软硬 RAID 区别上，重要业务用硬 RAID 卡（有缓存、不占 CPU），软 RAID（`mdadm`）便宜但吃主机资源。
+
+</details>
+
+### 三、运行阶段：资源与磁盘
+
+<details>
+<summary>Q10：CPU 使用率高如何排查？</summary>
+
+**答：**
+
+CPU 高我按"先定位进程、再定位线程、再看在干什么"三步查。
+
+第一步上 `top`：进交互界面后按 `P` 让进程按 CPU 从高到低排，先揪出是哪个进程吃 CPU。按 `1` 可以展开每个核心，看是单核打满还是整体忙。top 上方这行很关键：`us`（用户态）高是应用自己算得多，`sy`（内核态）高是系统调用/上下文切换多，`wa`（iowait）高说明 CPU 在等磁盘 IO——这三种情况根因完全不同。
+
+第二步如果是 Java/多线程程序，要往下钻到线程：用 `top -Hp <pid>` 看这个进程里哪个线程在烧 CPU，拿到线程 ID 转成 16 进制，再 `jstack <pid> | grep <16进制tid>` 看这个线程在跑哪段代码。
+
+第三步看它到底在干嘛：CPU 高但你不确定原因，可以 `strace -p <pid>` 看它在频繁发什么系统调用，或者用 `perf top` 看热点函数。
+
+举个真实场景：`us` 高、某个 Java 进程占满，多半是死循环或者频繁 Full GC；`sy` 高可能是上下文切换太频繁（用 `vmstat` 看 cs 列）；`wa` 高其实不是 CPU 的锅，是磁盘慢，该去查 IO。所以我第一句话永远是"先看 top 里 us/sy/wa 哪个高"，这决定了后面往哪个方向查。
+
+</details>
+
+<details>
+<summary>Q11：内存不足如何排查？</summary>
+
+**答：**
+
+查内存我第一步永远是 `free -h`，而且重点看 **available** 那一列，不是看 free。
+
+```bash
+free -h
+#               total   used   free   shared  buff/cache  available
+# Mem:           125Gi    20Gi    10Gi     1Gi        95Gi       100Gi
+```
+
+很多新人看到 free 只剩 10G 就慌了，其实不对——Linux 会把空闲内存拿去做磁盘缓存（buff/cache），这部分是"可回收"的，真正常用的是 **available** 列，它才是现在还能分给新程序的内存。所以 10G free + 95G cache ≈ 还有 100G 可用，根本不紧张。
+
+如果 available 真的见底了，才是内存紧张。这时在 top 里按 `M` 让进程按内存从大到小排，揪出吃内存的进程。再深入：看 `/var/log/messages` 或 `dmesg | grep -i oom`，有没有内核 OOM killer 出来杀进程的记录——OOM 发生时内核会选一个"罪魁祸首"杀掉，日志里能看到杀了谁。
+
+如果某进程内存只涨不跌，那是**内存泄漏**，需要抓 dump 分析。补充：swap 也要看，`free` 里 swap used 持续增长说明内存确实吃紧、在往磁盘上倒，性能会明显下降。一句话：先看 available 别被 cache 吓到，真紧张了按 M 找进程、查 OOM。
+
+</details>
+
+<details>
+<summary>Q12：负载 load 高说明什么？</summary>
+
+**答：**
+
+load average 是 Unix 系统的经典指标，但它的定义很多人搞不清。**它不是 CPU 使用率，而是"处于运行态 + 不可中断睡眠态"的进程数的平均值**，就是"正在抢资源排队的队伍长度"。
+
+`top` 或 `uptime` 开头会给三个数：`load average: 1.5, 0.8, 0.3`，分别是**过去 1 分钟、5 分钟、15 分钟**的平均值。怎么解读要结合 CPU 核数：
+
+- 比如一台 8 核机器，load 是 8 才算打满，load 4 其实才用了一半。
+- 如果 load 10 但机器才 4 核，说明有 6 个进程在排队等。
+
+关键在于：**load 高不一定是 CPU 忙**。因为不可中断睡眠的进程（通常是在等磁盘 IO）也算进 load。所以我看到 load 高，会先判断是哪种：
+
+- 同时 `top` 看 CPU 的 `us/sy` 高 → 确实是 CPU 计算瓶颈。
+- CPU 不高但 load 高，再看 `wa`（iowait）高 → 是磁盘 IO 拖慢，进程都卡在等盘上。
+- 也可能是大量进程在等锁、等 NFS。
+
+还要看趋势：1 分钟 load 远高于 15 分钟，说明负载正在上来；反过来是在回落。所以我答 load 一定补一句"要结合核数和 iowait 一起看，不能单看数值大小"。
+
+</details>
+
+<details>
+<summary>Q13：什么是僵尸进程？怎么处理？</summary>
+
+**答：**
+
+僵尸进程是**子进程已经退出了，但父进程没调用 wait() 去回收它的退出状态**，于是这个子进程残留成一个占着 PID 的空壳，在 `ps` 里状态显示为 **Z**（zombie）。
+
+它的原理是：进程退出时并不会立刻消失，内核会保留一个退出状态码，等着父进程来取。父进程不取，它就一直挂着。僵尸进程本身**不占内存不占 CPU**（资源已经释放了），只占一个进程号 PID——少量几个无所谓，但如果大量堆积，PID 被耗尽就没法再开新进程了，这才是危害。
+
+排查：
+
+```bash
+ps aux | grep defunct     # 或看 STAT 列是 Z 的
+```
+
+怎么处理？**直接 kill 僵尸本身是杀不掉的**，因为它已经死了。正确做法是找到它的父进程：
+
+```bash
+ps -ef | grep <僵尸pid>    # 看 PPID 那列是哪个父进程
+```
+
+然后让父进程去回收——要么给父进程发 `SIGCHLD` 信号让它 wait，最干脆的办法是**重启那个有 bug 的父进程**，父进程一死，僵尸就被 init（PID 1）接管并回收了。
+
+根因是父进程写得不对、没处理子进程退出。一句话总结：少量僵尸是正常现象不用管，大量僵尸要找父进程修，治本是改父进程代码正确回收子进程。
+
+</details>
+
+<details>
+<summary>Q14：磁盘有空间却提示 No space left？</summary>
+
+**答：**
+
+这个坑我实际遇到过——`df -h` 看明明还有几十 G，写文件却报 `No space left on device`。**第一反应不是看容量，而是看 inode 用完了没有。**
+
+原理：Linux 里每个文件不管多小，都要占一个 inode 来存元数据（权限、大小、位置）。`df -h` 看的是数据块容量，而 `df -i` 看的是 inode 个数。如果你磁盘上有海量小文件（比如几万个几 KB 的 session、缓存、日志碎文件），数据块还没用多少，inode 却被小文件占光了——这时候新建文件就报 No space left，但大块文件还能写。
+
+排查命令：
+
+```bash
+df -h /data     # 看容量，可能还有很多
+df -i /data     # 看 inode，Use% 100% 就是它了
+```
+
+找到后定位是谁造的小文件：`du -sh /data/* | sort -rh` 找大目录，或者直接找小文件密集的地方（常见是 `/var/spool/clientmqueue`、应用缓存目录），清理掉没用的小文件，inode 就释放了。
+
+其他次要原因：磁盘配额（quota）限制了用户用量，或者是挂载点下面藏着已被删除但进程还占着的大文件（这个用 `lsof | grep deleted` 查，见下一题）。排障时查到 inode 这一层，基本就到位。
+
+</details>
+
+<details>
+<summary>Q15：磁盘空间满如何排查？</summary>
+
+**答：**
+
+磁盘满我有一套固定排查顺序，从粗到细两步定位。
+
+第一步先看**整体谁满了**：
+
+```bash
+df -h            # 看哪个挂载点 Use% 到 100%
+df -i            # 同时看 inode 是不是先满了（上一题）
+```
+
+第二步进满了的目录**逐层往下钻**：
+
+```bash
+du -sh /* 2>/dev/null          # 先看根下每个目录占多大
+du -sh /var/* 2>/dev/null      # 一层层往下，通常在 /var/log 或 /var/lib
+```
+
+`du -sh` 加 `sort -rh` 倒序排，几轮就定位到最大的那个目录，一般是日志暴涨、core dump、或者上传目录没清理。
+
+**还有一个高频坑必须单独查**：你 `du` 出来所有文件加起来远没用满，`df` 却显示满了——这是**进程还占着已被删除的大文件**。比如日志文件被 `rm` 删了，但那个写日志的进程没重启，文件句柄还开着，空间没真正释放。查法：
+
+```bash
+lsof | grep deleted     # 列出已删除但仍被进程占用的文件
+```
+
+找到对应进程，重启它（或 `> 那个已删除句柄`），空间立刻释放。这是 SRE 排磁盘满的标志性技能，这是排障的关键动作。
+
+</details>
+
+### 四、日常操作：Shell 与文本处理
+
+<details>
+<summary>Q16：grep、awk、sed 各自擅长？</summary>
+
+**答：**
+
+这三个是文本处理三剑客，我按"各管一段"来记：grep 管**找行**，awk 管**按列处理**，sed 管**编辑替换**。
+
+**grep** 是行过滤器，作用是"从一堆文本里把符合条件的行筛出来"，不做修改。常用参数：`-i` 忽略大小写、`-v` 反选（排除匹配行）、`-r` 递归目录、`-n` 显示行号、`-E` 用扩展正则。比如 `grep -rn "error" /var/log/` 找出日志里所有 error 行。
+
+**awk** 是按列处理的语言，适合"每行是一条记录、用空格或分隔符分成几列"的场景。它能取列、做统计、按条件过滤。比如 `awk '{print $1}'` 取第一列，`-F:` 指定冒号分隔（处理 /etc/passwd 特别好用）。
+
+**sed** 是流编辑器，适合"按规则批量替换或删行"，最常用就是替换：`sed 's/旧/新/g'`。比如 `sed -i 's/192.168.1.10/10.0.0.5/g' nginx.conf` 直接改文件里的 IP。`-i` 是原地修改，不加 `-i` 只打印结果不改文件。
+
+一句话分工：**要找用 grep，要算列用 awk，要改文本用 sed**，实战里经常仨串起来用——grep 先过滤，awk 再取列统计，sed 最后替换。
+
+</details>
+
+<details>
+<summary>Q17：awk 如何统计列总和/出现次数？</summary>
+
+**答：**
+
+awk 的精髓就是它的"三段式"和数组统计，我用两个例子说清楚。
+
+**统计某列总和**：它有 BEGIN、主体、END 三个块。BEGIN 是处理前跑一次（初始化），主体是每行跑一次，END 是全部读完跑一次（输出汇总）。比如统计 /tmp/data 里第二列的总和：
+
+```bash
+awk '{sum += $2} END {print "总和=" sum}' /tmp/data
+```
+
+这里 sum 每行累加第二列 `$2`，最后 END 打印总和。
+
+**统计某个字段出现次数**：用数组当计数器，key 就是要统计的内容。比如统计 /etc/passwd 里每种 shell 出现多少次（用 `-F:` 指定冒号分隔，第 7 列是 shell）：
+
+```bash
+awk -F: '{cnt[$7]++} END {for (s in cnt) print s, cnt[s]}' /etc/passwd
+```
+
+原理是：每读一行，就把 `cnt[这个shell]` 加 1，遇到相同 shell 自动累加；END 里遍历这个数组，把每种 shell 和它的次数打出来。这就是 awk 做分组计数的经典套路。
+
+再比如统计第 1 列等于某个值时第 3 列的和：`awk '$1=="web" {sum+=$3} END{print sum}'`。核心就记三点：`-F` 定分隔符、`数组[key]++` 做计数、`END` 出结果。
+
+</details>
+
+<details>
+<summary>Q18：统计日志中访问最高的 IP？</summary>
+
+**答：**
+
+这是 awk/sort/uniq 组合的经典题，套路是"取 IP → 计数 → 排序 → 取前 N"。假设是 Nginx access.log，IP 在第一列：
+
+```bash
+awk '{print $1}' /var/log/nginx/access.log | sort | uniq -c | sort -rn | head -10
+```
+
+我一步步解释这条管道。第一截 `awk '{print $1}'` 把每行的 IP 单独取出来，一行一个。第二截 `sort` 先排序——uniq 只能合并相邻的重复行，所以前面必须先 sort，否则一样的 IP 不挨着就统计不到，这是新手最容易漏的一步。第三截 `uniq -c` 把相邻重复行合并并在前面打出出现次数。第四截 `sort -rn` 按出现次数**数字倒序**排（`-r` 倒序、`-n` 按数值）。最后 `head -10` 取前 10 个。
+
+输出大概长这样：
+
+```
+   1523 1.2.3.4     ← 访问最多的 IP
+    860 5.6.7.8
+    210 9.10.11.12
+```
+
+如果日志格式复杂、IP 不在第一列，可以先用 grep 过滤，比如只统计 404 请求里的 IP：`grep ' 404 ' access.log | awk '{print $1}' | sort | uniq -c | sort -rn | head`。整个套路——取列、sort、uniq -c、sort -rn——记熟，统计 Top N 的题都能套。
+
+</details>
+
+<details>
+<summary>Q19：find 常用用法？</summary>
+
+**答：**
+
+find 是按条件找文件再批量处理的工具，我按"找什么、怎么处理"两类记。
+
+**按条件找（常用条件）：**
+
+```bash
+find /etc -name "*.conf"                 # 按名字找，-iname 忽略大小写
+find /var -type f -size +100M            # 找大于 100M 的普通文件
+find /home -type d -name "logs"          # -type d 只找目录，f 是文件
+find /var/log -mtime -7                   # 7 天内被修改过的文件（+7 是 7 天前）
+```
+
+参数要点：`-name` 按文件名、`-type f/d` 按类型、`-size` 按大小（+大于 -小于）、`-mtime` 按修改时间（天）。
+
+**找到之后批量处理（-exec）：**
+
+```bash
+find /var/log -name "*.log" -mtime +30 -exec rm -f {} \;
+# 找出 30 天前的日志并删除，{} 代表找到的每个文件，\; 结尾
+
+find /tmp -name "*.tmp" -exec ls -lh {} \;     # 先看下找到啥再删，保险
+```
+
+生产上有两个好习惯：一是**删之前先用 `-exec ls -lh {} \;` 预览一遍**，确认找的是对的再换 `rm`，别上来就删；二是清老日志用 `-mtime +N` 按时间删，这是日志轮转的手工做法。
+
+我个人常用来排查的一条：`find / -name "*.pid" -mmin -60` 找最近一小时变动的文件。find 的核心就是"先把条件写准，再用 -exec 批量动作"。
+
+</details>
+
+<!-- merged-qa-faq:end -->

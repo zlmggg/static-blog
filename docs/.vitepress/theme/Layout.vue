@@ -154,14 +154,9 @@ function initCopyEnhance() {
 
 <template>
   <DefaultTheme.Layout>
-    <!-- 全局背景 fixed 铺满：网格 + 三团光晕（首页与内容页统一，不在这里重复挂） -->
+    <!-- 全局背景 fixed 铺满：V3 纯底色（无网格、无光晕），首页与内容页共用 -->
     <template #layout-top>
-      <div class="bg-fx" aria-hidden="true">
-        <div class="bg-grid"></div>
-        <div class="glow g1"></div>
-        <div class="glow g2"></div>
-        <div class="glow g3"></div>
-      </div>
+      <div class="bg-fx" aria-hidden="true"></div>
     </template>
 
     <!-- 文章页 h1 上方元信息条（分类/难度/日期/阅读时长） -->

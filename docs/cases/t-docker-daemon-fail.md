@@ -1,10 +1,10 @@
 ---
+id: D-01
 category: 容器
 difficulty: 中级
-date: 2021-05-17
+description: "改完 /etc/docker/daemon.json 后重启 Docker，systemctl restart docker 一直卡住失败"
 ---
-
-# dockerd 启动失败排查（2021-05-17）
+# D-01 · dockerd 启动失败排查
 
 ## 现象
 
@@ -163,4 +163,4 @@ docker run --rm hello-world    # 能正常跑容器
 ## 相关
 
 - 命令速查：[Docker 命令速查](/reference/docker-commands) ｜ [Linux 命令速查](/reference/linux-commands)
-- 同组短文：[存储驱动 overlay2 问题](/cases/t-docker-storage-driver) ｜ [容器网络不通](/cases/t-docker-network-bridge) ｜ [镜像拉取失败](/cases/t-docker-image-pull-fail)
+- 同组短文：[存储驱动 overlay2 问题](/cases/t-docker-storage-driver) ｜ [容器网络不通](/cases/t-docker-network-bridge) ｜ [镜像拉取失败](/cases/)

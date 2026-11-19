@@ -1,10 +1,10 @@
 ---
+id: D-02
 category: 容器
 difficulty: 中级
-date: 2022-09-02
+description: "节点磁盘告警使用率到 95%，但 docker system df 发现镜像/容器占用和实际不符。新建容器时报错"
 ---
-
-# Docker 存储驱动 overlay2 与磁盘打满（2022-09-02）
+# D-02 · Docker 存储驱动 overlay2 与磁盘打满
 
 ## 现象
 
@@ -150,4 +150,4 @@ docker system df             # reclaimable 空间归零
 ## 相关
 
 - 命令速查：[Docker 命令速查](/reference/docker-commands) ｜ [Linux 命令速查](/reference/linux-commands)
-- 同组短文：[dockerd 启动失败](/cases/t-docker-daemon-fail) ｜ [容器网络不通](/cases/t-docker-network-bridge) ｜ [镜像拉取失败](/cases/t-docker-image-pull-fail)
+- 同组短文：[dockerd 启动失败](/cases/t-docker-daemon-fail) ｜ [容器网络不通](/cases/t-docker-network-bridge) ｜ [镜像拉取失败](/cases/)

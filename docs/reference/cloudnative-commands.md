@@ -1,12 +1,34 @@
+---
+title: "云原生排障命令速查"
+description: "云原生环境（Helm / K8s 进阶排障 / containerd / OpenTelemetry / Grafana LGTM / Cilium-eBPF）常用排障命令速查。"
+---
 # 云原生排障命令速查
 
 > 云原生环境（Helm / K8s 进阶排障 / containerd / OpenTelemetry / Grafana LGTM / Cilium-eBPF）常用排障命令速查。
-> 基础 kubectl 命令见 [kubectl 命令速查](/reference/kubectl-commands)；概念与部署见 [K8s 系列指南](/guide/container-k8s-01-architecture-cluster) 与 [eBPF 指南](/guide/linux-ebpf)。
+> 基础 kubectl 命令见 [kubectl 命令速查](/reference/kubectl-commands)；概念与部署见 [K8s 系列指南](/services/container/kubernetes/01-理论) 与 [eBPF 指南](/guide/linux#合并资料)。
 > 用法：右侧「本页目录」跳转，或 `Ctrl+K` 搜索；命令可直接复制（把占位符换成你的实际值）。
 
 ::: tip 版本基准（2026-09）
 本篇命令基于当前稳定版：Helm 4.3、Kubernetes 1.35（临时容器自 1.25 GA）、containerd 2.3、crictl(cri-tools) v1.35、OpenTelemetry Collector v0.162、Grafana Loki 3.7、Tempo 3.0（TraceQL metrics 已 GA）、Cilium 1.20、bpftrace 0.27。版本以各发行版实际安装为准，用 `xx version` 自查。
 :::
+
+## 集群生命周期与证书
+
+> 升级集群、证书快到期、etcd 要备份时看这一节。完整流程见 集群生命周期与证书详解。
+
+| 命令 | 说明 |
+|---|---|
+| `kubeadm upgrade plan` | 查看可升级版本与控制面组件 |
+| `kubeadm upgrade apply v1.30.0` | 升级控制面 |
+| `kubeadm upgrade node` | 升级工作节点配置 |
+| `kubeadm token create --print-join-command` | 生成新的加入命令 |
+| `kubeadm certs check-expiration` | 查看所有证书到期时间 |
+| `kubeadm certs renew all` | 续期全部证书并重启 kubelet |
+| `etcdctl endpoint health` | etcd 健康检查 |
+| `etcdctl member list` | 查看 etcd 成员 |
+| `etcdctl snapshot save 路径.db` | 备份 etcd 数据 |
+| `etcdctl snapshot status 路径.db` | 校验备份文件 |
+| `journalctl -u kubelet -n 100 --no-pager` | 看 kubelet 报错 |
 
 ## Helm（release 排障）
 
@@ -25,28 +47,22 @@
 | [`helm install 名 chart --dry-run --debug`](./cmd-cloudnative/helm-troubleshoot) | 试运行安装并打印渲染结果与调试信息 |
 | [`helm upgrade 名 chart --dry-run`](./cmd-cloudnative/helm-troubleshoot) | 试运行升级，看会变什么 |
 | [`helm lint chart`](./cmd-cloudnative/helm-troubleshoot) | 检查 chart 语法/依赖问题 |
-| [`helm pull repo/chart --untar`](./cmd-kubectl/helm) | 下载 chart 到本地查看 |
-| [`helm push chart.tgz oci://repo`](./cmd-kubectl/helm) | 把 chart 推到 OCI 仓库 |
-| [`helm repo add 名 url && helm repo update`](./cmd-kubectl/helm) | 添加并更新仓库索引 |
+| [`helm pull repo/chart --untar`](/reference/kubectl-commands) | 下载 chart 到本地查看 |
+| [`helm push chart.tgz oci://repo`](/reference/kubectl-commands) | 把 chart 推到 OCI 仓库 |
 
 ## kubectl 进阶排障
 
 | 命令 | 说明 |
 |---|---|
-| [`kubectl describe pod 名`](./cmd-kubectl/describe) | 看事件、调度、探针失败原因 |
 | [`kubectl get events -A --sort-by=.metadata.creationTimestamp`](./cmd-cloudnative/kubectl-advanced) | 按时间正序看全集群事件 |
 | [`kubectl get events --field-selector type=Warning`](./cmd-cloudnative/kubectl-advanced) | 只看 Warning 事件 |
-| [`kubectl top nodes`](./cmd-kubectl/cluster) / [`kubectl top pods -A`](./cmd-kubectl/cluster) | 节点/Pod 资源用量（需 metrics-server） |
 | [`kubectl debug 名 -it --image=busybox --target=容器`](./cmd-cloudnative/kubectl-advanced) | 给崩溃/精简容器注入临时调试容器（Ephemeral Container） |
 | [`kubectl debug node/节点名 -it --image=ubuntu`](./cmd-cloudnative/kubectl-advanced) | 在节点上起调试 Pod，挂载节点宿主文件系统 /host |
-| [`kubectl logs 名 --previous`](./cmd-kubectl/logs) | 看崩溃前那个容器的日志 |
 | [`kubectl get --raw /metrics`](./cmd-cloudnative/kubectl-advanced) | 直接抓取组件 metrics（如 apiserver） |
 | [`kubectl get --raw /healthz?verbose`](./cmd-cloudnative/kubectl-advanced) | 健康检查详情 |
 | [`kubectl cluster-info dump`](./cmd-cloudnative/kubectl-advanced) | 导出集群大量调试信息到当前目录 |
-| [`kubectl cordon 节点`](./cmd-cloudnative/kubectl-advanced) | 标记节点不可调度 |
-| [`kubectl drain 节点 --ignore-daemonsets --delete-emptydir-data`](./cmd-cloudnative/kubectl-advanced) | 驱逐节点上 Pod（升级前） |
-| [`kubectl uncordon 节点`](./cmd-cloudnative/kubectl-advanced) | 恢复节点可调度 |
-| [`kubectl auth can-i create pods --as=user`](./cmd-kubectl/auth) | 模拟某账号权限（RBAC 排障） |
+
+> 基础资源查看、`describe/logs/exec`、节点维护（`cordon/drain/taint`）与 RBAC 自检，见 [kubectl 命令速查](./kubectl-commands)，这里不再重复。
 
 ## containerd / CRI 运行时
 
@@ -60,8 +76,8 @@
 | [`crictl pods`](./cmd-cloudnative/crictl) | 列出 PodSandbox |
 | [`crictl stats`](./cmd-cloudnative/crictl) | 容器资源占用实时统计 |
 | [`crictl info`](./cmd-cloudnative/crictl) | 运行时与 CRI 配置信息 |
-| [`ctr -n k8s.io images ls`](./cmd-cloudnative/ctr) | 用 ctr 列出 containerd 中镜像（k8s 命名空间） |
-| [`ctr -n k8s.io containers ls`](./cmd-cloudnative/ctr) | 列出 containerd 容器 |
+| `ctr -n k8s.io images ls` | 用 ctr 列出 containerd 中镜像（k8s 命名空间） |
+| `ctr -n k8s.io containers ls` | 列出 containerd 容器 |
 | [`crictl config runtime-endpoint unix:///run/containerd/containerd.sock`](./cmd-cloudnative/crictl) | 指定运行时端点（切 CRI-O 用 /run/crio/crio.sock） |
 
 > 注意：`docker` 管不到 K8s 容器（除非用 docker-shim）；kubelet 走 CRI，节点排障优先用 [`crictl`](./cmd-cloudnative/crictl)。
@@ -70,15 +86,15 @@
 
 | 命令 / 操作 | 说明 |
 |---|---|
-| [`otelcol-contrib --config=config.yaml`](./cmd-cloudnative/otelcol) | 启动 Collector（contrib 版含更多组件） |
-| [`otelcol --config=config.yaml --validate`](./cmd-cloudnative/otelcol) | 只校验配置是否合法 |
-| [`--log-level=debug`](./cmd-cloudnative/otelcol) | 启动参数，打印每个管道的数据细节 |
+| `otelcol-contrib --config=config.yaml` | 启动 Collector（contrib 版含更多组件） |
+| `otelcol --config=config.yaml --validate` | 只校验配置是否合法 |
+| `--log-level=debug` | 启动参数，打印每个管道的数据细节 |
 | `service.telemetry.metrics.address: 0.0.0.0:8888` | 配置 Collector 自身 metrics 端口 |
-| [`curl -s localhost:8888/metrics`](./cmd-net/curl) | 查看 Collector 自身处理指标（接收/导出/拒绝条数） |
-| [`curl -s localhost:55679/debug/zpages`](./cmd-net/curl) | zpages 页面：看管道活跃 trace、错误（需开启） |
-| [`curl -s localhost:8888/debug/pprof/`](./cmd-net/curl) | pprof 性能分析（内存/CPU） |
+| [`curl -s localhost:8888/metrics`](/commands/network/curl) | 查看 Collector 自身处理指标（接收/导出/拒绝条数） |
+| [`curl -s localhost:55679/debug/zpages`](/commands/network/curl) | zpages 页面：看管道活跃 trace、错误（需开启） |
+| [`curl -s localhost:8888/debug/pprof/`](/commands/network/curl) | pprof 性能分析（内存/CPU） |
 | `otlphttp://<host>:4318` | HTTP 接收/导出端点（gRPC 为 4317） |
-| [`curl -X POST localhost:4318/v1/traces -d @trace.json`](./cmd-net/curl) | 手动投递一条 OTLP 数据验证导出链路 |
+| [`curl -X POST localhost:4318/v1/traces -d @trace.json`](/commands/network/curl) | 手动投递一条 OTLP 数据验证导出链路 |
 
 > zpages 需在配置里显式开启 `extension: zpages` 并在 `service.extensions` 引用；排导出失败时先看 Collector 自身 metrics 里 `exporter_failed` 是否在涨。
 
@@ -88,47 +104,47 @@
 
 | 查询 | 说明 |
 |---|---|
-| [`{job="api"}`](./cmd-cloudnative/logcli) | 按标签选择器选出日志流 |
-| [`{job="api"} |= "error"`](./cmd-cloudnative/logcli) | 在日志里过滤含 error 的行 |
-| [`{job="api"} \|~ "5[0-9]{2}"`](./cmd-cloudnative/logcli) | 正则匹配 5xx 状态码 |
-| [`{job="api"} \| json`](./cmd-cloudnative/logcli) | 把 JSON 日志解析成字段 |
-| [`{job="api"} \| label_format level="level"`](./cmd-cloudnative/logcli) | 提取字段为标签 |
-| [`rate({job="api"}[5m])`](./cmd-cloudnative/logcli) | 量化函数：日志每秒条数 |
-| [`count_over_time({job="api"}[5m])`](./cmd-cloudnative/logcli) | 统计 5 分钟内日志行数 |
-| [`sum(rate({job="api"} |= "error"[5m])) by (status)`](./cmd-cloudnative/logcli) | 按状态码聚合错误率 |
+| `{job="api"}` | 按标签选择器选出日志流 |
+| `{job="api"} |= "error"` | 在日志里过滤含 error 的行 |
+| `{job="api"} \|~ "5[0-9]{2}"` | 正则匹配 5xx 状态码 |
+| `{job="api"} \| json` | 把 JSON 日志解析成字段 |
+| `{job="api"} \| label_format level="level"` | 提取字段为标签 |
+| `rate({job="api"}[5m])` | 量化函数：日志每秒条数 |
+| `count_over_time({job="api"}[5m])` | 统计 5 分钟内日志行数 |
+| `sum(rate({job="api"} \|= "error"[5m])) by (status)` | 按状态码聚合错误率 |
 
 **Tempo TraceQL（链路查询）：**
 
 | 查询 | 说明 |
 |---|---|
-| [`{ resource.service.name = "api" }`](./cmd-cloudnative/tempo) | 按服务选 trace |
-| [`{ span.http.status_code >= 500 }`](./cmd-cloudnative/tempo) | 选含 5xx span 的 trace |
-| [`{ .error = true }`](./cmd-cloudnative/tempo) | 选出错的 trace |
-| [`{ duration > 1s }`](./cmd-cloudnative/tempo) | 选慢 trace |
-| [`{ resource.service.name = "api" && span.http.route = "/pay" }`](./cmd-cloudnative/tempo) | 组合条件 |
+| `{ resource.service.name = "api" }` | 按服务选 trace |
+| `{ span.http.status_code >= 500 }` | 选含 5xx span 的 trace |
+| `{ .error = true }` | 选出错的 trace |
+| `{ duration > 1s }` | 选慢 trace |
+| `{ resource.service.name = "api" && span.http.route = "/pay" }` | 组合条件 |
 
 **Jaeger：**
 
 | 命令 / 操作 | 说明 |
 |---|---|
-| [`jaeger_query --query.port=16686`](./cmd-cloudnative/tempo) | 启动 Jaeger 查询 UI |
-| 浏览器打开 [`http://<host>:16686`](./cmd-cloudnative/tempo) | 按服务/操作/tag 查 trace |
-| [`curl localhost:16686/api/traces?service=api`](./cmd-net/curl) | API 方式拉 trace |
+| `jaeger_query --query.port=16686` | 启动 Jaeger 查询 UI |
+| 浏览器打开 `http://<host>:16686` | 按服务/操作/tag 查 trace |
+| [`curl localhost:16686/api/traces?service=api`](/commands/network/curl) | API 方式拉 trace |
 
 ## Cilium 与 eBPF
 
 | 命令 | 说明 |
 |---|---|
-| [`cilium status`](./cmd-cloudnative/cilium) | 查看 Cilium 组件健康与版本 |
-| [`cilium status --verbose`](./cmd-cloudnative/cilium) | 含节点、 Hubble 状态详情 |
-| [`cilium endpoint list`](./cmd-cloudnative/cilium) | 列出所有端点（Pod）及其身份/策略状态 |
-| [`cilium endpoint get <pod>`](./cmd-cloudnative/cilium) | 查看某 Pod 端点详情 |
-| [`cilium policy get`](./cmd-cloudnative/cilium) | 查看已导入的网络策略 |
-| [`cilium policy validate -f policy.yaml`](./cmd-cloudnative/cilium) | 校验 Cilium 网络策略 |
-| [`cilium hubble ui`](./cmd-cloudnative/cilium) | 本地打开 Hubble 可观测 UI |
-| [`hubble observe`](./cmd-cloudnative/hubble) | 实时观察 Pod 间流日志（源/目的/协议/ verdict） |
-| [`hubble observe --namespace ns --protocol http`](./cmd-cloudnative/hubble) | 按命名空间/协议过滤流 |
-| [`cilium connectivity test`](./cmd-cloudnative/cilium) | 跑内置连通性测试套件 |
+| `cilium status` | 查看 Cilium 组件健康与版本 |
+| `cilium status --verbose` | 含节点、 Hubble 状态详情 |
+| `cilium endpoint list` | 列出所有端点（Pod）及其身份/策略状态 |
+| `cilium endpoint get <pod>` | 查看某 Pod 端点详情 |
+| `cilium policy get` | 查看已导入的网络策略 |
+| `cilium policy validate -f policy.yaml` | 校验 Cilium 网络策略 |
+| `cilium hubble ui` | 本地打开 Hubble 可观测 UI |
+| `hubble observe` | 实时观察 Pod 间流日志（源/目的/协议/ verdict） |
+| `hubble observe --namespace ns --protocol http` | 按命名空间/协议过滤流 |
+| `cilium connectivity test` | 跑内置连通性测试套件 |
 | `bpftrace -e 'kprobe:vfs_open { printf("open by %s\n", comm); }'` | bpftrace 单行：追踪文件打开 |
 | `bpftrace -e 'tracepoint:syscalls:sys_enter_execve { join(args->argv); }'` | 追踪进程启动参数 |
 | `bpftrace -l 'kprobe:tcp_*'` | 列出可用探针 |
@@ -139,16 +155,16 @@
 
 | 命令 | 说明 |
 |---|---|
-| [`curl -v http://服务名/路径`](./cmd-net/curl) | 详细 HTTP 请求过程（看 DNS/连接/TLS） |
-| [`curl -v --resolve 域名:80:IP http://域名/`](./cmd-net/curl) | 绕过 DNS 直连指定 IP 验证虚拟主机 |
-| [`curl -kv https://域名`](./cmd-net/curl) | 跳过证书校验排查 TLS 问题 |
-| [`dig 域名 @DNS服务器`](./cmd-net/dig) | DNS 解析排查 |
-| [`nslookup 域名`](./cmd-net/dig) | 简易 DNS 查询 |
-| [`nc -zv 主机 端口`](./cmd-net/nc-telnet) | 测试 TCP 端口是否通 |
-| [`nc -uzv 主机 端口`](./cmd-net/nc-telnet) | 测试 UDP 端口 |
-| [`grpcurl -plaintext 主机:端口 list`](./cmd-cloudnative/ingress-mesh) | 列出 gRPC 服务（服务网格排障常用） |
-| [`grpcurl -plaintext 主机:端口 包.服务/方法`](./cmd-cloudnative/ingress-mesh) | 直接调用 gRPC 方法 |
-| [`kubectl exec`](./cmd-kubectl/exec) -it pod -- nslookup svc | 在 Pod 内验证集群 DNS |
+| [`curl -v http://服务名/路径`](/commands/network/curl) | 详细 HTTP 请求过程（看 DNS/连接/TLS） |
+| [`curl -v --resolve 域名:80:IP http://域名/`](/commands/network/curl) | 绕过 DNS 直连指定 IP 验证虚拟主机 |
+| [`curl -kv https://域名`](/commands/network/curl) | 跳过证书校验排查 TLS 问题 |
+| [`dig 域名 @DNS服务器`](/commands/network/dig) | DNS 解析排查 |
+| [`nslookup 域名`](/commands/network/dig) | 简易 DNS 查询 |
+| [`nc -zv 主机 端口`](/reference/network-commands) | 测试 TCP 端口是否通 |
+| [`nc -uzv 主机 端口`](/reference/network-commands) | 测试 UDP 端口 |
+| `grpcurl -plaintext 主机:端口 list` | 列出 gRPC 服务（服务网格排障常用） |
+| `grpcurl -plaintext 主机:端口 包.服务/方法` | 直接调用 gRPC 方法 |
+| [`kubectl exec`](/reference/kubectl-commands) -it pod -- nslookup svc | 在 Pod 内验证集群 DNS |
 | `ipvsadm -Ln` | 查看 LVS/IPVS 转发规则（kube-probe=ipvs 模式） |
 
 ::: warning 生产红线
@@ -158,10 +174,39 @@
 - drain 节点前确认 Pod 有 PDB 与副本冗余，避免把服务全部驱逐掉。
 :::
 
-### 官方文档
+#<!-- merged-command-pitfalls:start -->
+## 命令坑点索引
+
+> 原先逐条拆开的单命令详解已合并到本手册；下面只保留每条命令最容易踩的坑，完整选项和示例不再单独成页。
+> 需要看某条命令的完整用法时，先在上方速查表找到它，再看本节对应行。
+
+| 命令 | 最容易踩的坑 | 官方文档 |
+|---|---|---|
+| `Cilium 排障` | cilium status 默认不够细：排障加 --verbose，否则只看到 OK 看不到哪个控制器挂了。 | — |
+| `ctr` | 不加 -n k8s.io 就啥都没有：这是 ctr 第一大坑。 | — |
+| `Grafana Loki logcli` | 先写标签选择器 {...} 再过滤正文：LogQL 必须以标签选择器开头；直接 \|= "error" 不报标签会扫全量、极慢。 | — |
+| `Grafana Tempo 与 TraceQL` | TraceQL 条件写在花括号里：{ .error = true }，不是 LogQL 那种反引号；多个条件用 &&。 | — |
+| `Hubble observe` | 只能看本节点流：不装 Relay，hubble observe 只看到本 cilium-agent 的流量；跨节点查要配 Relay。 | — |
+| `Ingress / 网格 / 服务连通排障` | 逐层排查，别跳步：先 DNS（nslookup）→ 端口（nc）→ HTTP（curl）→ gRPC（grpcurl）。 | — |
+| `istioctl` | 路由不生效先看 proxy-status：STALE 说明 istiod 没把配置推下去，别急着改 YAML。 | — |
+| `kubectl jsonpath 与 jq` | jq .name 带引号、jq -r .name 才是裸值：要传给 shell 变量/文件名时忘了 -r，会把引号也带进去。 | — |
+| `OpenTelemetry Collector 排障` | 忘了在 service.extensions 里引用扩展：配置了 zpages/pprof/health_check 但没在 service 里挂上，端口就是不通。 | — |
+| `集群生命周期与证书速查` | kubectl get nodes # 1. 节点是否 Ready kubectl get pods -n kube-system # 2. 控制面 Pod 是否在跑 crictl ps -a \| grep -E 'kube-apiserver\|etcd\|kube-controller' # 3. 容器是否反复重启 journalctl -u kubelet -n 2… | — |
+
+<!-- merged-command-pitfalls:end -->
+
+## 相关问答
+
+- 容器与集群排障：[容器与 Kubernetes 问题](/guide/container#常见问题-faq)
+- 云平台与自动化：[云服务器与自动化问题](/guide/automation#常见问题-faq)
+
+## 官方文档
 
 - Helm 文档：https://helm.sh/docs/ （Helm 4：https://helm.sh/docs/4.3/）
 - Kubernetes 命令参考（kubectl / debug）：https://kubernetes.io/docs/reference/kubectl/ ；临时容器：https://kubernetes.io/docs/tasks/debug/debug-application/debug-running-pod/
+- kubeadm：https://kubernetes.io/docs/reference/setup-tools/kubeadm/
+- kubeadm 证书：https://kubernetes.io/docs/tasks/administer-cluster/kubeadm/kubeadm-certs/
+- etcd 运维与恢复：https://etcd.io/docs/latest/op-guide/maintenance/
 - crictl (cri-tools)：https://github.com/kubernetes-sigs/cri-tools
 - containerd：https://containerd.io/docs/
 - OpenTelemetry Collector：https://opentelemetry.io/docs/collector/
