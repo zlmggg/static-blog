@@ -256,6 +256,20 @@ sudo /data/deploy.sh /home/zlmggg/dist.tar.gz
 sudo /data/rollback.sh     # 回滚到上一版本
 ```
 
+### 证书自动续期（Let's Encrypt · DNS-01）
+
+线上用通配符证书（`sresec.com` + `*.sresec.com`），验证走阿里云 DNS API 的 DNS-01，不占用 80/443，也不需要停 Nginx 换证书。
+
+续期由宿主机脚本 + root cron 驱动，每天一次：
+
+```bash
+30 3 * * * /data/renew-cert.sh
+```
+
+脚本三步：在 `neilpang/acme.sh` 容器里跑 `acme.sh --cron`（到期前 30 天内才真正续，其余空跑）→ 若证书文件刚更新，就 `docker exec edge-nginx nginx -s reload`（失败回退 restart）→ 把 acme 退出码和证书到期时间追加进 `/data/logs/acme-renew.log`。
+
+重载放在宿主机而不是 acme 配置里的 `Le_ReloadCmd`，因为 acme 容器内没有 docker 客户端，钩子在那里执行不到。
+
 ## 🤝 致谢
 
 - [VitePress](https://vitepress.dev/zh/)：本站的构建框架；
