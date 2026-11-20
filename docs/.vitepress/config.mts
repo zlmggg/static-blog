@@ -183,8 +183,7 @@ export default defineConfig({
         text: '开始',
         collapsed: false,
         items: [
-          { text: '关于本站', link: '/about' },
-          { text: '学习路线', link: '/roadmap' }
+          { text: '关于本站', link: '/about' }
         ]
       },
       {
