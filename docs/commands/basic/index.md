@@ -18,8 +18,8 @@ description: "定位、查看、过滤、编辑、压缩、校验——运维每
 | 命令 | 用途 |
 |---|---|
 | [ls](./ls) | 列出目录内容 |
-| [cd-pwd](./cd-pwd) | 切换与确认当前目录 |
-| [mkdir-rmdir](./mkdir-rmdir) | 建删目录 |
+| [cd 与 pwd](./cd-pwd) | 切换与确认当前目录 |
+| [mkdir / rmdir](./mkdir-rmdir) | 建删目录 |
 | [touch](./touch) | 建空文件与改时间戳 |
 | [cp](./cp) | 复制文件和目录 |
 | [mv](./mv) | 移动和重命名文件 |
@@ -45,7 +45,7 @@ description: "定位、查看、过滤、编辑、压缩、校验——运维每
 |---|---|
 | [find](./find) | 按条件全盘查找文件 |
 | [grep](./grep) | 从文本里按关键词筛行 |
-| [rg](./rg) | 极速代码搜索 |
+| [rg (ripgrep)](./rg) | 极速代码搜索 |
 
 ### 编辑与统计
 
@@ -64,9 +64,9 @@ description: "定位、查看、过滤、编辑、压缩、校验——运维每
 
 | 命令 | 用途 |
 |---|---|
-| [diff-patch](./diff-patch) | 比较与打补丁 |
-| [paste-comm](./paste-comm) | 合并与比较列 |
-| [dos2unix-iconv](./dos2unix-iconv) | 换行与编码转换 |
+| [diff / patch](./diff-patch) | 比较与打补丁 |
+| [paste / comm](./paste-comm) | 合并与比较列 |
+| [dos2unix / iconv](./dos2unix-iconv) | 换行与编码转换 |
 
 ### 管道与组合
 
@@ -80,15 +80,15 @@ description: "定位、查看、过滤、编辑、压缩、校验——运维每
 | 命令 | 用途 |
 |---|---|
 | [tar](./tar) | 打包与解包（.tar / .tar.gz / .tar.bz2） |
-| [gzip-bzip2-xz](./gzip-bzip2-xz) | 单文件压缩 |
-| [zip-unzip](./zip-unzip) | 跨平台打包压缩 |
+| [gzip / bzip2 / xz](./gzip-bzip2-xz) | 单文件压缩 |
+| [zip / unzip](./zip-unzip) | 跨平台打包压缩 |
 | [split](./split) | 分割大文件 |
 
 ### 校验与擦除
 
 | 命令 | 用途 |
 |---|---|
-| [md5sum-sha256sum](./md5sum-sha256sum) | 校验和 |
+| [md5sum / sha256sum](./md5sum-sha256sum) | 校验和 |
 | [shred](./shred) | 安全擦除文件 |
 
 ::: tip 组织原则

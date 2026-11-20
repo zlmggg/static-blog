@@ -17,37 +17,37 @@ description: "把命令串成自动化：变量、判断、循环、函数与健
 
 | 命令 | 用途 |
 |---|---|
-| [variables](./variables) | 变量、read、printf |
-| [test-if-case](./test-if-case) | 条件判断 |
-| [loops](./loops) | 循环 |
-| [functions](./functions) | 组织与复用 |
+| [变量 / read / printf](./variables) | 变量、read、printf |
+| [test / if / case](./test-if-case) | 条件判断 |
+| [for / while / until](./loops) | 循环 |
+| [函数](./functions) | 组织与复用 |
 
 ### 数据流
 
 | 命令 | 用途 |
 |---|---|
-| [redirect-pipe](./redirect-pipe) | 数据流向 |
+| [重定向与管道](./redirect-pipe) | 数据流向 |
 
 ### 执行与参数
 
 | 命令 | 用途 |
 |---|---|
-| [exec-source-eval](./exec-source-eval) | 执行方式 |
-| [getopts-shift](./getopts-shift) | 参数解析 |
+| [exec / source / eval](./exec-source-eval) | 执行方式 |
+| [getopts / shift](./getopts-shift) | 参数解析 |
 
 ### 健壮性与检查
 
 | 命令 | 用途 |
 |---|---|
-| [robust](./robust) | 脚本健壮性 |
-| [shellcheck](./shellcheck) | 静态检查 |
+| [set -euo pipefail / trap](./robust) | 脚本健壮性 |
+| [shellcheck / bash -n](./shellcheck) | 静态检查 |
 
 ### 交互与历史
 
 | 命令 | 用途 |
 |---|---|
 | [expect](./expect) | 自动化交互 |
-| [history](./history) | 复用历史 |
+| [history 与引用](./history) | 复用历史 |
 
 ::: tip 组织原则
 同族命令合并成一页，一条命令只有一个主页；跨组场景用链接指向对应分组。

@@ -17,8 +17,8 @@ description: "连通、端口、DNS、抓包、远程、防火墙与流量，查
 
 | 命令 | 用途 |
 |---|---|
-| [ip-addr-link](./ip-addr-link) | 看清网卡、IP 与 MAC |
-| [ifconfig-bridge-networkctl](./ifconfig-bridge-networkctl) | 接口与桥接 |
+| [ip addr 与 ip link](./ip-addr-link) | 看清网卡、IP 与 MAC |
+| [ifconfig / bridge / networkctl](./ifconfig-bridge-networkctl) | 接口与桥接 |
 | [nmcli](./nmcli) | NetworkManager 网络配置 |
 | [ethtool](./ethtool) | 网卡速率、双工、丢包与 offload |
 | [tc](./tc) | 流量控制 |
@@ -27,7 +27,7 @@ description: "连通、端口、DNS、抓包、远程、防火墙与流量，查
 
 | 命令 | 用途 |
 |---|---|
-| [arp](./arp) | 邻居表 |
+| [arp / arping / ip neigh](./arp) | 邻居表 |
 | [route](./route) | 路由表（旧） |
 
 ### DNS 解析
@@ -35,8 +35,8 @@ description: "连通、端口、DNS、抓包、远程、防火墙与流量，查
 | 命令 | 用途 |
 |---|---|
 | [dig](./dig) | 查 DNS 记录 |
-| [nslookup-host](./nslookup-host) | DNS 查询 |
-| [getent-resolvectl](./getent-resolvectl) | 解析顺序与 hosts 配置 |
+| [nslookup / host / getent](./nslookup-host) | DNS 查询 |
+| [系统解析配置](./getent-resolvectl) | 解析顺序与 hosts 配置 |
 | [whois](./whois) | 域名与 IP 归属 |
 
 ### 连通与路径
@@ -44,8 +44,8 @@ description: "连通、端口、DNS、抓包、远程、防火墙与流量，查
 | 命令 | 用途 |
 |---|---|
 | [ping](./ping) | 连通性测试 |
-| [traceroute-mtr](./traceroute-mtr) | 路径追踪 |
-| [nc-socat-telnet](./nc-socat-telnet) | 端口与连接测试 |
+| [traceroute / mtr](./traceroute-mtr) | 路径追踪 |
+| [nc / socat / telnet](./nc-socat-telnet) | 端口与连接测试 |
 | [iperf3](./iperf3) | 带宽测试 |
 | [nmap](./nmap) | 端口扫描与服务探测 |
 
@@ -78,8 +78,8 @@ description: "连通、端口、DNS、抓包、远程、防火墙与流量，查
 
 | 命令 | 用途 |
 |---|---|
-| [ssh-rsync](./ssh-rsync) | 登录、传文件、端口转发 |
-| [scp-sftp](./scp-sftp) | 远程传输 |
+| [SSH 与 rsync](./ssh-rsync) | 登录、传文件、端口转发 |
+| [scp / sftp](./scp-sftp) | 远程传输 |
 | [sshpass](./sshpass) | 非交互 SSH 密码 |
 | [curl](./curl) | 万能 HTTP 请求与接口测试 |
 | [wget](./wget) | 下载工具 |

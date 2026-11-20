@@ -30,21 +30,21 @@ Git 是版本协作工具（不是常驻服务），命令放本组；GitLab/Jen
 
 | 命令 | 用途 |
 |---|---|
-| [base64-xxd-od](./base64-xxd-od) | 编码与二进制查看 |
+| [base64 / xxd / od](./base64-xxd-od) | 编码与二进制查看 |
 
 ### 证书与密钥
 
 | 命令 | 用途 |
 |---|---|
 | [openssl](./openssl) | 证书与加密排查 |
-| [ssh-keygen](./ssh-keygen) | 密钥与免密 |
+| [ssh-keygen / ssh-copy-id](./ssh-keygen) | 密钥与免密 |
 
 ### 执行控制与效率
 
 | 命令 | 用途 |
 |---|---|
-| [watch-timeout-time](./watch-timeout-time) | 定时刷新、超时与计时 |
-| [fzf-parallel-pv](./fzf-parallel-pv) | 模糊查找、并行与进度条 |
+| [watch / timeout / time](./watch-timeout-time) | 定时刷新、超时与计时 |
+| [fzf / parallel / pv](./fzf-parallel-pv) | 模糊查找、并行与进度条 |
 
 ::: tip 组织原则
 同族命令合并成一页，一条命令只有一个主页；跨组场景用链接指向对应分组。

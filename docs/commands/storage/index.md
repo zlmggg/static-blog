@@ -26,35 +26,35 @@ description: "不止查看检测：分区、格式化、挂载、LVM 扩缩容�
 
 | 命令 | 用途 |
 |---|---|
-| [lsblk-blkid-findmnt](./lsblk-blkid-findmnt) | 块设备与挂载 |
-| [nvme-xfs_info-hdparm](./nvme-xfs_info-hdparm) | 磁盘信息与调优 |
+| [lsblk / blkid / findmnt](./lsblk-blkid-findmnt) | 块设备与挂载 |
+| [nvme / xfs_info / hdparm](./nvme-xfs_info-hdparm) | 磁盘信息与调优 |
 | [smartctl](./smartctl) | 磁盘健康检查与 SMART 预警 |
 
 ### 分区与格式化
 
 | 命令 | 用途 |
 |---|---|
-| [fdisk-parted-gdisk](./fdisk-parted-gdisk) | 分区 |
-| [mkfs](./mkfs) | 格式化 |
-| [wipefs-partprobe](./wipefs-partprobe) | 清签名与刷新分区 |
+| [fdisk / parted / gdisk](./fdisk-parted-gdisk) | 分区 |
+| [mkfs / mkswap](./mkfs) | 格式化 |
+| [wipefs / partprobe](./wipefs-partprobe) | 清签名与刷新分区 |
 
 ### 挂载与共享
 
 | 命令 | 用途 |
 |---|---|
-| [mount-umount](./mount-umount) | 挂载卸载 |
-| [fstab](./fstab) | 持久化挂载 |
-| [nfs](./nfs) | 网络文件共享 |
-| [cifs](./cifs) | 挂载 Windows/SMB 共享 |
+| [mount / umount](./mount-umount) | 挂载卸载 |
+| [/etc/fstab](./fstab) | 持久化挂载 |
+| [NFS](./nfs) | 网络文件共享 |
+| [mount.cifs](./cifs) | 挂载 Windows/SMB 共享 |
 
 ### LVM
 
 | 命令 | 用途 |
 |---|---|
-| [lvm-view](./lvm-view) | LVM 查看 |
-| [lvm-create](./lvm-create) | LVM 创建 |
-| [lvm-extend](./lvm-extend) | LVM 扩容 |
-| [lvm-reduce](./lvm-reduce) | LVM 缩容与移除 |
+| [pvs / vgs / lvs](./lvm-view) | LVM 查看 |
+| [pvcreate / vgcreate / lvcreate](./lvm-create) | LVM 创建 |
+| [lvextend / vgextend / resize2fs / xfs_growfs](./lvm-extend) | LVM 扩容 |
+| [lvreduce / lvremove / pvremove](./lvm-reduce) | LVM 缩容与移除 |
 
 ### RAID、加密与多路径
 
@@ -62,15 +62,15 @@ description: "不止查看检测：分区、格式化、挂载、LVM 扩缩容�
 |---|---|
 | [mdadm](./mdadm) | 软 RAID |
 | [cryptsetup](./cryptsetup) | LUKS 磁盘加密 |
-| [iscsi-multipath](./iscsi-multipath) | iSCSI 与多路径 |
+| [iscsiadm / multipath](./iscsi-multipath) | iSCSI 与多路径 |
 
 ### 修复、调优与交换
 
 | 命令 | 用途 |
 |---|---|
-| [fsck-xfs_repair](./fsck-xfs_repair) | 文件系统修复 |
-| [tune2fs-dumpe2fs](./tune2fs-dumpe2fs) | ext4 调优与查看 |
-| [swapon](./swapon) | 交换空间 |
+| [fsck / xfs_repair](./fsck-xfs_repair) | 文件系统修复 |
+| [tune2fs / dumpe2fs](./tune2fs-dumpe2fs) | ext4 调优与查看 |
+| [swapon / swapoff / mkswap](./swapon) | 交换空间 |
 
 ### 底层复制
 
