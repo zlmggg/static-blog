@@ -680,6 +680,32 @@ html:not(.dark) .vp-doc div[class*='language-']::before {
   word-break: break-word;
 }
 
+/* ---------- 8.1 命令手册 cmd-table：工具书式紧凑排版 ---------- */
+.vp-doc h3:has(+ .cmd-table) {
+  margin: 1.35rem 0 0.3rem;
+  font-size: 1.02rem;
+  line-height: 1.4;
+}
+.vp-doc h3:first-of-type:has(+ .cmd-table) {
+  margin-top: 0.9rem;
+}
+.vp-doc .cmd-table {
+  margin: 0;
+}
+.vp-doc .cmd-table table {
+  table-layout: auto;
+  margin: 0;
+}
+.vp-doc .cmd-table table th,
+.vp-doc .cmd-table table td {
+  padding: 5px 14px;
+  line-height: 1.5;
+}
+.vp-doc .cmd-table table thead th {
+  padding-top: 6px;
+  padding-bottom: 6px;
+}
+
 /* ============================================================
  * 9. ThemeToggle（圆形涟漪主题切换按钮）+ 隐藏默认开关
  * ============================================================ */

@@ -5,15 +5,9 @@ description: "账号与组、提权、文件权限与属性、SELinux 与登录�
 
 # 用户与权限
 
-> 命令手册 · [返回总览](/commands/) ｜ 本组 14 个页面，按功能分类
-
-## 功能
-
-权限是 Linux 安全的第一道门。这一组既管"谁能登录、谁能提权"（useradd/sudo），也管"谁能读写执行哪个文件"（chmod/chown/ACL），还管 SELinux 这层额外约束。排障时"Permission denied"几乎都绕不开本组。
-
-## 类别
-
 ### 账号与组
+
+::: cmd
 
 | 命令 | 用途 |
 |---|---|
@@ -23,13 +17,21 @@ description: "账号与组、提权、文件权限与属性、SELinux 与登录�
 | [groupadd / gpasswd / newgrp](./group) | 组管理 |
 | [id / whoami / w / who](./id-whoami) | 身份与在线 |
 
+:::
+
 ### 提权
+
+::: cmd
 
 | 命令 | 用途 |
 |---|---|
 | [su / sudo / visudo](./su-sudo) | 提权与授权 |
 
+:::
+
 ### 文件权限与属性
+
+::: cmd
 
 | 命令 | 用途 |
 |---|---|
@@ -39,7 +41,11 @@ description: "账号与组、提权、文件权限与属性、SELinux 与登录�
 | [getfacl / setfacl](./acl) | 细粒度 ACL |
 | [chattr / lsattr](./chattr-lsattr) | 文件扩展属性 |
 
+:::
+
 ### 安全策略与审计
+
+::: cmd
 
 | 命令 | 用途 |
 |---|---|
@@ -47,6 +53,4 @@ description: "账号与组、提权、文件权限与属性、SELinux 与登录�
 | [auditctl / ausearch](./audit) | 审计规则 |
 | [last / lastlog / lastb](./last) | 登录审计 |
 
-::: tip 组织原则
-同族命令合并成一页，一条命令只有一个主页；跨组场景用链接指向对应分组。
 :::

@@ -116,6 +116,13 @@ export default defineConfig({
         }
       })
 
+      // 命令手册聚合表：紧凑排版容器（行高与间距收紧，第一列按内容自适应）
+      md.use(container, 'cmd', {
+        render(tokens: any, idx: number) {
+          return tokens[idx].nesting === 1 ? '<div class="cmd-table">\n' : '</div>\n'
+        }
+      })
+
       // —— Mermaid：把 ```mermaid 代码块转成 <Mermaid> 组件，由组件在浏览器端渲染 ——
       // 手动集成而非用 vitepress-plugin-mermaid（该插件的 withMermaid 在 VitePress 1.6 会白屏）。
       const defaultFence = md.renderer.rules.fence
