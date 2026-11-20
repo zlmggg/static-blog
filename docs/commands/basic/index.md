@@ -5,73 +5,92 @@ description: "定位、查看、过滤、编辑、压缩、校验——运维每
 
 # 文件与文本
 
-> 命令手册分组 · 返回 [命令手册总览](/commands/)
-> 定位、查看、过滤、编辑、压缩、校验——运维每天敲得最多的一类。
+> 命令手册 · [返回总览](/commands/) ｜ 本组 38 个页面，按功能分类
 
-## 这类命令解决什么
+## 功能
 
 文件与文本命令是运维的"手"：找文件、看内容、过滤日志、改配置、打包传输都靠它。文本三剑客 grep/sed/awk 是日志分析与配置批量修改的核心，值得反复练。
 
-## 学习顺序（入门 → 高级）
+## 类别
 
-1. ls / cd / pwd / cp / mv / rm（先会操作文件）
-2. cat / less / head / tail（看内容）
-3. find / grep（定位与过滤）
-4. sed / awk（编辑与统计）
-5. tar / gzip（打包压缩）
-6. xargs / tee / sort / uniq（组合管道）
+### 目录与文件操作
 
-## 本组命令
+| 命令 | 用途 |
+|---|---|
+| [ls](./ls) | 列出目录内容 |
+| [cd-pwd](./cd-pwd) | 切换与确认当前目录 |
+| [mkdir-rmdir](./mkdir-rmdir) | 建删目录 |
+| [touch](./touch) | 建空文件与改时间戳 |
+| [cp](./cp) | 复制文件和目录 |
+| [mv](./mv) | 移动和重命名文件 |
+| [rm](./rm) | 删除文件与目录（高危） |
+| [ln](./ln) | 硬链接与软链接 |
+| [rename](./rename) | 批量重命名 |
 
-### 已就绪
+### 读取与查看
 
-- [awk](./awk)
-- [cat](./cat)
-- [cd-pwd](./cd-pwd)
-- [cp](./cp)
-- [cut](./cut)
-- [diff-patch](./diff-patch)
-- [dos2unix-iconv](./dos2unix-iconv)
-- [file](./file)
-- [find](./find)
-- [grep](./grep)
-- [gzip-bzip2-xz](./gzip-bzip2-xz)
-- [head](./head)
-- [less](./less)
-- [ln](./ln)
-- [ls](./ls)
-- [md5sum-sha256sum](./md5sum-sha256sum)
-- [mkdir-rmdir](./mkdir-rmdir)
-- [mv](./mv)
-- [paste-comm](./paste-comm)
-- [rename](./rename)
-- [rg](./rg)
-- [rm](./rm)
-- [sed](./sed)
-- [shred](./shred)
-- [sort](./sort)
-- [split](./split)
-- [stat](./stat)
-- [tail](./tail)
-- [tar](./tar)
-- [tee](./tee)
-- [touch](./touch)
-- [tr](./tr)
-- [tree](./tree)
-- [uniq](./uniq)
-- [vim](./vim)
-- [wc](./wc)
-- [xargs](./xargs)
-- [zip-unzip](./zip-unzip)
+| 命令 | 用途 |
+|---|---|
+| [cat](./cat) | 查看与拼接文件 |
+| [less](./less) | 翻页查看大文件 |
+| [head](./head) | 看文件开头 |
+| [tail](./tail) | 看文件结尾，还能实时跟踪新日志 |
+| [stat](./stat) | 文件元信息 |
+| [tree](./tree) | 树状目录结构 |
+| [file](./file) | 识别文件类型 |
 
-### 规划中（待编写）
+### 查找与过滤
 
-`ls`、`cd / pwd`、`cp`、`mv`、`rm`、`mkdir / rmdir`、`touch`、`cat`、`less`、`head`、`tail`、`find`、`grep`、`rg (ripgrep)`、`sed`、`awk`、`cut`、`sort`、`uniq`、`wc`、`tr`、`diff / patch`、`tar`、`gzip / bzip2 / xz`、`zip / unzip`、`ln`、`file`、`stat`、`tree`、`tee`、`xargs`、`split`、`paste / comm`、`md5sum / sha256sum`、`dos2unix / iconv`、`rename`、`vim`、`shred`
+| 命令 | 用途 |
+|---|---|
+| [find](./find) | 按条件全盘查找文件 |
+| [grep](./grep) | 从文本里按关键词筛行 |
+| [rg](./rg) | 极速代码搜索 |
 
-::: tip 覆盖与组织原则
-查看检测与操作变更并重；同族命令合并成页（如 fdisk/parted/gdisk → 分区工具）；一条命令只有一个主页，跨组互链。
+### 编辑与统计
+
+| 命令 | 用途 |
+|---|---|
+| [vim](./vim) | 终端编辑器 |
+| [sed](./sed) | 流式批量编辑文本 |
+| [awk](./awk) | 按列处理文本的小编程语言 |
+| [cut](./cut) | 按列截取 |
+| [sort](./sort) | 排序 |
+| [uniq](./uniq) | 去重与计数 |
+| [wc](./wc) | 统计行/词/字节 |
+| [tr](./tr) | 字符转换与删除 |
+
+### 比较与转换
+
+| 命令 | 用途 |
+|---|---|
+| [diff-patch](./diff-patch) | 比较与打补丁 |
+| [paste-comm](./paste-comm) | 合并与比较列 |
+| [dos2unix-iconv](./dos2unix-iconv) | 换行与编码转换 |
+
+### 管道与组合
+
+| 命令 | 用途 |
+|---|---|
+| [xargs](./xargs) | 把输入变参数 |
+| [tee](./tee) | 分流输出 |
+
+### 打包与压缩
+
+| 命令 | 用途 |
+|---|---|
+| [tar](./tar) | 打包与解包（.tar / .tar.gz / .tar.bz2） |
+| [gzip-bzip2-xz](./gzip-bzip2-xz) | 单文件压缩 |
+| [zip-unzip](./zip-unzip) | 跨平台打包压缩 |
+| [split](./split) | 分割大文件 |
+
+### 校验与擦除
+
+| 命令 | 用途 |
+|---|---|
+| [md5sum-sha256sum](./md5sum-sha256sum) | 校验和 |
+| [shred](./shred) | 安全擦除文件 |
+
+::: tip 组织原则
+同族命令合并成一页，一条命令只有一个主页；跨组场景用链接指向对应分组。
 :::
-
-## 命令页模板
-
-一句话用途 + 频率标记 → 高频场景速查（中文，复制即用）→ 参数详解（`--help` 全量中文化，按"每天用 / 偶尔用 / 很少用"分级，标易错点）→ 运维实战示例 → 相关命令 + 官方文档完整链接。

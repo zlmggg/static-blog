@@ -14,11 +14,16 @@ GitLab 托管代码与 CI，Jenkins 跑流水线与分布式构建，Ansible 做
 
 ## 本组服务
 
-| 服务 | 形态 | 状态 | 入口 |
-|---|---|---|---|
-| GitLab | 单页 | 已就绪 | [进入](/services/cicd/gitlab) |
-| Jenkins | 四篇 | 已就绪 | [进入](/services/cicd/jenkins/01-理论) |
-| Ansible | 单页 | 已就绪 | [进入](/services/cicd/ansible) |
+::: idx
+
+| 服务 | 篇幅 | 入口 |
+|---|---|---|
+| GitLab | 单页 | [进入](/services/cicd/gitlab) |
+| Jenkins | 四篇 | [进入](/services/cicd/jenkins/01-理论) |
+| Ansible | 单页 | [进入](/services/cicd/ansible) |
+
+:::
+
 
 ## 统一四段模板
 

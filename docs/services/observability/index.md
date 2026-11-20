@@ -14,12 +14,17 @@ Prometheus 采指标、Alertmanager 发告警、Grafana 做可视化，ELK/Fileb
 
 ## 本组服务
 
-| 服务 | 形态 | 状态 | 入口 |
-|---|---|---|---|
-| Prometheus | 四篇 | 已就绪 | [进入](/services/observability/prometheus/01-理论) |
-| Grafana | 单页 | 已就绪 | [进入](/services/observability/grafana) |
-| Alertmanager | 单页 | 已就绪 | [进入](/services/observability/alertmanager) |
-| ELK / Filebeat | 单页 | 已就绪 | [进入](/services/observability/elk) |
+::: idx
+
+| 服务 | 篇幅 | 入口 |
+|---|---|---|
+| Prometheus | 四篇 | [进入](/services/observability/prometheus/01-理论) |
+| Grafana | 单页 | [进入](/services/observability/grafana) |
+| Alertmanager | 单页 | [进入](/services/observability/alertmanager) |
+| ELK / Filebeat | 单页 | [进入](/services/observability/elk) |
+
+:::
+
 
 ## 统一四段模板
 

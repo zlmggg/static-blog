@@ -14,12 +14,17 @@ description: "流量入口：反向代理、四层负载、高可用 VIP、域�
 
 ## 本组服务
 
-| 服务 | 形态 | 状态 | 入口 |
-|---|---|---|---|
-| Nginx | 四篇 | 已就绪 | [进入](/services/web/nginx/01-理论) |
-| LVS + Keepalived | 单页 | 已就绪 | [进入](/services/web/lvs-keepalived) |
-| HAProxy | 单页 | 已就绪 | [进入](/services/web/haproxy) |
-| DNS（Bind） | 单页 | 已就绪 | [进入](/services/web/dns) |
+::: idx
+
+| 服务 | 篇幅 | 入口 |
+|---|---|---|
+| Nginx | 四篇 | [进入](/services/web/nginx/01-理论) |
+| LVS + Keepalived | 单页 | [进入](/services/web/lvs-keepalived) |
+| HAProxy | 单页 | [进入](/services/web/haproxy) |
+| DNS（Bind） | 单页 | [进入](/services/web/dns) |
+
+:::
+
 
 ## 统一四段模板
 

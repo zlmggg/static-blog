@@ -5,60 +5,79 @@ description: "不止查看检测：分区、格式化、挂载、LVM 扩缩容�
 
 # 磁盘与存储
 
-> 命令手册分组 · 返回 [命令手册总览](/commands/)
-> 不止查看检测：分区、格式化、挂载、LVM 扩缩容、修复、RAID 全套操作。
+> 命令手册 · [返回总览](/commands/) ｜ 本组 25 个页面，按功能分类
 
-## 这类命令解决什么
+## 功能
 
 磁盘命令分两类动作：一类是"看"（df/du/lsblk/smartctl/iostat），一类是"改"（fdisk/parted 分区、mkfs 格式化、mount/fstab 挂载、LVM 扩缩容、fsck 修复）。运维不只看得懂容量，还要敢动手扩容、换盘、修文件系统。"磁盘满了"和"加块盘"是两种完全不同的工作，本组都覆盖。
 
-## 学习顺序（入门 → 高级）
+## 类别
 
-1. df / du / lsblk（先看容量与块设备）
-2. fdisk / parted / mkfs（分区与格式化）
-3. mount / umount / fstab（挂载与持久化）
-4. pvs / vgs / lvs + lvextend（LVM 扩容）
-5. fsck / xfs_repair（修复）
-6. smartctl / iostat（健康与 IO）
+### 容量与占用
 
-## 本组命令
+| 命令 | 用途 |
+|---|---|
+| [df](./df) | 看磁盘分区还剩多少空间 |
+| [du](./du) | 找是哪个目录把磁盘塞满了 |
+| [ncdu](./ncdu) | 交互式磁盘占用 |
+| [logrotate](./logrotate) | 日志轮转、压缩与清理 |
 
-### 已就绪
+### 块设备与健康
 
-- [cifs](./cifs)
-- [cryptsetup](./cryptsetup)
-- [dd](./dd)
-- [df](./df)
-- [du](./du)
-- [fdisk-parted-gdisk](./fdisk-parted-gdisk)
-- [fsck-xfs_repair](./fsck-xfs_repair)
-- [fstab](./fstab)
-- [iscsi-multipath](./iscsi-multipath)
-- [logrotate](./logrotate)
-- [lsblk-blkid-findmnt](./lsblk-blkid-findmnt)
-- [lvm-create](./lvm-create)
-- [lvm-extend](./lvm-extend)
-- [lvm-reduce](./lvm-reduce)
-- [lvm-view](./lvm-view)
-- [mdadm](./mdadm)
-- [mkfs](./mkfs)
-- [mount-umount](./mount-umount)
-- [ncdu](./ncdu)
-- [nfs](./nfs)
-- [nvme-xfs_info-hdparm](./nvme-xfs_info-hdparm)
-- [smartctl](./smartctl)
-- [swapon](./swapon)
-- [tune2fs-dumpe2fs](./tune2fs-dumpe2fs)
-- [wipefs-partprobe](./wipefs-partprobe)
+| 命令 | 用途 |
+|---|---|
+| [lsblk-blkid-findmnt](./lsblk-blkid-findmnt) | 块设备与挂载 |
+| [nvme-xfs_info-hdparm](./nvme-xfs_info-hdparm) | 磁盘信息与调优 |
+| [smartctl](./smartctl) | 磁盘健康检查与 SMART 预警 |
 
-### 规划中（待编写）
+### 分区与格式化
 
-`df`、`du`、`lsblk`、`blkid`、`findmnt`、`smartctl`、`iostat`、`ncdu`、`nvme`、`xfs_info`、`hdparm`、`lsscsi`、`fdisk`、`parted`、`gdisk`、`mkfs.ext4 / mkfs.xfs`、`mkswap`、`partprobe`、`wipefs`、`cryptsetup`、`mount`、`umount`、`/etc/fstab`、`swapon / swapoff`、`pvs / vgs / lvs`、`pvcreate / vgcreate / lvcreate`、`lvextend / vgextend`、`resize2fs / xfs_growfs`、`lvreduce / lvremove / pvremove`、`fsck`、`xfs_repair`、`tune2fs / dumpe2fs`、`dd`、`mdadm`、`mount.nfs / showmount`、`mount.cifs`、`exportfs`、`iscsiadm`、`multipath`、`logrotate`
+| 命令 | 用途 |
+|---|---|
+| [fdisk-parted-gdisk](./fdisk-parted-gdisk) | 分区 |
+| [mkfs](./mkfs) | 格式化 |
+| [wipefs-partprobe](./wipefs-partprobe) | 清签名与刷新分区 |
 
-::: tip 覆盖与组织原则
-查看检测与操作变更并重；同族命令合并成页（如 fdisk/parted/gdisk → 分区工具）；一条命令只有一个主页，跨组互链。
+### 挂载与共享
+
+| 命令 | 用途 |
+|---|---|
+| [mount-umount](./mount-umount) | 挂载卸载 |
+| [fstab](./fstab) | 持久化挂载 |
+| [nfs](./nfs) | 网络文件共享 |
+| [cifs](./cifs) | 挂载 Windows/SMB 共享 |
+
+### LVM
+
+| 命令 | 用途 |
+|---|---|
+| [lvm-view](./lvm-view) | LVM 查看 |
+| [lvm-create](./lvm-create) | LVM 创建 |
+| [lvm-extend](./lvm-extend) | LVM 扩容 |
+| [lvm-reduce](./lvm-reduce) | LVM 缩容与移除 |
+
+### RAID、加密与多路径
+
+| 命令 | 用途 |
+|---|---|
+| [mdadm](./mdadm) | 软 RAID |
+| [cryptsetup](./cryptsetup) | LUKS 磁盘加密 |
+| [iscsi-multipath](./iscsi-multipath) | iSCSI 与多路径 |
+
+### 修复、调优与交换
+
+| 命令 | 用途 |
+|---|---|
+| [fsck-xfs_repair](./fsck-xfs_repair) | 文件系统修复 |
+| [tune2fs-dumpe2fs](./tune2fs-dumpe2fs) | ext4 调优与查看 |
+| [swapon](./swapon) | 交换空间 |
+
+### 底层复制
+
+| 命令 | 用途 |
+|---|---|
+| [dd](./dd) | 底层复制与镜像 |
+
+::: tip 组织原则
+同族命令合并成一页，一条命令只有一个主页；跨组场景用链接指向对应分组。
 :::
-
-## 命令页模板
-
-一句话用途 + 频率标记 → 高频场景速查（中文，复制即用）→ 参数详解（`--help` 全量中文化，按"每天用 / 偶尔用 / 很少用"分级，标易错点）→ 运维实战示例 → 相关命令 + 官方文档完整链接。

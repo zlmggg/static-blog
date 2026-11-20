@@ -14,10 +14,15 @@ MinIO 提供 S3 兼容对象存储（文件/图片/备份），Elasticsearch 提
 
 ## 本组服务
 
-| 服务 | 形态 | 状态 | 入口 |
-|---|---|---|---|
-| MinIO | 单页 | 已就绪 | [进入](/services/storage-search/minio) |
-| Elasticsearch | 四篇 | 已就绪 | [进入](/services/storage-search/elasticsearch/01-理论) |
+::: idx
+
+| 服务 | 篇幅 | 入口 |
+|---|---|---|
+| MinIO | 单页 | [进入](/services/storage-search/minio) |
+| Elasticsearch | 四篇 | [进入](/services/storage-search/elasticsearch/01-理论) |
+
+:::
+
 
 ## 统一四段模板
 

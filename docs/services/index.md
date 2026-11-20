@@ -9,15 +9,20 @@ description: "按企业场景分 7 组 22 服务，统一四段模板：理论�
 
 ## 七组全景
 
+::: idx
+
 | 分组 | 覆盖 | 入口 |
 |---|---|---|
 | 接入与网络 | Nginx · LVS · HAProxy · DNS（Bind） | [进入](/services/web/) |
 | 数据库与缓存 | MySQL · Redis | [进入](/services/database/) |
 | 中间件 | Nacos · Kafka · RabbitMQ | [进入](/services/middleware/) |
-| 容器与编排 | Docker · Docker · Kubernetes · Helm · Harbor | [进入](/services/container/) |
+| 容器与编排 | Docker · Docker Compose · Kubernetes · Helm · Harbor | [进入](/services/container/) |
 | 存储与搜索 | MinIO · Elasticsearch | [进入](/services/storage-search/) |
 | CI/CD 与自动化 | GitLab · Jenkins · Ansible | [进入](/services/cicd/) |
 | 监控与日志 | Prometheus · Grafana · Alertmanager · ELK | [进入](/services/observability/) |
+
+:::
+
 
 ## 统一四段模板
 

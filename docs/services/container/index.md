@@ -14,13 +14,18 @@ description: "镜像、容器、编排与私有仓库。"
 
 ## 本组服务
 
-| 服务 | 形态 | 状态 | 入口 |
-|---|---|---|---|
-| Docker | 四篇 | 已就绪 | [进入](/services/container/docker/01-理论) |
-| Docker Compose | 单页 | 已就绪 | [进入](/services/container/compose) |
-| Kubernetes | 四篇 | 已就绪 | [进入](/services/container/kubernetes/01-理论) |
-| Helm | 单页 | 已就绪 | [进入](/services/container/helm) |
-| Harbor | 单页 | 已就绪 | [进入](/services/container/harbor) |
+::: idx
+
+| 服务 | 篇幅 | 入口 |
+|---|---|---|
+| Docker | 四篇 | [进入](/services/container/docker/01-理论) |
+| Docker Compose | 单页 | [进入](/services/container/compose) |
+| Kubernetes | 四篇 | [进入](/services/container/kubernetes/01-理论) |
+| Helm | 单页 | [进入](/services/container/helm) |
+| Harbor | 单页 | [进入](/services/container/harbor) |
+
+:::
+
 
 ## 统一四段模板
 

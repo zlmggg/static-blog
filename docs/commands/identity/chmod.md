@@ -208,9 +208,9 @@ chmod 600 ~/.ssh/id_rsa
 ## 八、相关命令与文档
 
 - 所属分组：[用户与权限](/commands/identity/)
-- 改文件属主/属组：`chown` / `chgrp`（本分组，待编写）
-- 比 rwx 更细的授权（给指定用户开权限）：`getfacl` / `setfacl`（本分组，待编写）
-- 防篡改属性（immutable）：`chattr` / `lsattr`（本分组，待编写）
+- 改文件属主/属组：[chown / chgrp](./chown-chgrp)
+- 比 rwx 更细的授权（给指定用户开权限）：[getfacl / setfacl](./acl)
+- 防篡改属性（immutable）：[chattr / lsattr](./chattr-lsattr)
 - 权限与安全模型专题：[Linux 用户与组](/guide/linux#合并资料)、[Linux 安全](/guide/linux-security)
 
 ## 官方文档

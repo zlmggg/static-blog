@@ -14,10 +14,15 @@ description: "业务数据层：关系型数据库与内存缓存。"
 
 ## 本组服务
 
-| 服务 | 形态 | 状态 | 入口 |
-|---|---|---|---|
-| MySQL / MariaDB | 四篇 | 已就绪 | [进入](/services/database/mysql/01-理论) |
-| Redis | 四篇 | 已就绪 | [进入](/services/database/redis/01-理论) |
+::: idx
+
+| 服务 | 篇幅 | 入口 |
+|---|---|---|
+| MySQL / MariaDB | 四篇 | [进入](/services/database/mysql/01-理论) |
+| Redis | 四篇 | [进入](/services/database/redis/01-理论) |
+
+:::
+
 
 ## 统一四段模板
 

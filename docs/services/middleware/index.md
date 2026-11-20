@@ -14,11 +14,16 @@ description: "注册配置中心与消息队列。"
 
 ## 本组服务
 
-| 服务 | 形态 | 状态 | 入口 |
-|---|---|---|---|
-| Nacos | 单页 | 已就绪 | [进入](/services/middleware/nacos) |
-| Kafka | 单页 | 已就绪 | [进入](/services/middleware/kafka) |
-| RabbitMQ | 单页 | 已就绪 | [进入](/services/middleware/rabbitmq) |
+::: idx
+
+| 服务 | 篇幅 | 入口 |
+|---|---|---|
+| Nacos | 单页 | [进入](/services/middleware/nacos) |
+| Kafka | 单页 | [进入](/services/middleware/kafka) |
+| RabbitMQ | 单页 | [进入](/services/middleware/rabbitmq) |
+
+:::
+
 
 ## 统一四段模板
 
